@@ -2,6 +2,8 @@ package cse360project;
 
 import java.sql.SQLException;
 
+import cse360project.utils.DatabaseHelper;
+
 public class DBTest {
     public static void main(String[] args) {
         initialTest();
