@@ -13,6 +13,10 @@ public class PageManager {
         page.onPageOpen();
     }
 
+    public static Page getPageByName(String name) {
+        return pageNames.get(name);
+    }
+
     public static void switchToPage(Page page) {
         primaryScene.setRoot(page.getRoot());
     }
