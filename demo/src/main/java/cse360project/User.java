@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import cse360project.utils.Role;
+
 public class User {
     int id;
     String username;
@@ -37,6 +39,13 @@ public class User {
         this.is_admin = is_admin;
         this.is_instructor = is_instructor;
         this.is_student = is_student;
+    }
+
+    public boolean hasRole(Role role) {
+        if (role == Role.ADMIN) return this.is_admin;
+        if (role == Role.INSTRUCTOR) return this.is_instructor;
+        if (role == Role.STUDENT) return this.is_student;
+        return false;
     }
 
     static User fromResultSet(ResultSet rs) throws SQLException {
