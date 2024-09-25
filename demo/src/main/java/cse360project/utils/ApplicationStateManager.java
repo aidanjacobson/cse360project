@@ -22,6 +22,8 @@ public class ApplicationStateManager {
     // log the user out
     public static void logout() {
         loggedInUser = null;
+        loggedInRole = null;
+        PageManager.switchToPage("login");
     }
 
     static Role loggedInRole;
