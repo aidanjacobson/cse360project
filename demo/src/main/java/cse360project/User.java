@@ -7,21 +7,21 @@ import java.sql.Timestamp;
 import cse360project.utils.Role;
 
 public class User {
-    int id;
-    String username;
-    String password;
-    String email;
-    String inviteCode;
-    boolean accountSetUp;
-    boolean OTP;
-    Timestamp OTP_expiration;
-    String firstName;
-    String middleName;
-    String lastName;
-    String preferredName;
-    boolean is_admin;
-    boolean is_student;
-    boolean is_instructor;
+    public int id;
+    public String username;
+    public String password;
+    public String email;
+    public String inviteCode;
+    public boolean accountSetUp;
+    public boolean OTP;
+    public Timestamp OTP_expiration;
+    public String firstName;
+    public String middleName;
+    public String lastName;
+    public String preferredName;
+    public boolean is_admin;
+    public boolean is_student;
+    public boolean is_instructor;
 
     public User(int id, String username, String password, String email, String inviteCode, boolean accountSetUp, boolean OTP, Timestamp OTP_expiration, String firstName, String middleName, String lastName, String preferredName, boolean is_admin, boolean is_instructor, boolean is_student) {
         this.id = id;
