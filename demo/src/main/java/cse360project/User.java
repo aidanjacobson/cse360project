@@ -48,11 +48,11 @@ public class User {
         return false;
     }
 
-    static User fromResultSet(ResultSet rs) throws SQLException {
+    public static User fromResultSet(ResultSet rs) throws SQLException {
         return new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("inviteCode"), rs.getBoolean("accountSetUp"), rs.getBoolean("OTP"), rs.getTimestamp("OTP_expiration"), rs.getString("firstName"), rs.getString("middleName"), rs.getString("lastName"), rs.getString("preferredName"), rs.getBoolean("is_admin"), rs.getBoolean("is_instructor"), rs.getBoolean("is_student"));
     }
 
-    static User createInvitedUser(boolean is_admin, boolean is_instructor, boolean is_student) {
+    public static User createInvitedUser(boolean is_admin, boolean is_instructor, boolean is_student) {
         return new User(-1, null, null, null, getRandomInviteCode(), false, false, null, null, null, null, null, is_admin, is_instructor, is_student);
     }
 
