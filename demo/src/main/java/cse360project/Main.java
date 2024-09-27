@@ -14,7 +14,7 @@ public class Main extends Application {
     }
     
     public void start(Stage primaryStage) {
-        // show the initial windowz
+        // show the initial window
     	System.out.println("Starting CSE360 Project...");
         primaryStage.setTitle("CSE360 Project");
         primaryStage.show();
