@@ -3,6 +3,7 @@ package cse360project;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 import cse360project.utils.Role;
 
@@ -46,6 +47,20 @@ public class User {
         if (role == Role.INSTRUCTOR) return this.is_instructor;
         if (role == Role.STUDENT) return this.is_student;
         return false;
+    }
+
+    public ArrayList<Role> getRoles() {
+        ArrayList<Role> roles = new ArrayList<>();
+        if (this.hasRole(Role.ADMIN)) {
+            roles.add(Role.ADMIN);
+        }
+        if (this.hasRole(Role.STUDENT)) {
+            roles.add(Role.STUDENT);
+        }
+        if (this.hasRole(Role.INSTRUCTOR)) {
+            roles.add(Role.INSTRUCTOR);
+        }
+        return roles;
     }
 
     public static User fromResultSet(ResultSet rs) throws SQLException {
