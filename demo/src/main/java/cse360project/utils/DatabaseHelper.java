@@ -25,16 +25,19 @@ public class DatabaseHelper {
     /*
      * Connect to the database. Defaults to ~/cse360db unless setDataBasePath() has been called.
      */
-    public static void connectToDatabase() throws SQLException {
+    public static void connectToDatabase() {
 		try {
 			Class.forName(JDBC_DRIVER); // Load the JDBC driver
 			System.out.println("Connecting to database...");
 			connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
 			statement = connection.createStatement(); 
 			createTables();  // Create the necessary tables if they don't exist
+            System.out.println("Connection successful");
 		} catch (ClassNotFoundException e) {
 			System.err.println("JDBC Driver not found: " + e.getMessage());
-		}
+		} catch (SQLException e) {
+            System.err.println("Could not connect to database");
+        }
 	}
 
     /*
