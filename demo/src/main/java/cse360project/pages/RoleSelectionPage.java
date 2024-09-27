@@ -26,6 +26,10 @@ public class RoleSelectionPage implements Page {
     Button adminButton = new Button("Admin");
     Button studentButton = new Button("Student");
     Button instructorButton = new Button("Instructor");
+
+    /**
+     * Constructor for Role Selection Page
+     */
     public RoleSelectionPage() {
         // make a vbox for main page content and center it on screen
         VBox mainContent = new VBox(10);
@@ -53,10 +57,18 @@ public class RoleSelectionPage implements Page {
         root.getChildren().add(mainContent);
     }
 
+    /**
+     * get the root stackpane, for use in PageManager class
+     * Requirement of Page interface
+     */
     public StackPane getRoot() {
         return root;
     }
 
+    /**
+     * The function that should run when the user visits the page
+     * Requirement of Page interface
+     */
     public void onPageOpen() {
         // check assumptions:
         // assumption: user is logged in
@@ -92,7 +104,18 @@ public class RoleSelectionPage implements Page {
 
     }
 
+    /**
+     * Select the role the user wants to log in as.
+     * @param role
+     */
     void selectUserRole(Role role) {
+        // check the user actually has this role
+        // if all goes well they should not be able to call this function with any role except ones they have
+        if (! ApplicationStateManager.getLoggedInUser().hasRole(role)) {
+            System.err.println("You don't have that role!");
+            return;
+        }
+
         // save the users role to the ApplicationStateManager
         ApplicationStateManager.setRole(role);
 
@@ -110,6 +133,9 @@ public class RoleSelectionPage implements Page {
         }
     }
 
+    /**
+     * Set the visibility of the buttons to reflect which roles the user actually has
+     */
     void setButtonVisibility() {
         // get the current user
         User user = ApplicationStateManager.getLoggedInUser();
@@ -131,6 +157,9 @@ public class RoleSelectionPage implements Page {
         instructorButton.setManaged(isInstructor);
     }
 
+    /**
+     * Set the click handlers for the 3 buttons
+     */
     void addButtonClickHandlers() {
         // set the handler for admin button
         EventHandler<ActionEvent> adminClick = new EventHandler<ActionEvent>() {
@@ -157,6 +186,9 @@ public class RoleSelectionPage implements Page {
         instructorButton.setOnAction(instructorClick);
     }
 
+    /**
+     * Set the width, height, background color, text color, and font size for 3 buttons
+     */
     void setButtonStyles() {
         // set button widths
         final int btnWidth = 200;
