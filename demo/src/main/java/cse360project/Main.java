@@ -6,6 +6,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import cse360project.pages.LoginPage;
+import cse360project.utils.DatabaseHelper;
 import cse360project.utils.PageManager;
  
 public class Main extends Application {
@@ -16,6 +17,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         // show the initial window
     	System.out.println("Starting CSE360 Project...");
+        DatabaseHelper.connectToDatabase();
+        
         primaryStage.setTitle("CSE360 Project");
         primaryStage.show();
 
