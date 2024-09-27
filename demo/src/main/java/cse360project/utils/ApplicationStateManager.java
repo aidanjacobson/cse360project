@@ -5,6 +5,7 @@ import cse360project.User;
 public class ApplicationStateManager {
     private static User loggedInUser = null;
     // set the logged in user
+    // call this whenever a user logs in
     public static void setLoggedInUser(User user) {
         loggedInUser = user;
     }
@@ -27,10 +28,13 @@ public class ApplicationStateManager {
     }
 
     static Role loggedInRole;
+    // get the role the user has selected for this session
     public static Role getRole() {
         return loggedInRole;
     }
 
+    // set the role the user has selected for this session
+    // call this on the role selection page
     public static void setRole(Role newRole) {
         loggedInRole = newRole;
     }
