@@ -18,8 +18,11 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         // show the initial window
     	System.out.println("Starting CSE360 Project...");
+
+        // initialize the database
         DatabaseHelper.connectToDatabase();
         
+        // set the stage title and show it
         primaryStage.setTitle("CSE360 Project");
         primaryStage.show();
 
