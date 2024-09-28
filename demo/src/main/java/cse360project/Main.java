@@ -9,6 +9,8 @@ import cse360project.pages.LoginPage;
 import cse360project.pages.RoleSelectionPage;
 import cse360project.utils.DatabaseHelper;
 import cse360project.utils.PageManager;
+import cse360project.pages.UserPassSetupPage;
+
  
 public class Main extends Application {
     public static void main(String[] args) {
@@ -36,6 +38,8 @@ public class Main extends Application {
         // add your pages here
         PageManager.registerPage("login", new LoginPage());
         PageManager.registerPage("roleselection", new RoleSelectionPage());
+        PageManager.registerPage("userpasssetup", new UserPassSetupPage());
+
 
         // switch to the login page on open
         PageManager.switchToPage("login");
