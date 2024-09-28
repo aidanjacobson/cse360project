@@ -48,5 +48,8 @@ public class Main extends Application {
 
         // switch to the login page on open
         PageManager.switchToPage("login");
+        //PageManager.switchToPage("userpasssetup"); //testing the other pages
+        //PageManager.switchToPage("student");
+        //PageManager.switchToPage("instructor");
     }
 }

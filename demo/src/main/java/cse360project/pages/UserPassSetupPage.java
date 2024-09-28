@@ -78,25 +78,26 @@ public class UserPassSetupPage implements Page {
             // Check if the database is empty to determine if the user should be the admin
             boolean isDatabaseEmpty = DatabaseHelper.isDatabaseEmpty();
 
-            // Get the logged-in user (assumed to be an invited user)
-            User newUser = ApplicationStateManager.getLoggedInUser(); 
+            User newUser;
 
             if (isDatabaseEmpty) {
                 // First user, automatically set as admin
-                newUser.is_admin = true;
-                System.out.println("Setting up first user as admin");
+                newUser = new User(-1, usernameField.getText(), passwordField.getText(), "", null, true, false, null, "", "", "", "", true, false, false);
+                System.out.println("Setting up the first user as admin");
             } else {
-                // Ensure an invite code was provided for non-admin user setup
-                if (newUser.inviteCode != null && !newUser.inviteCode.isEmpty()) {
-                    // Update the invited user's details with the username and password they entered
-                    newUser.username = usernameField.getText();
-                    newUser.password = passwordField.getText();
-                    newUser.accountSetUp = true; // Mark the account as set up
-                    newUser.inviteCode = null; // Invalidate the invite code after it's used
-                } else {
+                // Get the logged-in user (assumed to be an invited user)
+                newUser = ApplicationStateManager.getLoggedInUser(); 
+                
+                if (newUser == null || newUser.inviteCode == null || newUser.inviteCode.isEmpty()) {
                     System.err.println("Invite code is required for new user setup"); // Error if no invite code provided
                     return;
                 }
+                
+                // Update the invited user's details with the username and password they entered
+                newUser.username = usernameField.getText();
+                newUser.password = passwordField.getText();
+                newUser.accountSetUp = true; // Mark the account as set up
+                newUser.inviteCode = null; // Invalidate the invite code after it's used
             }
 
             // Save the user details to the database (either add or update)
