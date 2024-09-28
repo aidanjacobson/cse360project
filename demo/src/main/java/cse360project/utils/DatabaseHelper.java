@@ -81,13 +81,19 @@ public class DatabaseHelper {
      * @return true/false
      * @throws SQLException
      */
-    public static boolean isDatabaseEmpty() throws SQLException {
-		String query = "SELECT COUNT(*) AS count FROM cse360users";
-		ResultSet resultSet = statement.executeQuery(query);
-		if (resultSet.next()) {
-			return resultSet.getInt("count") == 0;
-		}
-		return true;
+    public static boolean isDatabaseEmpty() {
+        try {
+            String query = "SELECT COUNT(*) AS count FROM cse360users";
+            ResultSet resultSet = statement.executeQuery(query);
+            if (resultSet.next()) {
+                return resultSet.getInt("count") == 0;
+            }
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Could not access the database");
+            return true;
+        }
 	}
 
     /**
