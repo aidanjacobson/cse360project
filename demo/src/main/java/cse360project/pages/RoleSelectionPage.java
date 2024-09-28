@@ -79,8 +79,16 @@ public class RoleSelectionPage implements Page {
             return;
         }
 
-        // get a list of the roles the logged in user has
+        // get reference to current user
         User user = ApplicationStateManager.getLoggedInUser();
+
+        // check if user needs account to be set up
+        if (! user.accountSetUp) {
+            PageManager.switchToPage("accountsetup"); // change this line when we have the actual id
+            return;
+        }
+
+        // get a list of the roles the logged in user has
         ArrayList<Role> userRoles = user.getRoles();
 
         // assumption: The user has at least one role
