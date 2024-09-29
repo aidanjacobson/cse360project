@@ -300,6 +300,7 @@ public class DatabaseHelper {
             PreparedStatement pstmt = connection.prepareStatement(deleteQuery);
             pstmt.setInt(1, user.id);
             int affectedRows = pstmt.executeUpdate();
+            user.id = -1;
             if (affectedRows == 0) return false;
             return true;
         } catch(SQLException e) {
