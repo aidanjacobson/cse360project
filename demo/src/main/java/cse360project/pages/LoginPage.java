@@ -1,5 +1,7 @@
 package cse360project.pages;
 
+import cse360project.utils.DatabaseHelper;
+import cse360project.utils.PageManager;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,6 +13,11 @@ import javafx.scene.text.Text;
 public class LoginPage implements Page {
     StackPane root = new StackPane();
     public LoginPage() {
+//    	DatabaseHelper database = new DatabaseHelper();
+//    	if(database.isDatabaseEmpty()) {
+//            PageManager.registerPage("accountsetup", new AccountSetUp());
+//            PageManager.switchToPage("accountsetup");
+//    	}
         VBox vbox = new VBox(10);
         Text titleText = new Text("this is the login page");
         vbox.getChildren().add(titleText);
@@ -30,7 +37,25 @@ public class LoginPage implements Page {
         Button login = new Button("Login");
         vbox.getChildren().add(login);
         root.getChildren().add(vbox);
-        
+        /* login button selected
+         * if user exist
+         * 		if user has OTP flag
+         * 				if OTP expired
+         * 					"error expired OTP
+         * 				else 
+         * 					Login
+         * 					redirect to password rest
+         * 		else
+         * 			if !accountsetup
+         * 				login 
+         * 				redirect account set up
+         * 			else
+         * 				login
+         * 				redirect to role selection
+         * else
+         * 		clear fields
+         * 		"incorrect username or password" 			
+         */
         VBox vbox2 = new VBox(10);
         vbox2.setAlignment(Pos.BOTTOM_CENTER);
         final TextField invite_code = new TextField();
@@ -41,7 +66,14 @@ public class LoginPage implements Page {
         Button join = new Button("Join here");
         vbox2.getChildren().add(join);
         root.getChildren().add(vbox2);
-        
+        /* join here button selected
+         * 	if invite code is valid
+         * 		redirect user/pass set up screen
+         * 		send invite code
+         * 	else
+         * 		clear fields
+         * 		"Incorrect Invite Code
+         */
     }
 
     public void onPageOpen() {
