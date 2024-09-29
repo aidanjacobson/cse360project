@@ -1,5 +1,10 @@
 package cse360project.pages;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import cse360project.utils.DatabaseHelper;
+import cse360project.utils.PageManager;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,6 +16,11 @@ import javafx.scene.text.Text;
 public class LoginPage implements Page {
     StackPane root = new StackPane();
     public LoginPage() {
+    	boolean isDatabaseEmpty = DatabaseHelper.isDatabaseEmpty();
+    	if(isDatabaseEmpty) {
+//    		PageManager.registerPage("accountsetup", new AccountSetUp());
+//    		PageManager.switchToPage("accountsetup");
+    	}
         VBox vbox = new VBox(10);
         Text titleText = new Text("this is the login page");
         vbox.getChildren().add(titleText);
@@ -30,7 +40,17 @@ public class LoginPage implements Page {
         Button login = new Button("Login");
         vbox.getChildren().add(login);
         root.getChildren().add(vbox);
-        /* login button selected
+        login.setOnAction(e -> {
+        	try {
+				PreparedStatement ps = DatabaseHelper.prepareStatement("SELECT * FROM cse360users WHERE username=?");
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        	
+        	
+        });
+        /*
          * if user exist
          * 		if user has OTP flag
          * 				if OTP expired
