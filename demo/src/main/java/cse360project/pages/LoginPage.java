@@ -10,6 +10,7 @@ import cse360project.User;
 import cse360project.utils.ApplicationStateManager;
 import cse360project.utils.DatabaseHelper;
 import cse360project.utils.PageManager;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -17,21 +18,23 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 public class LoginPage implements Page {
-    StackPane root = new StackPane();
+    BorderPane root = new BorderPane();
     public LoginPage() {
     	boolean isDatabaseEmpty = DatabaseHelper.isDatabaseEmpty();
     	if(isDatabaseEmpty) {
     		PageManager.switchToPage("accountsetup");
     	}
+
+		root.setPadding(new Insets(100, 100, 100, 100));
  
         VBox vbox = new VBox(10);
-        Text titleText = new Text("this is the login page");
-        vbox.getChildren().add(titleText);
+		
         Label label = new Label("Login here");
         vbox.getChildren().add(label);
         vbox.setAlignment(Pos.CENTER);
@@ -47,7 +50,6 @@ public class LoginPage implements Page {
         vbox.getChildren().add(password);
         Button login = new Button("Login");
         vbox.getChildren().add(login);
-        root.getChildren().add(vbox);
         login.setOnAction(e -> {
         try { 
 				Timestamp today = Timestamp.valueOf(LocalDateTime.now());
@@ -80,6 +82,7 @@ public class LoginPage implements Page {
         	
         });
         VBox vbox2 = new VBox(10);
+		
         vbox2.setAlignment(Pos.BOTTOM_CENTER);
         final TextField invite_code = new TextField();
         invite_code.setPromptText("Enter Invite Code");
@@ -88,32 +91,33 @@ public class LoginPage implements Page {
         vbox2.getChildren().add(invite_code);
         Button join = new Button("Join here");
         vbox2.getChildren().add(join);
-        root.getChildren().add(vbox2);
         join.setOnAction(e -> {
             try { 
-            		PreparedStatement ps2 = DatabaseHelper.prepareStatement("SELECT * FROM cse360users WHERE inviteCode=?");
-    				ps2.setString(1, invite_code.getText());
-    				User user2 = DatabaseHelper.getOneUser(ps2);
-    	        	if (user2 != null) {
-    	        		ApplicationStateManager.setLoggedInUser(user2);
-    		    		PageManager.switchToPage("userpasssetup");
-    	        	}else {
-    	        		Alert emailAlert = new Alert(AlertType.ERROR, "Your Username and/or Password is invalid", ButtonType.OK);
-    			        emailAlert.showAndWait();
-    	        	}
-            	} catch (SQLException e1) {
-    				// TODO Auto-generated catch block
-    				e1.printStackTrace();
-    			}
+				PreparedStatement ps2 = DatabaseHelper.prepareStatement("SELECT * FROM cse360users WHERE inviteCode=?");
+				ps2.setString(1, invite_code.getText());
+				User user2 = DatabaseHelper.getOneUser(ps2);
+				if (user2 != null) {
+					ApplicationStateManager.setLoggedInUser(user2);
+					PageManager.switchToPage("userpasssetup");
+				}else {
+					Alert emailAlert = new Alert(AlertType.ERROR, "Your Username and/or Password is invalid", ButtonType.OK);
+					emailAlert.showAndWait();
+				}
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
             	
-            });
-    }
+		});
+		root.setCenter(vbox);
+		root.setBottom(vbox2);
+	}
 
     public void onPageOpen() {
         // System.out.println("You visited the login page");
     }
 
-    public StackPane getRoot() {
+    public BorderPane getRoot() {
         return root;
     }
 }
