@@ -51,7 +51,6 @@ public class AdminPage implements Page {
         pageContent.setMouseTransparent(false); // allow mouse events for scrolling and page interactions
         userListScrollPane.setContent(userListGrid);
         populateUserListHeaders();
-        updateUserList();
         pageContent.getChildren().add(userListScrollPane);
     }
 
@@ -92,7 +91,7 @@ public class AdminPage implements Page {
             return;
         }
 
-        System.out.println("Admin page visited");
+        updateUserList();
     }
 
     void populateUserListHeaders() {
@@ -110,18 +109,41 @@ public class AdminPage implements Page {
         // userListGrid.add(createTextElement("Delete"),        7, 0, 1, 1);
 
 
-        userListGrid.add(createTextElement("aidanjacobson"),      0, 1, 1, 1);
-        userListGrid.add(createTextElement("Aidan"),    1, 1, 1, 1);
-        userListGrid.add(createTextElement("Aidan Joseph Jacobson"),     2, 1, 1, 1);
-        userListGrid.add(createTextElement("Is Admin"),      3, 1, 1, 1);
-        userListGrid.add(createTextElement("Is Student"),    4, 1, 1, 1);
-        userListGrid.add(createTextElement("Is Instructor"), 5, 1, 1, 1);
-        userListGrid.add(createResetButton(1),         6, 1, 1, 1);
-        userListGrid.add(createDeleteButton(),        7, 1, 1, 1);
+        // userListGrid.add(createTextElement("aidanjacobson"),      0, 1, 1, 1);
+        // userListGrid.add(createTextElement("Aidan"),    1, 1, 1, 1);
+        // userListGrid.add(createTextElement("Aidan Joseph Jacobson"),     2, 1, 1, 1);
+        // userListGrid.add(createTextElement("Is Admin"),      3, 1, 1, 1);
+        // userListGrid.add(createTextElement("Is Student"),    4, 1, 1, 1);
+        // userListGrid.add(createTextElement("Is Instructor"), 5, 1, 1, 1);
+        // userListGrid.add(createResetButton(1),         6, 1, 1, 1);
+        // userListGrid.add(createDeleteButton(),        7, 1, 1, 1);
     }
 
     void updateUserList() {
-        // ArrayList<User> allUsers = DatabaseHelper.getAllUsers();
+        ArrayList<User> allUsers = DatabaseHelper.getAllUsers();
+
+        for (int i = 0; i < allUsers.size(); i++) {
+            User user = allUsers.get(i);
+            int gridRowIndex = i+1;
+
+            String username = user.username;
+            String prefName = user.getPreferredName();
+            String fullName = user.getFullName();
+
+            String isAdmin = user.is_admin ? "true" : "false";
+            String isStudent = user.is_student ? "true" : "false";
+            String isInstructor = user.is_instructor ? "true" : "false";
+
+            userListGrid.add(createTextElement(username), 0, gridRowIndex, 1, 1);
+            userListGrid.add(createTextElement(prefName), 1, gridRowIndex, 1, 1);
+            userListGrid.add(createTextElement(fullName), 2, gridRowIndex, 1, 1);
+            userListGrid.add(createTextElement(isAdmin), 3, gridRowIndex, 1, 1);
+            userListGrid.add(createTextElement(isStudent), 4, gridRowIndex, 1, 1);
+            userListGrid.add(createTextElement(isInstructor), 5, gridRowIndex, 1, 1);
+
+            userListGrid.add(createResetButton(user.id), 6, gridRowIndex, 1, 1);
+            userListGrid.add(createDeleteButton(user.id), 7, gridRowIndex, 1, 1);
+        }
     }
 
     Label createTextElement(String text) {
@@ -137,15 +159,17 @@ public class AdminPage implements Page {
         Button resetBtn = new Button("Reset");
         resetBtn.setPrefWidth(100);
         GridPane.setMargin(resetBtn, new Insets(5, 15, 5, 15));
+
+        resetBtn.setOnAction(e -> System.out.println(userId));
         return resetBtn;
-
-
     }
 
-    Button createDeleteButton() {
+    Button createDeleteButton(int userId) {
         Button deleteBtn = new Button("Delete");
         deleteBtn.setPrefWidth(100);
         GridPane.setMargin(deleteBtn, new Insets(5, 15, 5, 15));
+
+        deleteBtn.setOnAction(e -> System.out.println(userId));
         return deleteBtn;
     }
 }
