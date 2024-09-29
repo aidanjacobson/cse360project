@@ -64,20 +64,28 @@ public class User {
     }
 
     public String getFullName() {
-        String fullName = this.firstName + " ";
+        String fullName = "";
+        if (this.firstName != null && ! this.firstName.isBlank()) {
+            fullName += this.firstName + " ";
+        }
         if (this.middleName != null && ! this.middleName.isBlank()) {
             fullName += this.middleName + " ";
         }
-        fullName += this.lastName;
+        if (this.lastName != null && ! this.lastName.isBlank()) {
+            fullName += this.lastName;
+        }
         return fullName;
     }
 
     public String getPreferredName() {
+        String out;
         if (this.preferredName != null && ! this.preferredName.isBlank()) {
-            return this.preferredName;
+            out = this.preferredName;
         } else {
-            return this.firstName;
+            out = this.firstName;
         }
+        if (out == null || out.isBlank()) return "";
+        return out;
     }
 
     public static User fromResultSet(ResultSet rs) throws SQLException {
