@@ -82,7 +82,7 @@ public class UserPassSetupPage implements Page {
 
             if (isDatabaseEmpty) {
                 // First user, automatically set as admin
-                newUser = new User(-1, usernameField.getText(), passwordField.getText(), "", null, true, false, null, "", "", "", "", true, false, false);
+                newUser = new User(-1, usernameField.getText(), passwordField.getText(), null, null, false, false, null, "", "", "", "", true, false, false);
                 System.out.println("Setting up the first user as admin");
             } else {
                 // Get the logged-in user (assumed to be an invited user)
@@ -103,8 +103,8 @@ public class UserPassSetupPage implements Page {
             // Save the user details to the database (either add or update)
             DatabaseHelper.addOrUpdateUser(newUser);
 
-            // Redirect to the login page after setup
-            PageManager.switchToPage("login");
+            // clear logging-in user and return to login screen
+            ApplicationStateManager.logout();
         });
 
         // HBox for aligning the submit button in the center
