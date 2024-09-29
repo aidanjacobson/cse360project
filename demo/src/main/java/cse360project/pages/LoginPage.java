@@ -71,7 +71,7 @@ public class LoginPage implements Page {
     }
 
     public void onPageOpen() {
-        System.out.println("You visited the login page");
+        // System.out.println("You visited the login page");
     }
 
     public StackPane getRoot() {

@@ -31,7 +31,7 @@ public class DBTest {
 
             if (empty) {
                 User newUser = new User(-1, "admin", "password", "a@a.a", null, true, false, null, "a", "b", "c", "a", true, false, false);
-                DatabaseHelper.addOrUpdateUser(newUser);
+                DatabaseHelper.addUser(newUser);
 
                 System.out.printf("New User ID: %d%n", newUser.id);
 
@@ -39,7 +39,7 @@ public class DBTest {
                 System.out.printf("Name info: %s %s %s (%s)%n", found.firstName, found.middleName, found.lastName, found.preferredName);
 
                 found.preferredName = "new preferred name";
-                DatabaseHelper.addOrUpdateUser(found);
+                DatabaseHelper.updateUser(found);
 
                 found = DatabaseHelper.getOneUser("SELECT * FROM cse360users WHERE username='admin'");
                 System.out.printf("Name info after changing preferred name: %s %s %s (%s)%n", found.firstName, found.middleName, found.lastName, found.preferredName);

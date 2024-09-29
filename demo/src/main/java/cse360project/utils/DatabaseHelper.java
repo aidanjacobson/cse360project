@@ -10,8 +10,9 @@ public class DatabaseHelper {
     
     static String DB_URL = "jdbc:h2:" + defaultDatabase;
 
-    /*
+    /**
      * Set a different location for the database. Useful when running tests.
+     * @param databasePath path to database e.g. "~/testdb" to store in user home directory in database called testdb
      */
     public static void setDatabasePath(String databasePath) {
         DB_URL = "jdbc:h2:" + databasePath;
@@ -22,23 +23,27 @@ public class DatabaseHelper {
     static private Connection connection = null;
     static private Statement statement = null;
 
-    /*
+    /**
      * Connect to the database. Defaults to ~/cse360db unless setDataBasePath() has been called.
      */
-    public static void connectToDatabase() throws SQLException {
+    public static void connectToDatabase() {
 		try {
 			Class.forName(JDBC_DRIVER); // Load the JDBC driver
 			System.out.println("Connecting to database...");
 			connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
 			statement = connection.createStatement(); 
 			createTables();  // Create the necessary tables if they don't exist
+            System.out.println("Connection successful");
 		} catch (ClassNotFoundException e) {
 			System.err.println("JDBC Driver not found: " + e.getMessage());
-		}
+		} catch (SQLException e) {
+            System.err.println("Could not connect to database");
+        }
 	}
 
-    /*
+    /**
      * Create the necessary tables if they dont exist already.
+     * @throws SQLException
      */
     public static void createTables() throws SQLException {
 		String userTable = "CREATE TABLE IF NOT EXISTS cse360users ("
@@ -61,34 +66,48 @@ public class DatabaseHelper {
 		statement.execute(userTable);
 	}
 
-    /*
+    /**
      * Create a PreparedStatement on the connection from the given query.
+     * @param query the SQL query to select the user(s)
+     * @return a PreparedStatement that can be used in getOneUser(), getAllUsers()
+     * @throws SQLException
      */
     public static PreparedStatement prepareStatement(String query) throws SQLException {
         return connection.prepareStatement(query);
     }
 
-    /*
+    /**
      * Test if users exist in database
+     * @return true/false
+     * @throws SQLException
      */
-    public static boolean isDatabaseEmpty() throws SQLException {
-		String query = "SELECT COUNT(*) AS count FROM cse360users";
-		ResultSet resultSet = statement.executeQuery(query);
-		if (resultSet.next()) {
-			return resultSet.getInt("count") == 0;
-		}
-		return true;
+    public static boolean isDatabaseEmpty() {
+        try {
+            String query = "SELECT COUNT(*) AS count FROM cse360users";
+            ResultSet resultSet = statement.executeQuery(query);
+            if (resultSet.next()) {
+                return resultSet.getInt("count") == 0;
+            }
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Could not access the database");
+            return true;
+        }
 	}
 
-    /*
+    /**
      * Get a list of all users in database.
+     * @return an ArrayList<User> with all users in the database.
      */
     public static ArrayList<User> getAllUsers() {
         return getAllUsers("SELECT * FROM cse360users");
     }
 
-    /*
+    /**
      * Get one user that matches query.
+     * @param query the SQL query to select a user
+     * @return the first user that matches the selection, or null if none match
      */
     public static User getOneUser(String query) {
         try {
@@ -100,8 +119,10 @@ public class DatabaseHelper {
         }
     }
 
-    /*
+    /**
      * Get one user that matches the PreparedStatement.
+     * @param pstmt a PreparedStatement created with DatabaseHelper.prepareStatement(query)
+     * @return the first user that matches the selection, or null if none match
      */
     public static User getOneUser(PreparedStatement pstmt) {
         try {
@@ -117,8 +138,10 @@ public class DatabaseHelper {
         }
     }
 
-    /*
+    /**
      * Get all users that match the query.
+     * @param query the query to select the users
+     * @return an ArrayList<User> of all matching users
      */
     public static ArrayList<User> getAllUsers(String query) {
         try {
@@ -130,8 +153,10 @@ public class DatabaseHelper {
         }
     }
 
-    /*
+    /**
      * Get all users that match the prepared statement.
+     * @param pstmt a PreparedStatement created with DatabaseHelper.prepareStatement(query)
+     * @return an ArrayList<User> of all matching users
      */
     public static ArrayList<User> getAllUsers(PreparedStatement pstmt) {
         ArrayList<User> users = new ArrayList<>();
@@ -146,11 +171,12 @@ public class DatabaseHelper {
         }
         return users;
     }
-
-    /*
-     * If user is not in database (i.e. user.id == -1) add to database.
-     * Else update existing user in database.
-     */
+    
+    /**
+      * If user is not in database (i.e. user.id == -1) add to database.
+      * Else update existing user in database.
+      * @param user the user to add/update
+      */
     public static void addOrUpdateUser(User user) {
         if (user.id == -1) { // we need to add the user
             addUser(user);
@@ -159,8 +185,9 @@ public class DatabaseHelper {
         }
     }
 
-    /*
+    /**
      * Update existing user with database. If user with given id is not found, this will not affect the database.
+     * @param user the user to update
      */
     public static void updateUser(User user) {
         // first, check to see if user with id exists
@@ -200,6 +227,10 @@ public class DatabaseHelper {
         }
     }
 
+    /**
+     * Add a user to the database. If the user already exists in the database, this command will fail.
+     * @param user The user to update
+     */
     public static void addUser(User user) {
         // if the user id is not -1, we should not add to database
         if (user.id != -1) {
@@ -242,8 +273,10 @@ public class DatabaseHelper {
         }
     }
 
-    /*
+    /**
      * Delete a user from the database.
+     * @param user The user object to delete
+     * @return true/false whether the delete succeeded
      */
     public static boolean deleteUser(User user) {
         try {
@@ -258,11 +291,12 @@ public class DatabaseHelper {
             return false;
         }
     }
-
-    /*
-     * Warning! This function will delete ALL USERS in the connected database!
-     * Use with caution!
-     */
+    
+    /**
+      * Warning! This function will delete ALL USERS in the connected database!
+      * Use with caution!
+      * @return true/false whether the delete succeeded
+      */
     public static boolean deleteAllUsers() {
         String sql = "DELETE FROM cse360users";
         try {
