@@ -63,6 +63,23 @@ public class User {
         return roles;
     }
 
+    public String getFullName() {
+        String fullName = this.firstName + " ";
+        if (this.middleName != null && ! this.middleName.isBlank()) {
+            fullName += this.middleName + " ";
+        }
+        fullName += this.lastName;
+        return fullName;
+    }
+
+    public String getPreferredName() {
+        if (this.preferredName != null && ! this.preferredName.isBlank()) {
+            return this.preferredName;
+        } else {
+            return this.firstName;
+        }
+    }
+
     public static User fromResultSet(ResultSet rs) throws SQLException {
         return new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("inviteCode"), rs.getBoolean("accountSetUp"), rs.getBoolean("OTP"), rs.getTimestamp("OTP_expiration"), rs.getString("firstName"), rs.getString("middleName"), rs.getString("lastName"), rs.getString("preferredName"), rs.getBoolean("is_admin"), rs.getBoolean("is_instructor"), rs.getBoolean("is_student"));
     }
