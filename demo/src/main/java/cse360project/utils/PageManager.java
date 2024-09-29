@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 
 public class PageManager {
     // keep a reference to the primaryScene so we can set the root node
-    static Scene primaryScene;
+    public static Scene primaryScene;
 
     // keep a reference to the active page, incase another class asks for it
     static Page activePage;
