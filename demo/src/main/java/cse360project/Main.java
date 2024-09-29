@@ -4,13 +4,10 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-
 import cse360project.pages.LoginPage;
 import cse360project.pages.RoleSelectionPage;
-import cse360project.utils.ApplicationStateManager;
 import cse360project.utils.DatabaseHelper;
 import cse360project.utils.PageManager;
-import cse360project.utils.Role;
 import cse360project.pages.UserPassSetupPage;
 import cse360project.pages.admin.AdminPage;
 import cse360project.pages.StudentPage;
@@ -52,27 +49,5 @@ public class Main extends Application {
 
         // switch to the login page on open
         PageManager.switchToPage("login");
-        //PageManager.switchToPage("userpasssetup"); //testing the other pages
-        //PageManager.switchToPage("student");
-        //PageManager.switchToPage("instructor");
-
-        // code to test the role selection page
-        // DatabaseHelper.setDatabasePath("~/testdb");
-        // DatabaseHelper.connectToDatabase();
-        // DatabaseHelper.deleteAllUsers();
-        // User user = new User(-1, "admin", "password", "admin@cse360.com", null, true, false, null, "", "", "", "", true, true, true);
-        // DatabaseHelper.addUser(user);
-        // ApplicationStateManager.setLoggedInUser(user);
-        // PageManager.switchToPage("roleselection");
-
-        // code to test the admin page
-        DatabaseHelper.setDatabasePath("~/testdb");
-        DatabaseHelper.connectToDatabase();
-        DatabaseHelper.deleteAllUsers();
-        User user = new User(-1, "admin", "password", "admin@cse360.com", null, true, false, null, "", "", "", "", true, true, true);
-        DatabaseHelper.addUser(user);
-        ApplicationStateManager.setLoggedInUser(user);
-        ApplicationStateManager.setRole(Role.ADMIN);
-        PageManager.switchToPage("admin");
     }
 }
