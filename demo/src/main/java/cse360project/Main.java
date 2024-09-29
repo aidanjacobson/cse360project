@@ -66,13 +66,13 @@ public class Main extends Application {
         // PageManager.switchToPage("roleselection");
 
         // code to test the admin page
-        // DatabaseHelper.setDatabasePath("~/testdb");
-        // DatabaseHelper.connectToDatabase();
-        // DatabaseHelper.deleteAllUsers();
-        // User user = new User(-1, "admin", "password", "admin@cse360.com", null, true, false, null, "", "", "", "", true, true, true);
-        // DatabaseHelper.addUser(user);
-        // ApplicationStateManager.setLoggedInUser(user);
-        // ApplicationStateManager.setRole(Role.ADMIN);
-        // PageManager.switchToPage("admin");
+        DatabaseHelper.setDatabasePath("~/testdb");
+        DatabaseHelper.connectToDatabase();
+        DatabaseHelper.deleteAllUsers();
+        User user = new User(-1, "admin", "password", "admin@cse360.com", null, true, false, null, "", "", "", "", true, true, true);
+        DatabaseHelper.addUser(user);
+        ApplicationStateManager.setLoggedInUser(user);
+        ApplicationStateManager.setRole(Role.ADMIN);
+        PageManager.switchToPage("admin");
     }
 }

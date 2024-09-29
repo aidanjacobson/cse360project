@@ -1,56 +1,75 @@
 package cse360project.pages.admin;
 
+import java.util.ArrayList;
+
 import cse360project.User;
 import cse360project.pages.Page;
 import cse360project.utils.ApplicationStateManager;
+import cse360project.utils.DatabaseHelper;
 import cse360project.utils.PageManager;
 import cse360project.utils.Role;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 public class AdminPage implements Page {
-    StackPane root = new StackPane();
+    BorderPane root = new BorderPane();
     GridPane userListGrid = new GridPane();
     public AdminPage() {
         // root should be aligned top left so logout button resides in top left
-        root.setAlignment(Pos.TOP_LEFT);
         // create the logout button
-        Button logoutButton = new Button("Log Out");
-        logoutButton.setAlignment(Pos.TOP_LEFT);
-        
-        // set logout button action
-        EventHandler<ActionEvent> logoutClick = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e) {
-                ApplicationStateManager.logout();
-            }
-        };
-        logoutButton.setOnAction(logoutClick);
-        root.getChildren().add(logoutButton);
+        createLogoutButton();
 
-        // since page content should be centered,
-        // put everything into a vbox that is centered
-        // this fixes all the alignment issues
-        VBox pageContent = new VBox();
-        pageContent.setMouseTransparent(true); // allow logout button to be clicked
-        pageContent.setAlignment(Pos.CENTER);
-        root.getChildren().add(pageContent);
+        StackPane pageContent = new StackPane();
+        pageContent.setPadding(new Insets(20, 20, 20, 20)); // Padding inside the grid container
+        BorderPane.setMargin(pageContent, new Insets(100, 100, 100, 100)); // Minimum margin around the grid
+
+        // set the user list border style
+        pageContent.setStyle("-fx-border-color: black; -fx-border-width: 5px; -fx-border-style: solid; -fx-border-radius: 25px;");
+
+        // center align grid
+        StackPane.setAlignment(pageContent, Pos.CENTER);
+
+        // allow logout button to be clicked
+        pageContent.setMouseTransparent(true);
+        
+        root.setCenter(pageContent);
 
         // the user list could get pretty long/wide,
         // so lets put it in a scrollpane so the user can scroll as needed
         ScrollPane userListScrollPane = new ScrollPane();
+        userListScrollPane.setStyle("-fx-background-color:transparent;");
+        pageContent.setMouseTransparent(false); // allow mouse events for scrolling and page interactions
         userListScrollPane.setContent(userListGrid);
         populateUserListHeaders();
+        updateUserList();
         pageContent.getChildren().add(userListScrollPane);
     }
 
-    public StackPane getRoot() {
+    public void createLogoutButton() {
+        // create the logout button
+        Button logoutButton = new Button("Log Out");
+        
+        // set logout button action
+        logoutButton.setOnAction(e -> ApplicationStateManager.logout());
+
+        // it will be in top left, so pad it away from the corner
+        BorderPane.setMargin(logoutButton, new Insets(20, 20, 20, 20));
+        
+        // set the top node to be the logout button
+        root.setTop(logoutButton);
+    }
+
+    public Pane getRoot() {
         return root;
     }
 
@@ -77,17 +96,56 @@ public class AdminPage implements Page {
     }
 
     void populateUserListHeaders() {
+        userListGrid.setPadding(new Insets(20)); // Padding around the grid
         userListGrid.setAlignment(Pos.CENTER);
-        userListGrid.setHgap(10);
-        userListGrid.setVgap(10);
-        userListGrid.add(new Text("Username"), 0, 0, 1, 2);
-        userListGrid.add(new Text("Pref. Name"), 1, 0, 1, 2);
-        userListGrid.add(new Text("Full Name"), 2, 0, 1, 2);
-        userListGrid.add(new Text("Roles"), 3, 0, 3, 1);
-        userListGrid.add(new Text("Admin"), 3, 1, 1, 1);
-        userListGrid.add(new Text("Student"), 4, 1, 1, 1);
-        userListGrid.add(new Text("Instructor"), 5, 1, 1, 1);
-        userListGrid.add(new Text("Reset"), 6, 0, 1, 2);
-        userListGrid.add(new Text("Delete"), 7, 0, 1, 2);
+        userListGrid.setGridLinesVisible(true);
+        
+        userListGrid.add(createTextElement("Username"),      0, 0, 1, 1);
+        userListGrid.add(createTextElement("Preferred Name"),    1, 0, 1, 1);
+        userListGrid.add(createTextElement("Full Name"),     2, 0, 1, 1);
+        userListGrid.add(createTextElement("Is Admin"),      3, 0, 1, 1);
+        userListGrid.add(createTextElement("Is Student"),    4, 0, 1, 1);
+        userListGrid.add(createTextElement("Is Instructor"), 5, 0, 1, 1);
+        // userListGrid.add(createTextElement("Reset"),         6, 0, 1, 1);
+        // userListGrid.add(createTextElement("Delete"),        7, 0, 1, 1);
+
+
+        userListGrid.add(createTextElement("aidanjacobson"),      0, 1, 1, 1);
+        userListGrid.add(createTextElement("Aidan"),    1, 1, 1, 1);
+        userListGrid.add(createTextElement("Aidan Joseph Jacobson"),     2, 1, 1, 1);
+        userListGrid.add(createTextElement("Is Admin"),      3, 1, 1, 1);
+        userListGrid.add(createTextElement("Is Student"),    4, 1, 1, 1);
+        userListGrid.add(createTextElement("Is Instructor"), 5, 1, 1, 1);
+        userListGrid.add(createResetButton(1),         6, 1, 1, 1);
+        userListGrid.add(createDeleteButton(),        7, 1, 1, 1);
+    }
+
+    void updateUserList() {
+        // ArrayList<User> allUsers = DatabaseHelper.getAllUsers();
+    }
+
+    Label createTextElement(String text) {
+        Label out = new Label(text);
+        out.setTextAlignment(TextAlignment.CENTER);
+        out.setFont(Font.font(20));
+        out.setPadding(new Insets(5, 15, 5, 15));
+        
+        return out;
+    }
+
+    Button createResetButton(int userId) {
+        Button resetBtn = new Button("Reset");
+        resetBtn.setPrefWidth(100);
+        GridPane.setMargin(resetBtn, new Insets(5, 15, 5, 15));
+        return resetBtn;
+
+
+    }
+
+    Button createDeleteButton() {
+        Button deleteBtn = new Button("Delete");
+        deleteBtn.setPrefWidth(100);
+        GridPane.setMargin(deleteBtn, new Insets(5, 15, 5, 15));
+        return deleteBtn;
     }
 }

@@ -1,8 +1,8 @@
 package cse360project.pages;
 
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 
 public interface Page {
-    public StackPane getRoot();
+    public Pane getRoot();
     public void onPageOpen();
 }
