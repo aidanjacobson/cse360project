@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.time.*;
 import java.util.ArrayList;
 
+import cse360project.utils.DatabaseHelper;
 import cse360project.utils.Role;
 
 public class User {
@@ -44,10 +45,17 @@ public class User {
     }
 
     public boolean hasRole(Role role) {
-        if (role == Role.ADMIN) return this.is_admin;
+        if (role == Role.ADMIN)      return this.is_admin;
         if (role == Role.INSTRUCTOR) return this.is_instructor;
-        if (role == Role.STUDENT) return this.is_student;
+        if (role == Role.STUDENT)    return this.is_student;
         return false;
+    }
+
+    public void setRole(Role role, boolean hasRole) {
+        if (role == Role.ADMIN)      this.is_admin = hasRole;
+        if (role == Role.INSTRUCTOR) this.is_instructor = hasRole;
+        if (role == Role.STUDENT)    this.is_student = hasRole;
+        DatabaseHelper.updateUser(this);
     }
 
     public ArrayList<Role> getRoles() {
