@@ -8,12 +8,14 @@ import cse360project.utils.ApplicationStateManager;
 import cse360project.utils.DatabaseHelper;
 import cse360project.utils.PageManager;
 import cse360project.utils.Role;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
@@ -172,23 +174,15 @@ public class AdminPage implements Page {
             String prefName = user.getPreferredName();
             String fullName = user.getFullName();
 
-            String isAdmin = user.is_admin ? "true" : "false";
-            String isStudent = user.is_student ? "true" : "false";
-            String isInstructor = user.is_instructor ? "true" : "false";
-
             // add info to table
             userListGrid.add(createTextElement(username), 0, gridRowIndex, 1, 1);
             userListGrid.add(createTextElement(prefName), 1, gridRowIndex, 1, 1);
             userListGrid.add(createTextElement(fullName), 2, gridRowIndex, 1, 1);
-            userListGrid.add(createTextElement(isAdmin), 3, gridRowIndex, 1, 1);
-            userListGrid.add(createTextElement(isStudent), 4, gridRowIndex, 1, 1);
-            userListGrid.add(createTextElement(isInstructor), 5, gridRowIndex, 1, 1);
+            userListGrid.add(createRoleCheckbox(user, Role.ADMIN), 3, gridRowIndex, 1, 1);
+            userListGrid.add(createRoleCheckbox(user, Role.STUDENT), 4, gridRowIndex, 1, 1);
+            userListGrid.add(createRoleCheckbox(user, Role.INSTRUCTOR), 5, gridRowIndex, 1, 1);
             userListGrid.add(createResetButton(user.id), 6, gridRowIndex, 1, 1);
-
-            // we should only add a delete button if it is not the logged in user
-            if (user.id != ApplicationStateManager.getLoggedInUser().id) {
-                userListGrid.add(createDeleteButton(user.id), 7, gridRowIndex, 1, 1);
-            }
+            userListGrid.add(createDeleteButton(user.id), 7, gridRowIndex, 1, 1);
         }
     }
 
@@ -249,6 +243,11 @@ public class AdminPage implements Page {
         deleteBtn.setPrefWidth(100);
         GridPane.setMargin(deleteBtn, new Insets(5, 15, 5, 15));
 
+        // if creating a delete button for ourselves, disable it
+        if (userId == ApplicationStateManager.getLoggedInUser().id) {
+            deleteBtn.setDisable(true);
+        }
+
         deleteBtn.setOnAction(e -> attemptUserDelete(userId));
         return deleteBtn;
     }
@@ -292,6 +291,9 @@ public class AdminPage implements Page {
      * @param userId the user to delete
      */
     void attemptUserDelete(int userId) {
+        // since we cant delete ourselves, if we somehow manage to click the button, silently fail
+        if (userId == ApplicationStateManager.getLoggedInUser().id) return;
+
         // who are we deleting?
         User userToDelete = DatabaseHelper.getUserByID(userId);
 
@@ -305,5 +307,32 @@ public class AdminPage implements Page {
         // delete the user and update the table
         DatabaseHelper.deleteUser(userToDelete);
         renderUserTable();
+    }
+
+    /**
+     * Create a checkbox that controls whether a particular user has a particular role.
+     * @param user - the user that the checkbox controls
+     * @param role - the role that the checkbox controls
+     * @return the checkbox
+     */
+    CheckBox createRoleCheckbox(User user, Role role) {
+        // create/align checkbox
+        CheckBox check = new CheckBox();
+        GridPane.setHalignment(check, HPos.CENTER);
+
+        // should the checkbox be selected
+        check.setSelected(user.hasRole(role));
+
+        check.setOnAction(e -> {
+            boolean hasRole = check.isSelected();
+            user.setRole(role, hasRole);
+        });
+
+        // we cannot demote ourselves from admin
+        if (user.id == ApplicationStateManager.getLoggedInUser().id && role == Role.ADMIN) {
+            check.setDisable(true);
+        }
+
+        return check;
     }
 }
