@@ -26,53 +26,57 @@ import javafx.scene.text.Text;
 public class LoginPage implements Page {
     BorderPane root = new BorderPane();
     public LoginPage() {
-    	boolean isDatabaseEmpty = DatabaseHelper.isDatabaseEmpty();
+    	boolean isDatabaseEmpty = DatabaseHelper.isDatabaseEmpty(); //check to see if there are no users in the database
     	if(isDatabaseEmpty) {
-    		PageManager.switchToPage("accountsetup");
+    		PageManager.switchToPage("accountsetup"); //if database is empty immediately redirect to the accountsetup page to set up admin
     	}
 
-		root.setPadding(new Insets(100, 100, 100, 100));
+		root.setPadding(new Insets(100, 100, 100, 100)); // padding to distance the vboxes
  
         VBox vbox = new VBox(10);
 		
-        Label label = new Label("Login here");
+        Label label = new Label("Login here"); // indicate where to login
         vbox.getChildren().add(label);
         vbox.setAlignment(Pos.CENTER);
-        final TextField username = new TextField();
-        username.setPromptText("Enter Username");
-        username.setMaxWidth(200);
-        username.getText();
+        final TextField username = new TextField(); // the textbox which they will enter their username in
+        username.setPromptText("Enter Username"); //prompt for username
+        username.setMaxWidth(200); // dimensions of the box
+        username.getText(); //get password
         vbox.getChildren().add(username);
-        final TextField password = new TextField();
-        password.setPromptText("Enter Password");
-        password.setMaxWidth(200);
-        password.getText();
+        final TextField password = new TextField(); // the textbox which they will enter their password in
+        password.setPromptText("Enter Password"); //prompt for password
+        password.setMaxWidth(200); // dimensions of the box
+        password.getText(); //get password
         vbox.getChildren().add(password);
-        Button login = new Button("Login");
+        Button login = new Button("Login"); // the login button
         vbox.getChildren().add(login);
-        login.setOnAction(e -> {
+        login.setOnAction(e -> { // clicking the button
         try { 
-				Timestamp today = Timestamp.valueOf(LocalDateTime.now());
-        		PreparedStatement ps = DatabaseHelper.prepareStatement("SELECT * FROM cse360users WHERE username=?");
+				Timestamp today = Timestamp.valueOf(LocalDateTime.now()); //get todays date
+        		PreparedStatement ps = DatabaseHelper.prepareStatement("SELECT * FROM cse360users WHERE username=?"); //check if the user exist
 				ps.setString(1, username.getText());
-				User user = DatabaseHelper.getOneUser(ps);
+				User user = DatabaseHelper.getOneUser(ps); // get the user, if they don't exist then sets to null
 	        	if (user != null) {
-	        		if (password.getText().equals(user.password)) {
+	        		if (password.getText().equals(user.password)) { // make sure passwords are equal
 	        			if(user.OTP) {
-	        				if(today.before(user.OTP_expiration)) {
-	        					ApplicationStateManager.setLoggedInUser(user);
-	        		    		PageManager.switchToPage("accountsetup");
+	        				if(today.before(user.OTP_expiration)) { //check to see if OTP is expired
+	        					ApplicationStateManager.setLoggedInUser(user); //log them in
+	        					username.clear(); //clear username
+	        					password.clear();// clear password
+	        		    		PageManager.switchToPage("accountsetup"); //redirect to accountsetup 
 	        				}else {
-	        			        Alert emailAlert = new Alert(AlertType.ERROR, "Your One Time Password has expired", ButtonType.OK);
-	        			        emailAlert.showAndWait();
+	        			        Alert emailAlert = new Alert(AlertType.ERROR, "Your One Time Password has expired", ButtonType.OK); 
+	        			        emailAlert.showAndWait(); // alert them if OTP is expired
 	        				}
 	        			}else {
-	        				ApplicationStateManager.setLoggedInUser(user);
-        		    		PageManager.switchToPage("roleselection");
+	        				ApplicationStateManager.setLoggedInUser(user);//log them in
+	        				username.clear();//clear username
+        					password.clear();// clear password
+        		    		PageManager.switchToPage("roleselection"); //switch to role selection page
         			}
 	        		}else {
 	        			Alert emailAlert = new Alert(AlertType.ERROR, "Your Username and/or Password is invalid", ButtonType.OK);
-    			        emailAlert.showAndWait();
+    			        emailAlert.showAndWait();//alert them their username and/or password is wrong
 	        		}
 	        	}
         	} catch (SQLException e1) {
@@ -84,24 +88,25 @@ public class LoginPage implements Page {
         VBox vbox2 = new VBox(10);
 		
         vbox2.setAlignment(Pos.BOTTOM_CENTER);
-        final TextField invite_code = new TextField();
-        invite_code.setPromptText("Enter Invite Code");
-        invite_code.setMaxWidth(200);
-        invite_code.getText();
+        final TextField invite_code = new TextField(); //text box to enter invite code
+        invite_code.setPromptText("Enter Invite Code"); //prompt them to enter invite code
+        invite_code.setMaxWidth(200); //dimensions for text field
+        invite_code.getText(); //get the invite code
         vbox2.getChildren().add(invite_code);
-        Button join = new Button("Join here");
+        Button join = new Button("Join here"); //button to submit invite code
         vbox2.getChildren().add(join);
         join.setOnAction(e -> {
             try { 
-				PreparedStatement ps2 = DatabaseHelper.prepareStatement("SELECT * FROM cse360users WHERE inviteCode=?");
+				PreparedStatement ps2 = DatabaseHelper.prepareStatement("SELECT * FROM cse360users WHERE inviteCode=?"); //check if the invite code exist
 				ps2.setString(1, invite_code.getText());
-				User user2 = DatabaseHelper.getOneUser(ps2);
+				User user2 = DatabaseHelper.getOneUser(ps2); // get the user, if they don't exist then sets to null
 				if (user2 != null) {
-					ApplicationStateManager.setLoggedInUser(user2);
-					PageManager.switchToPage("userpasssetup");
+					ApplicationStateManager.setLoggedInUser(user2); //log the user in
+					invite_code.clear(); //clear the invite code field
+					PageManager.switchToPage("userpasssetup"); //redirect them to userpasssetup
 				}else {
-					Alert emailAlert = new Alert(AlertType.ERROR, "Your Username and/or Password is invalid", ButtonType.OK);
-					emailAlert.showAndWait();
+					Alert emailAlert = new Alert(AlertType.ERROR, "Your Invite Code invalid", ButtonType.OK);
+					emailAlert.showAndWait();//alert them their invite code is invalid
 				}
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
@@ -109,8 +114,8 @@ public class LoginPage implements Page {
 			}
             	
 		});
-		root.setCenter(vbox);
-		root.setBottom(vbox2);
+		root.setCenter(vbox); //position vbox on screen
+		root.setBottom(vbox2); //position vbox2 on screen
 	}
 
     public void onPageOpen() {
