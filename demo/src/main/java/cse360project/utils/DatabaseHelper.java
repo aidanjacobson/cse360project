@@ -72,8 +72,13 @@ public class DatabaseHelper {
      * @return a PreparedStatement that can be used in getOneUser(), getAllUsers()
      * @throws SQLException
      */
-    public static PreparedStatement prepareStatement(String query) throws SQLException {
-        return connection.prepareStatement(query);
+    public static PreparedStatement prepareStatement(String query) {
+        try {
+            return connection.prepareStatement(query);
+        } catch(SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -95,6 +100,17 @@ public class DatabaseHelper {
             return true;
         }
 	}
+
+    public static User getUserByID(int userID) {
+        try {
+            PreparedStatement pstmt = prepareStatement("SELECT * FROM cse360users WHERE id = ?");
+            pstmt.setInt(1, userID);
+            return getOneUser(pstmt);
+        } catch(SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     /**
      * Get a list of all users in database.
