@@ -27,6 +27,10 @@ import javafx.scene.text.TextAlignment;
 public class AdminPage implements Page {
     BorderPane root = new BorderPane();
     GridPane userListGrid = new GridPane();
+
+    /**
+     * Constructor for admin page
+     */
     public AdminPage() {
         // create, position, and style the logout button
         createLogoutButton();
@@ -58,6 +62,9 @@ public class AdminPage implements Page {
         userListScrollPane.setContent(userListGrid);
     }
 
+    /**
+     * Create/style logout button and set click action
+     */
     public void createLogoutButton() {
         // create the logout button
         Button logoutButton = new Button("Log Out");
@@ -72,10 +79,19 @@ public class AdminPage implements Page {
         root.setTop(logoutButton);
     }
 
+    
+    
+    /** 
+     * Get the root of this page, for use in PageManager class
+     * @return Pane
+     */
     public Pane getRoot() {
         return root;
     }
 
+    /**
+     * Run on page open
+     */
     public void onPageOpen() {
         // check assumptions:
         // assumption: The user is logged in
@@ -98,6 +114,9 @@ public class AdminPage implements Page {
         renderUserTable();
     }
 
+    /**
+     * Clear user table and re-render
+     */
     void renderUserTable() {
         // remove everything from the table so we can rebuild it
         clearUserTable();
@@ -109,12 +128,18 @@ public class AdminPage implements Page {
         updateUserList();
     }
 
+    /**
+     * Clear all users from table, reset gridlines
+     */
     void clearUserTable() {
         userListGrid.getChildren().clear();
         userListGrid.setGridLinesVisible(false);
         userListGrid.setGridLinesVisible(true);
     }
 
+    /**
+     * Add the header row to the table
+     */
     void populateUserListHeaders() {
         userListGrid.setPadding(new Insets(20)); // Padding around the grid
         userListGrid.setAlignment(Pos.CENTER);
@@ -128,14 +153,21 @@ public class AdminPage implements Page {
         userListGrid.add(createTextElement("Is Instructor", true), 5, 0, 1, 1);
     }
 
+    /**
+     * Add all the users to the table
+     */
     void updateUserList() {
         // get all the users in the database
         ArrayList<User> allUsers = DatabaseHelper.getAllUsers();
 
+        // add each user to the table
         for (int i = 0; i < allUsers.size(); i++) {
             User user = allUsers.get(i);
+
+            // the first row is the header row, so move one row down
             int gridRowIndex = i+1;
 
+            // obtain username, name
             String username = user.username;
             String prefName = user.getPreferredName();
             String fullName = user.getFullName();
@@ -144,13 +176,13 @@ public class AdminPage implements Page {
             String isStudent = user.is_student ? "true" : "false";
             String isInstructor = user.is_instructor ? "true" : "false";
 
+            // add info to table
             userListGrid.add(createTextElement(username), 0, gridRowIndex, 1, 1);
             userListGrid.add(createTextElement(prefName), 1, gridRowIndex, 1, 1);
             userListGrid.add(createTextElement(fullName), 2, gridRowIndex, 1, 1);
             userListGrid.add(createTextElement(isAdmin), 3, gridRowIndex, 1, 1);
             userListGrid.add(createTextElement(isStudent), 4, gridRowIndex, 1, 1);
             userListGrid.add(createTextElement(isInstructor), 5, gridRowIndex, 1, 1);
-
             userListGrid.add(createResetButton(user.id), 6, gridRowIndex, 1, 1);
 
             // we should only add a delete button if it is not the logged in user
@@ -160,11 +192,20 @@ public class AdminPage implements Page {
         }
     }
 
+    
+    /** 
+     * Create a text element in the table
+     * @param text the text string
+     * @param bold whether it should be bold
+     * @return Label
+     */
     Label createTextElement(String text, boolean bold) {
+        // create label, set alignment, set padding
         Label out = new Label(text);
         out.setTextAlignment(TextAlignment.CENTER);
         out.setPadding(new Insets(5, 15, 5, 15));
         
+        // set bold status
         if (bold) {
             out.setFont(Font.font("system", FontWeight.BOLD, 20));
         } else {
@@ -174,10 +215,21 @@ public class AdminPage implements Page {
         return out;
     }
 
+    /**
+     * Create a text element in the table
+     * @param text the text string
+     * @return Label
+     */
     Label createTextElement(String text) {
+        // if bold is not specified, default to false
         return createTextElement(text, false);
     }
 
+    /**
+     * Create a reset button that will reset a particular user
+     * @param userId the id of the user to reset when clicked
+     * @return the button
+     */
     Button createResetButton(int userId) {
         Button resetBtn = new Button("Reset");
         resetBtn.setPrefWidth(100);
@@ -187,6 +239,11 @@ public class AdminPage implements Page {
         return resetBtn;
     }
 
+    /**
+     * Create a delete button that will delete a particular user
+     * @param userId the id of the user to delete when clicked
+     * @return the button
+     */
     Button createDeleteButton(int userId) {
         Button deleteBtn = new Button("Delete");
         deleteBtn.setPrefWidth(100);
@@ -196,6 +253,10 @@ public class AdminPage implements Page {
         return deleteBtn;
     }
 
+    /**
+     * Ask the user if they want to reset, then take action accordingly
+     * @param userId the user to reset
+     */
     void attemptUserReset(int userId) {
         // who are we resetting?
         User userToReset = DatabaseHelper.getUserByID(userId);
@@ -212,13 +273,13 @@ public class AdminPage implements Page {
         userToReset.OTP = true;
         userToReset.OTP_expiration = User.getNewOTPExpirationTimestamp();
 
+        // update the user in the db
+        DatabaseHelper.updateUser(userToReset);
+        
         // draft and show email with OTP
         String emailContents = String.format("From: passwords@cse360.com%nTo: %s%nSubject: Password Reset%nHi %s,%nYour temporary password is %s.%nPlease log in and reset it within 30 days.", userToReset.email, userToReset.preferredName, userToReset.password);
         Alert emailAlert = new Alert(AlertType.INFORMATION, emailContents, ButtonType.OK);
         emailAlert.showAndWait();
-
-        // update the user in the db
-        DatabaseHelper.updateUser(userToReset);
 
         // if we just reset ourselves, logout
         if (userToReset.id == ApplicationStateManager.getLoggedInUser().id) {
@@ -226,6 +287,10 @@ public class AdminPage implements Page {
         }
     }
 
+    /**
+     * Ask the user if they want to delete, then take action accordingly
+     * @param userId the user to delete
+     */
     void attemptUserDelete(int userId) {
         // who are we deleting?
         User userToDelete = DatabaseHelper.getUserByID(userId);
