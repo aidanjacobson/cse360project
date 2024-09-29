@@ -1,7 +1,20 @@
 package cse360project.pages;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import cse360project.User;
+import cse360project.utils.ApplicationStateManager;
+import cse360project.utils.DatabaseHelper;
+import cse360project.utils.PageManager;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
@@ -11,6 +24,11 @@ import javafx.scene.text.Text;
 public class LoginPage implements Page {
     StackPane root = new StackPane();
     public LoginPage() {
+    	boolean isDatabaseEmpty = DatabaseHelper.isDatabaseEmpty();
+    	if(isDatabaseEmpty) {
+    		PageManager.switchToPage("accountsetup");
+    	}
+ 
         VBox vbox = new VBox(10);
         Text titleText = new Text("this is the login page");
         vbox.getChildren().add(titleText);
@@ -30,7 +48,37 @@ public class LoginPage implements Page {
         Button login = new Button("Login");
         vbox.getChildren().add(login);
         root.getChildren().add(vbox);
-        
+        login.setOnAction(e -> {
+        try { 
+				Timestamp today = Timestamp.valueOf(LocalDateTime.now());
+        		PreparedStatement ps = DatabaseHelper.prepareStatement("SELECT * FROM cse360users WHERE username=?");
+				ps.setString(1, username.getText());
+				User user = DatabaseHelper.getOneUser(ps);
+	        	if (user != null) {
+	        		if (password.getText().equals(user.password)) {
+	        			if(user.OTP) {
+	        				if(today.before(user.OTP_expiration)) {
+	        					ApplicationStateManager.setLoggedInUser(user);
+	        		    		PageManager.switchToPage("accountsetup");
+	        				}else {
+	        			        Alert emailAlert = new Alert(AlertType.ERROR, "Your One Time Password has expired", ButtonType.OK);
+	        			        emailAlert.showAndWait();
+	        				}
+	        			}else {
+	        				ApplicationStateManager.setLoggedInUser(user);
+        		    		PageManager.switchToPage("roleselection");
+        			}
+	        		}else {
+	        			Alert emailAlert = new Alert(AlertType.ERROR, "Your Username and/or Password is invalid", ButtonType.OK);
+    			        emailAlert.showAndWait();
+	        		}
+	        	}
+        	} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+        	
+        });
         VBox vbox2 = new VBox(10);
         vbox2.setAlignment(Pos.BOTTOM_CENTER);
         final TextField invite_code = new TextField();
@@ -41,7 +89,24 @@ public class LoginPage implements Page {
         Button join = new Button("Join here");
         vbox2.getChildren().add(join);
         root.getChildren().add(vbox2);
-        
+        join.setOnAction(e -> {
+            try { 
+            		PreparedStatement ps2 = DatabaseHelper.prepareStatement("SELECT * FROM cse360users WHERE inviteCode=?");
+    				ps2.setString(1, invite_code.getText());
+    				User user2 = DatabaseHelper.getOneUser(ps2);
+    	        	if (user2 != null) {
+    	        		ApplicationStateManager.setLoggedInUser(user2);
+    		    		PageManager.switchToPage("userpasssetup");
+    	        	}else {
+    	        		Alert emailAlert = new Alert(AlertType.ERROR, "Your Username and/or Password is invalid", ButtonType.OK);
+    			        emailAlert.showAndWait();
+    	        	}
+            	} catch (SQLException e1) {
+    				// TODO Auto-generated catch block
+    				e1.printStackTrace();
+    			}
+            	
+            });
     }
 
     public void onPageOpen() {

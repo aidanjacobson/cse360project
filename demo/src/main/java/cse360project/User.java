@@ -3,8 +3,10 @@ package cse360project;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.*;
 import java.util.ArrayList;
 
+import cse360project.utils.DatabaseHelper;
 import cse360project.utils.Role;
 
 public class User {
@@ -43,10 +45,17 @@ public class User {
     }
 
     public boolean hasRole(Role role) {
-        if (role == Role.ADMIN) return this.is_admin;
+        if (role == Role.ADMIN)      return this.is_admin;
         if (role == Role.INSTRUCTOR) return this.is_instructor;
-        if (role == Role.STUDENT) return this.is_student;
+        if (role == Role.STUDENT)    return this.is_student;
         return false;
+    }
+
+    public void setRole(Role role, boolean hasRole) {
+        if (role == Role.ADMIN)      this.is_admin = hasRole;
+        if (role == Role.INSTRUCTOR) this.is_instructor = hasRole;
+        if (role == Role.STUDENT)    this.is_student = hasRole;
+        DatabaseHelper.updateUser(this);
     }
 
     public ArrayList<Role> getRoles() {
@@ -63,6 +72,31 @@ public class User {
         return roles;
     }
 
+    public String getFullName() {
+        String fullName = "";
+        if (this.firstName != null && ! this.firstName.isBlank()) {
+            fullName += this.firstName + " ";
+        }
+        if (this.middleName != null && ! this.middleName.isBlank()) {
+            fullName += this.middleName + " ";
+        }
+        if (this.lastName != null && ! this.lastName.isBlank()) {
+            fullName += this.lastName;
+        }
+        return fullName;
+    }
+
+    public String getPreferredName() {
+        String out;
+        if (this.preferredName != null && ! this.preferredName.isBlank()) {
+            out = this.preferredName;
+        } else {
+            out = this.firstName;
+        }
+        if (out == null || out.isBlank()) return "";
+        return out;
+    }
+
     public static User fromResultSet(ResultSet rs) throws SQLException {
         return new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("email"), rs.getString("inviteCode"), rs.getBoolean("accountSetUp"), rs.getBoolean("OTP"), rs.getTimestamp("OTP_expiration"), rs.getString("firstName"), rs.getString("middleName"), rs.getString("lastName"), rs.getString("preferredName"), rs.getBoolean("is_admin"), rs.getBoolean("is_instructor"), rs.getBoolean("is_student"));
     }
@@ -72,6 +106,25 @@ public class User {
     }
 
     static String getRandomInviteCode() {
-        return "invitecode";
+        return "invitecode"; // TODO: THIS
+    }
+
+    public static String getRandomOTP() {
+        return "otp"; // TODO: THIS
+    }
+
+    static final int otp_expiration_days = 30;
+
+    /**
+     * Get the timestamp of an OTP expiration that was generated now.
+     * @return the timestamp of expiration
+     */
+    public static Timestamp getNewOTPExpirationTimestamp() {
+        // get the date 30 days in the future at start of day
+        LocalDate futureDate = LocalDate.now().plusDays(otp_expiration_days);
+        LocalDateTime futureDateTime = futureDate.atStartOfDay();
+
+        // convert to timestamp
+        return Timestamp.valueOf(futureDateTime);
     }
 }
