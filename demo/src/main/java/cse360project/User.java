@@ -3,6 +3,7 @@ package cse360project;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.*;
 import java.util.ArrayList;
 
 import cse360project.utils.Role;
@@ -97,6 +98,25 @@ public class User {
     }
 
     static String getRandomInviteCode() {
-        return "invitecode";
+        return "invitecode"; // TODO: THIS
+    }
+
+    public static String getRandomOTP() {
+        return "otp"; // TODO: THIS
+    }
+
+    static final int otp_expiration_days = 30;
+
+    /**
+     * Get the timestamp of an OTP expiration that was generated now.
+     * @return the timestamp of expiration
+     */
+    public static Timestamp getNewOTPExpirationTimestamp() {
+        // get the date 30 days in the future at start of day
+        LocalDate futureDate = LocalDate.now().plusDays(otp_expiration_days);
+        LocalDateTime futureDateTime = futureDate.atStartOfDay();
+
+        // convert to timestamp
+        return Timestamp.valueOf(futureDateTime);
     }
 }
