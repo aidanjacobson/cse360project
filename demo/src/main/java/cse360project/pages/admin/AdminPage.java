@@ -5,6 +5,8 @@ import cse360project.pages.Page;
 import cse360project.utils.ApplicationStateManager;
 import cse360project.utils.PageManager;
 import cse360project.utils.Role;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -22,12 +24,21 @@ public class AdminPage implements Page {
         // create the logout button
         Button logoutButton = new Button("Log Out");
         logoutButton.setAlignment(Pos.TOP_LEFT);
+        
+        // set logout button action
+        EventHandler<ActionEvent> logoutClick = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+                ApplicationStateManager.logout();
+            }
+        };
+        logoutButton.setOnAction(logoutClick);
         root.getChildren().add(logoutButton);
 
         // since page content should be centered,
         // put everything into a vbox that is centered
         // this fixes all the alignment issues
         VBox pageContent = new VBox();
+        pageContent.setMouseTransparent(true); // allow logout button to be clicked
         pageContent.setAlignment(Pos.CENTER);
         root.getChildren().add(pageContent);
 
