@@ -7,6 +7,7 @@ import java.time.*;
 import java.util.ArrayList;
 
 import cse360project.utils.DatabaseHelper;
+import cse360project.utils.PasswordGenerator;
 import cse360project.utils.Role;
 
 public class User {
@@ -106,11 +107,11 @@ public class User {
     }
 
     static String getRandomInviteCode() {
-        return "invitecode"; // TODO: THIS
+        return PasswordGenerator.generate();
     }
 
     public static String getRandomOTP() {
-        return "otp"; // TODO: THIS
+        return PasswordGenerator.generate();
     }
 
     static final int otp_expiration_days = 30;
