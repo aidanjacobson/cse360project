@@ -1,9 +1,8 @@
-package cse360project.pages.admin;
+package cse360project.pages;
 
 import java.util.ArrayList;
 
 import cse360project.User;
-import cse360project.pages.Page;
 import cse360project.utils.ApplicationStateManager;
 import cse360project.utils.DatabaseHelper;
 import cse360project.utils.PageManager;
