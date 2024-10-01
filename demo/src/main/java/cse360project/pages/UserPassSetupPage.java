@@ -103,21 +103,40 @@ public class UserPassSetupPage implements Page {
                 System.out.println("Setting up the first user as admin");
             } else {
                 // Get the logged-in user (assumed to be an invited user)
-                newUser = ApplicationStateManager.getLoggedInUser(); 
-                
+                newUser = ApplicationStateManager.getLoggedInUser();
+
                 if (newUser == null || newUser.inviteCode == null || newUser.inviteCode.isEmpty()) {
                     System.err.println("Invite code is required for new user setup"); // Error if no invite code provided
                     return;
                 }
-                
+
                 // Update the invited user's details with the username and password they entered
                 newUser.username = usernameField.getText();
                 newUser.password = passwordField.getText();
                 newUser.inviteCode = null; // Invalidate the invite code after it's used
             }
 
-            // Save the user details to the database (either add or update)
-            DatabaseHelper.addOrUpdateUser(newUser);
+            // Use prepared statement to save the user details (both username and password) to the database
+            try {
+                PreparedStatement ps = DatabaseHelper.prepareStatement(
+                    "INSERT INTO cse360users (username, password, is_admin) VALUES (?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE username = ?, password = ?"
+                );
+                ps.setString(1, newUser.username);  // Set the username
+                ps.setString(2, newUser.password);  // Set the password
+                ps.setBoolean(3, newUser.is_admin); // Set admin status
+
+                // Set the fields for the update part of the query
+                ps.setString(4, newUser.username);
+                ps.setString(5, newUser.password);
+
+                // Execute the update query
+                ps.executeUpdate();
+                System.out.println("User saved successfully");
+            } catch (SQLException ex) {
+                System.err.println("Error saving user to the database: " + ex.getMessage());
+                return;
+            }
 
             // clear logging-in user and return to login screen
             ApplicationStateManager.logout();
