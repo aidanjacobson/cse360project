@@ -4,6 +4,7 @@ import cse360project.utils.ApplicationStateManager;
 import cse360project.User;
 import cse360project.utils.DatabaseHelper;
 import cse360project.utils.PageManager;
+import cse360project.utils.ValidationHelper;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -15,6 +16,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class UserPassSetupPage implements Page {
     // Root element for this page
@@ -56,22 +60,35 @@ public class UserPassSetupPage implements Page {
         // Submit button and its action handling
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(e -> {
-            // Validate passwords match
-            if (!passwordField.getText().equals(confirmPasswordField.getText())) {
+            // Validate passwords match using ValidationHelper
+            if (!ValidationHelper.doPasswordsMatch(passwordField.getText(), confirmPasswordField.getText())) {
                 System.err.println("Passwords do not match");
                 return;
             }
 
-            // Validate that the username is at least 3 characters long and contains no spaces
-            if (!usernameField.getText().matches("[a-zA-Z0-9_]{3,}")) {
-                System.err.println("Invalid username. Must be at least 3 characters and contain no spaces.");
+            // Validate password strength using ValidationHelper
+            if (!ValidationHelper.isValidPassword(passwordField.getText())) {
+                System.err.println("Password must be at least 6 characters and include at least 3 of the following: uppercase, lowercase, number, special character.");
                 return;
             }
 
-            // Check if the username is already taken in the database
-            User existingUser = DatabaseHelper.getOneUser("SELECT * FROM cse360users WHERE username = '" + usernameField.getText() + "'");
-            if (existingUser != null) {
-                System.err.println("Username is already taken");
+            // Validate that the username meets the constraints using ValidationHelper
+            if (!ValidationHelper.isValidUsername(usernameField.getText())) {
+                System.err.println("Invalid username. Must be at least 3 characters and contain only alphanumeric characters, underscores, or periods.");
+                return;
+            }
+
+            // Use prepared statement to check if the username is already taken in the database
+            try {
+                PreparedStatement ps = DatabaseHelper.prepareStatement("SELECT * FROM cse360users WHERE username = ?");
+                ps.setString(1, usernameField.getText());
+                User existingUser = DatabaseHelper.getOneUser(ps);
+                if (existingUser != null) {
+                    System.err.println("Username is already taken");
+                    return;
+                }
+            } catch (SQLException ex) {
+                System.err.println("Error checking for existing username: " + ex.getMessage());
                 return;
             }
 
@@ -96,7 +113,6 @@ public class UserPassSetupPage implements Page {
                 // Update the invited user's details with the username and password they entered
                 newUser.username = usernameField.getText();
                 newUser.password = passwordField.getText();
-                newUser.accountSetUp = true; // Mark the account as set up
                 newUser.inviteCode = null; // Invalidate the invite code after it's used
             }
 
