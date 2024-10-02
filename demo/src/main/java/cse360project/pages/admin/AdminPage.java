@@ -1,8 +1,9 @@
-package cse360project.pages;
+package cse360project.pages.admin;
 
 import java.util.ArrayList;
 
 import cse360project.User;
+import cse360project.pages.Page;
 import cse360project.utils.ApplicationStateManager;
 import cse360project.utils.DatabaseHelper;
 import cse360project.utils.PageManager;
@@ -19,7 +20,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -27,17 +30,15 @@ import javafx.scene.text.TextAlignment;
 
 public class AdminPage implements Page {
     BorderPane root = new BorderPane();
+    // Pane main = new Pane();
     GridPane userListGrid = new GridPane();
+    StackPane pageContent = new StackPane();
 
     /**
      * Constructor for admin page
      */
     public AdminPage() {
-        // create, position, and style the logout button
-        createLogoutButton();
-
         // create the main page content window
-        StackPane pageContent = new StackPane();
         pageContent.setPadding(new Insets(20, 20, 20, 20)); // Padding inside the grid container
         BorderPane.setMargin(pageContent, new Insets(100, 100, 100, 100)); // Minimum margin around the grid
 
@@ -61,26 +62,15 @@ public class AdminPage implements Page {
 
         pageContent.setMouseTransparent(false); // allow mouse events for scrolling and page interactions
         userListScrollPane.setContent(userListGrid);
+
+        // create the toolbar at the top of the borderpane
+        HBox topContent = new HBox();
+        root.setTop(topContent);
+
+        // the toolbar should have logout and invite buttons
+        topContent.getChildren().add(createLogoutButton());
+        topContent.getChildren().add(createInviteButton());
     }
-
-    /**
-     * Create/style logout button and set click action
-     */
-    public void createLogoutButton() {
-        // create the logout button
-        Button logoutButton = new Button("Log Out");
-        
-        // set logout button action
-        logoutButton.setOnAction(e -> ApplicationStateManager.logout());
-
-        // it will be in top left, so pad it away from the corner
-        BorderPane.setMargin(logoutButton, new Insets(20, 20, 20, 20));
-        
-        // set the top node to be the logout button
-        root.setTop(logoutButton);
-    }
-
-    
     
     /** 
      * Get the root of this page, for use in PageManager class
@@ -275,7 +265,7 @@ public class AdminPage implements Page {
         DatabaseHelper.updateUser(userToReset);
         
         // draft and show email with OTP
-        String emailContents = String.format("From: passwords@cse360.com%nTo: %s%nSubject: Password Reset%nHi %s,%nYour temporary password is %s.%nPlease log in and reset it within 30 days.", userToReset.email, userToReset.preferredName, userToReset.password);
+        String emailContents = String.format("From: passwords@cse360.com%nTo: %s%nSubject: Password Reset%nHi %s,%nYour temporary password is \"%s\".%nPlease log in and reset it within 30 days.", userToReset.email, userToReset.getPreferredName(), userToReset.password);
         Alert emailAlert = new Alert(AlertType.INFORMATION, emailContents, ButtonType.OK);
         emailAlert.showAndWait();
 
@@ -333,5 +323,50 @@ public class AdminPage implements Page {
         }
 
         return check;
+    }
+
+    /**
+     * Create/style invite button and set click action
+     * @return the invite button's stackpane
+     */
+    StackPane createInviteButton() {
+        // create the invite button
+        Button inviteButton = new Button("Invite User");
+
+        // create a container for the invite button that can be shifted to the right
+        StackPane stack = new StackPane();
+        stack.setAlignment(Pos.CENTER_RIGHT);
+        stack.getChildren().add(inviteButton);
+
+        // set the margin of the button
+        StackPane.setMargin(inviteButton, new Insets(20, 20, 20, 20));
+
+        // grow the stack to full size horizontally so the button is on the far right side
+        HBox.setHgrow(stack, Priority.ALWAYS);
+
+        // set the click action
+        inviteButton.setOnAction(e -> UserInviteWindow.openInviteUserDialog());
+
+        return stack;
+    }
+
+    
+    /**
+     * Create/style logout button and set click action
+     * @return the button
+     */
+    Button createLogoutButton() {
+        // create the logout button
+        Button logoutButton = new Button("Log Out");
+        
+        // set logout button action
+        logoutButton.setOnAction(e -> ApplicationStateManager.logout());
+
+        // it will be in top left, so pad it away from the corner
+        HBox.setMargin(logoutButton, new Insets(20, 20, 20, 20));
+        
+        // set the top node to be the logout button
+        // root.setTop(logoutButton);
+        return logoutButton;
     }
 }
