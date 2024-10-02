@@ -116,27 +116,9 @@ public class UserPassSetupPage implements Page {
                 newUser.inviteCode = null; // Invalidate the invite code after it's used
             }
 
-            // Use prepared statement to save the user details (both username and password) to the database
-            try {
-                PreparedStatement ps = DatabaseHelper.prepareStatement(
-                    "INSERT INTO cse360users (username, password, is_admin) VALUES (?, ?, ?) " +
-                    "ON DUPLICATE KEY UPDATE username = ?, password = ?"
-                );
-                ps.setString(1, newUser.username);  // Set the username
-                ps.setString(2, newUser.password);  // Set the password
-                ps.setBoolean(3, newUser.is_admin); // Set admin status
-
-                // Set the fields for the update part of the query
-                ps.setString(4, newUser.username);
-                ps.setString(5, newUser.password);
-
-                // Execute the update query
-                ps.executeUpdate();
-                System.out.println("User saved successfully");
-            } catch (SQLException ex) {
-                System.err.println("Error saving user to the database: " + ex.getMessage());
-                return;
-            }
+            // Save the user details using the DatabaseHelper (addOrUpdateUser handles both add and update)
+            DatabaseHelper.addOrUpdateUser(newUser);
+            System.out.println("User saved successfully");
 
             // clear logging-in user and return to login screen
             ApplicationStateManager.logout();
