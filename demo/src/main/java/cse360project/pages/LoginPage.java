@@ -59,11 +59,9 @@ public class LoginPage implements Page {
 	        	if (user != null) {
 	        		if (password.getText().equals(user.password)) { // make sure passwords are equal
 	        			if(user.OTP) {
-	        				if(today.before(user.OTP_expiration)) { //check to see if OTP is expired
-	        					ApplicationStateManager.setLoggedInUser(user); //log them in
-	        					username.clear(); //clear username
-	        					password.clear();// clear password
-	        		    		PageManager.switchToPage("accountsetup"); //redirect to accountsetup 
+	        				if(today.before(user.OTP_expiration)) {
+	        					ApplicationStateManager.setLoggedInUser(user);
+	        		    		PageManager.switchToPage("userpasssetup");
 	        				}else {
 	        			        Alert emailAlert = new Alert(AlertType.ERROR, "Your One Time Password has expired", ButtonType.OK); 
 	        			        emailAlert.showAndWait(); // alert them if OTP is expired
@@ -78,6 +76,10 @@ public class LoginPage implements Page {
 	        			Alert emailAlert = new Alert(AlertType.ERROR, "Your Username and/or Password is invalid", ButtonType.OK);
     			        emailAlert.showAndWait();//alert them their username and/or password is wrong
 	        		}
+	        	}
+	        	else {
+	        		Alert emailAlert = new Alert(AlertType.ERROR, "Your Username is invalid please set up an account", ButtonType.OK);
+			        emailAlert.showAndWait();
 	        	}
         	} catch (SQLException e1) {
 				// TODO Auto-generated catch block
