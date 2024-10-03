@@ -70,10 +70,14 @@ public class AccountSetupScreen implements Page {
             }
 
             // Validate first name and last name (no empty or whitespace-only strings)
-            String firstName = firstNameField.getText().trim();
-            String lastName = lastNameField.getText().trim();
-            if (firstName.isEmpty() || lastName.isEmpty()) {
-                errorMessage.setText("First name and last name cannot be empty or whitespace");
+            String firstName = firstNameField.getText();
+            String lastName = lastNameField.getText();
+            if (!ValidationHelper.isValidName(firstName)) {
+                errorMessage.setText("Invalid first name.");
+                return;
+            }
+            if (!ValidationHelper.isValidName(lastName)) {
+                errorMessage.setText("Invalid last name.");
                 return;
             }
             
