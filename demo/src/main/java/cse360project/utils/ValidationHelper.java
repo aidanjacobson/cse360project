@@ -86,6 +86,10 @@ public class ValidationHelper {
         return true;
     }
 
+    public static boolean doPasswordsMatch(String p1, String p2) { // temporary stopgap until password is switched to char[]
+        return doPasswordsMatch(p1.toCharArray(), p2.toCharArray());
+    }
+
 
     /**
      * Validates a name to ensure it contains only alphabetic characters, dashes,
