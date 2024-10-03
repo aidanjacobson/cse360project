@@ -60,21 +60,31 @@ public class UserPassSetupPage implements Page {
         // Submit button and its action handling
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(e -> {
+            // Convert password fields to char[]
+            char[] password = passwordField.getText().toCharArray();
+            char[] confirmPassword = confirmPasswordField.getText().toCharArray();
+
             // Validate passwords match using ValidationHelper
-            if (!ValidationHelper.doPasswordsMatch(passwordField.getText(), confirmPasswordField.getText())) {
+            if (!ValidationHelper.doPasswordsMatch(password, confirmPassword)) {
                 System.err.println("Passwords do not match");
+                java.util.Arrays.fill(password, '\0'); // Clear immediately if validation fails
+                java.util.Arrays.fill(confirmPassword, '\0'); 
                 return;
             }
 
             // Validate password strength using ValidationHelper
-            if (!ValidationHelper.isValidPassword(passwordField.getText())) {
+            if (!ValidationHelper.isValidPassword(password)) {
                 System.err.println("Password must be at least 6 characters and include at least 3 of the following: uppercase, lowercase, number, special character.");
+                java.util.Arrays.fill(password, '\0'); // Clear immediately if validation fails
+                java.util.Arrays.fill(confirmPassword, '\0'); 
                 return;
             }
 
             // Validate that the username meets the constraints using ValidationHelper
             if (!ValidationHelper.isValidUsername(usernameField.getText())) {
                 System.err.println("Invalid username. Must be at least 3 characters and contain only alphanumeric characters, underscores, or periods.");
+                java.util.Arrays.fill(password, '\0'); // Clear immediately if validation fails
+                java.util.Arrays.fill(confirmPassword, '\0'); 
                 return;
             }
 
@@ -85,44 +95,57 @@ public class UserPassSetupPage implements Page {
                 User existingUser = DatabaseHelper.getOneUser(ps);
                 if (existingUser != null) {
                     System.err.println("Username is already taken");
+                    java.util.Arrays.fill(password, '\0'); // Clear immediately if validation fails
+                    java.util.Arrays.fill(confirmPassword, '\0'); 
                     return;
                 }
             } catch (SQLException ex) {
                 System.err.println("Error checking for existing username: " + ex.getMessage());
+                java.util.Arrays.fill(password, '\0'); // Clear immediately if an error occurs
+                java.util.Arrays.fill(confirmPassword, '\0'); 
                 return;
             }
 
             // Check if the database is empty to determine if the user should be the admin
             boolean isDatabaseEmpty = DatabaseHelper.isDatabaseEmpty();
-
             User newUser;
 
             if (isDatabaseEmpty) {
                 // First user, automatically set as admin
-                newUser = new User(-1, usernameField.getText(), passwordField.getText(), null, null, false, false, null, "", "", "", "", true, false, false);
+                newUser = new User(-1, usernameField.getText(), new String(password), null, null, false, false, null, "", "", "", "", true, false, false);
                 System.out.println("Setting up the first user as admin");
             } else {
                 // Get the logged-in user (assumed to be an invited user)
                 newUser = ApplicationStateManager.getLoggedInUser();
 
                 if (newUser == null || newUser.inviteCode == null || newUser.inviteCode.isEmpty()) {
-                    System.err.println("Invite code is required for new user setup"); // Error if no invite code provided
+                    System.err.println("Invite code is required for new user setup");
+                    java.util.Arrays.fill(password, '\0'); // Clear immediately if validation fails
+                    java.util.Arrays.fill(confirmPassword, '\0'); 
                     return;
                 }
 
                 // Update the invited user's details with the username and password they entered
                 newUser.username = usernameField.getText();
-                newUser.password = passwordField.getText();
+                newUser.password = new String(password); // Convert char[] to String for the User object
                 newUser.inviteCode = null; // Invalidate the invite code after it's used
+                
             }
-
-            // Save the user details using the DatabaseHelper (addOrUpdateUser handles both add and update)
+            
+            // Save the user details using the DatabaseHelper
             DatabaseHelper.addOrUpdateUser(newUser);
             System.out.println("User saved successfully");
 
-            // clear logging-in user and return to login screen
+            // Clear the char[] for security reasons
+            java.util.Arrays.fill(password, '\0');
+            java.util.Arrays.fill(confirmPassword, '\0');
+
+           
+
+            // Clear logging-in user and return to login screen
             ApplicationStateManager.logout();
         });
+
 
         // HBox for aligning the submit button in the center
         HBox buttonBox = new HBox(10);

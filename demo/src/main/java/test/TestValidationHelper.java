@@ -21,18 +21,18 @@ public class TestValidationHelper {
         performUsernameTest(7, "user__name", true);    // Consecutive underscores
         performUsernameTest(8, "user..name", true);    // Consecutive periods
 
-        // Password tests
-        performPasswordTest(9, "Abc@123", true);
-        performPasswordTest(10, "Abc", false);
-        performPasswordTest(11, "123456", false);
-        performPasswordTest(12, "Strong@Pass12", true);
-        performPasswordTest(13, "AllLowercase", false);
-        performPasswordTest(14, "ALLUPPERCASE123", false);
-        performPasswordTest(15, "Short1!", false);
+        // Password tests (char[] inputs)
+        performPasswordTest(9, "Abc@123".toCharArray(), true);
+        performPasswordTest(10, "Abc".toCharArray(), false);
+        performPasswordTest(11, "123456".toCharArray(), false);
+        performPasswordTest(12, "Strong@Pass12".toCharArray(), true);
+        performPasswordTest(13, "AllLowercase".toCharArray(), false);
+        performPasswordTest(14, "ALLUPPERCASE123".toCharArray(), false);
+        performPasswordTest(15, "Short1!".toCharArray(), false);
 
-        // Password match tests
-        performPasswordMatchTest(16, "Password123", "Password123", true);
-        performPasswordMatchTest(17, "Password123", "password123", false);
+        // Password match tests (char[] inputs)
+        performPasswordMatchTest(16, "Password123".toCharArray(), "Password123".toCharArray(), true);
+        performPasswordMatchTest(17, "Password123".toCharArray(), "password123".toCharArray(), false);
 
         // Name tests
         performNameTest(18, "John Doe", true);
@@ -66,22 +66,22 @@ public class TestValidationHelper {
         evaluateResult(result, expectedPass, "Username validation", username);
     }
 
-    // Helper method for testing password validation
-    private static void performPasswordTest(int testCase, String password, boolean expectedPass) {
+    // Helper method for testing password validation (char[] inputs)
+    private static void performPasswordTest(int testCase, char[] password, boolean expectedPass) {
         System.out.println("____________________________________________________________________________\n\nTest case: " + testCase + " (Password Test)");
-        System.out.println("Input: \"" + password + "\"");
+        System.out.println("Input: \"" + new String(password) + "\"");
 
         boolean result = ValidationHelper.isValidPassword(password);
-        evaluateResult(result, expectedPass, "Password validation", password);
+        evaluateResult(result, expectedPass, "Password validation", new String(password));
     }
 
-    // Helper method for testing password match validation
-    private static void performPasswordMatchTest(int testCase, String password, String confirmPassword, boolean expectedPass) {
+    // Helper method for testing password match validation (char[] inputs)
+    private static void performPasswordMatchTest(int testCase, char[] password, char[] confirmPassword, boolean expectedPass) {
         System.out.println("____________________________________________________________________________\n\nTest case: " + testCase + " (Password Match Test)");
-        System.out.println("Input: \"" + password + "\" and \"" + confirmPassword + "\"");
+        System.out.println("Input: \"" + new String(password) + "\" and \"" + new String(confirmPassword) + "\"");
 
         boolean result = ValidationHelper.doPasswordsMatch(password, confirmPassword);
-        evaluateResult(result, expectedPass, "Password match validation", password + ", " + confirmPassword);
+        evaluateResult(result, expectedPass, "Password match validation", new String(password) + ", " + new String(confirmPassword));
     }
 
     // Helper method for testing name validation
@@ -104,7 +104,7 @@ public class TestValidationHelper {
 
     // Evaluates if the test passed or failed based on the result and expected output
     private static void evaluateResult(boolean result, boolean expectedPass, String validationType, String input) {
-        if (result == expectedPass) {
+        if (result == true && expectedPass == true) {
             System.out.println("***Success*** The " + validationType + " for <" + input + "> passed as expected.");
             numPassed++;
         } else {

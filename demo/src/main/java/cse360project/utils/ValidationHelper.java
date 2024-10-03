@@ -1,5 +1,8 @@
 package cse360project.utils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class ValidationHelper {
 
     /**
@@ -13,30 +16,76 @@ public class ValidationHelper {
     }
 
     /**
-     * Validates that the password meets at least 3 of the following:
+     * Validates that the password (char array) meets at least 3 of the following:
      * uppercase, lowercase, numeric, special character with a minimum length of 6.
-     * @param password The password to validate.
+     * @param password The password as a char array to validate.
      * @return true if valid, false otherwise.
      */
-    public static boolean isValidPassword(String password) {
+    public static boolean isValidPassword(char[] password) {
         int count = 0;
-        if (password.length() < 6) return false;
-        if (password.matches(".*[a-z].*")) count++; // Lowercase letter
-        if (password.matches(".*[A-Z].*")) count++; // Uppercase letter
-        if (password.matches(".*[0-9].*")) count++; // Numeric digit
-        if (password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*")) count++; // Special character
+        
+        // Check if the password is less than 6 characters
+        if (password.length < 6) return false;
+
+        // Check for lowercase letters
+        for (char c : password) {
+            if (Character.isLowerCase(c)) {
+                count++;
+                break;
+            }
+        }
+
+        // Check for uppercase letters
+        for (char c : password) {
+            if (Character.isUpperCase(c)) {
+                count++;
+                break;
+            }
+        }
+
+        // Check for numeric digits
+        for (char c : password) {
+            if (Character.isDigit(c)) {
+                count++;
+                break;
+            }
+        }
+
+        // Check for special characters
+        for (char c : password) {
+            if ("!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?".indexOf(c) >= 0) {
+                count++;
+                break;
+            }
+        }
+
+        // Return true if the password contains at least 3 types of characters
         return count >= 3;
     }
 
     /**
-     * Validates that two passwords match.
-     * @param password The password entered.
-     * @param confirmPassword The confirmation password.
+     * Validates that two passwords match by comparing char arrays.
+     * @param password The original password as a char array.
+     * @param confirmPassword The confirmation password as a char array.
      * @return true if passwords match, false otherwise.
      */
-    public static boolean doPasswordsMatch(String password, String confirmPassword) {
-        return password.equals(confirmPassword);
+    public static boolean doPasswordsMatch(char[] password, char[] confirmPassword) {
+        // Check if both arrays have the same length
+        if (password.length != confirmPassword.length) {
+            return false;
+        }
+
+        // Compare each character in both arrays
+        for (int i = 0; i < password.length; i++) {
+            if (password[i] != confirmPassword[i]) {
+                return false;
+            }
+        }
+
+        // Return true if all characters match
+        return true;
     }
+
 
     /**
      * Validates a name to ensure it contains only alphabetic characters, dashes,
@@ -55,6 +104,10 @@ public class ValidationHelper {
      */
     public static boolean isValidEmail(String email) {
         // Basic email regex pattern: checks for name@domain.something(>2)
-        return email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+        //return email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+        Pattern pattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        boolean matchFound = matcher.find();
+        return matchFound;
     }
 }
