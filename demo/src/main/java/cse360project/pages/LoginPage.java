@@ -27,11 +27,6 @@ import javafx.scene.text.Text;
 public class LoginPage implements Page {
     BorderPane root = new BorderPane();
     public LoginPage() {
-    	boolean isDatabaseEmpty = DatabaseHelper.isDatabaseEmpty(); //check to see if there are no users in the database
-    	if(isDatabaseEmpty) {
-    		PageManager.switchToPage("accountsetup"); //if database is empty immediately redirect to the accountsetup page to set up admin
-    	}
-
 		root.setPadding(new Insets(100, 100, 100, 100)); // padding to distance the vboxes
  
         VBox vbox = new VBox(10);
@@ -123,7 +118,10 @@ public class LoginPage implements Page {
 	}
 
     public void onPageOpen() {
-        // System.out.println("You visited the login page");
+        boolean isDatabaseEmpty = DatabaseHelper.isDatabaseEmpty(); //check to see if there are no users in the database
+    	if(isDatabaseEmpty) {
+    		PageManager.switchToPage("accountsetup"); //if database is empty immediately redirect to the accountsetup page to set up admin
+    	}
     }
 
     public BorderPane getRoot() {
