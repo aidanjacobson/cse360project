@@ -122,6 +122,8 @@ public class UserInviteWindow {
         User newUser = User.createInvitedUser(is_admin, is_instructor, is_student);
         DatabaseHelper.addUser(newUser);
 
+        System.out.printf("A new user has been invited with code: \"%s\"%n", newUser.inviteCode);
+
         // show a popup with the new invite code
         String roleString = getRoleListString(is_admin, is_student, is_instructor);
         String messageContents = String.format("A new user has been created with the following roles:%n%s%nTheir invite code is \"%s\".%nPlease write this down as it will not be shown again.", roleString, newUser.inviteCode);
