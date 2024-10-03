@@ -120,7 +120,7 @@ public class LoginPage implements Page {
     public void onPageOpen() {
         boolean isDatabaseEmpty = DatabaseHelper.isDatabaseEmpty(); //check to see if there are no users in the database
     	if(isDatabaseEmpty) {
-    		PageManager.switchToPage("accountsetup"); //if database is empty immediately redirect to the accountsetup page to set up admin
+    		PageManager.switchToPage("userpasssetup"); //if database is empty immediately redirect to the accountsetup page to set up admin
     	}
     }
 
