@@ -10,6 +10,7 @@ import cse360project.User;
 import cse360project.utils.ApplicationStateManager;
 import cse360project.utils.DatabaseHelper;
 import cse360project.utils.PageManager;
+import cse360project.utils.ValidationHelper;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -51,41 +52,42 @@ public class LoginPage implements Page {
         Button login = new Button("Login"); // the login button
         vbox.getChildren().add(login);
         login.setOnAction(e -> { // clicking the button
-        try { 
+			try { 
 				Timestamp today = Timestamp.valueOf(LocalDateTime.now()); //get todays date
-        		PreparedStatement ps = DatabaseHelper.prepareStatement("SELECT * FROM cse360users WHERE username=?"); //check if the user exist
+				PreparedStatement ps = DatabaseHelper.prepareStatement("SELECT * FROM cse360users WHERE username=?"); //check if the user exist
 				ps.setString(1, username.getText());
 				User user = DatabaseHelper.getOneUser(ps); // get the user, if they don't exist then sets to null
-	        	if (user != null) {
-	        		if (password.getText().equals(user.password)) { // make sure passwords are equal
-	        			if(user.OTP) {
-	        				if(today.before(user.OTP_expiration)) {
-	        					ApplicationStateManager.setLoggedInUser(user);
-	        		    		PageManager.switchToPage("userpasssetup");
-	        				}else {
-	        			        Alert emailAlert = new Alert(AlertType.ERROR, "Your One Time Password has expired", ButtonType.OK); 
-	        			        emailAlert.showAndWait(); // alert them if OTP is expired
-	        				}
-	        			}else {
-	        				ApplicationStateManager.setLoggedInUser(user);//log them in
-	        				username.clear();//clear username
-        					password.clear();// clear password
-        		    		PageManager.switchToPage("roleselection"); //switch to role selection page
-        			}
-	        		}else {
-	        			Alert emailAlert = new Alert(AlertType.ERROR, "Your Username and/or Password is invalid", ButtonType.OK);
-    			        emailAlert.showAndWait();//alert them their username and/or password is wrong
-	        		}
-	        	}
-	        	else {
-	        		Alert emailAlert = new Alert(AlertType.ERROR, "Your Username is invalid please set up an account", ButtonType.OK);
-			        emailAlert.showAndWait();
-	        	}
-        	} catch (SQLException e1) {
+				if (user != null && ValidationHelper.doPasswordsMatch(password.getText(), user.password)) { // the username exists and the password matches
+					if(user.OTP) { // the user is using a one time password
+						// make sure the OTP has not expired
+						if(today.before(user.OTP_expiration)) {
+							// log the user in and switch to the password reset page
+							ApplicationStateManager.setLoggedInUser(user);
+							PageManager.switchToPage("passwordreset");
+							// clear the username and password
+							username.clear();
+							password.clear();
+						} else {
+							// alert the user they need a new OTP
+							Alert emailAlert = new Alert(AlertType.ERROR, "Your One Time Password has expired. Please contact the admin to get a new one.", ButtonType.OK); 
+							emailAlert.showAndWait();
+						}
+					} else { // the user is not using an OTP and should proceed to role selection
+						ApplicationStateManager.setLoggedInUser(user);//log them in
+						username.clear();//clear username
+						password.clear();// clear password
+						PageManager.switchToPage("roleselection"); //switch to role selection page
+					}
+				} else { // the username was not found in the database OR the password was incorrect
+					Alert emailAlert = new Alert(AlertType.ERROR, "Invalid username and/or password", ButtonType.OK);
+					emailAlert.showAndWait();
+					// clear the password field only
+					password.clear();
+				}
+			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-        	
         });
         VBox vbox2 = new VBox(10);
 		
