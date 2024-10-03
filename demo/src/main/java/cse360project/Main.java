@@ -11,6 +11,7 @@ import cse360project.utils.PageManager;
 import cse360project.pages.UserPassSetupPage;
 import cse360project.pages.admin.AdminPage;
 import cse360project.pages.StudentPage;
+import cse360project.pages.AccountSetupScreen;
 import cse360project.pages.InstructorPage;
 
  
@@ -44,8 +45,7 @@ public class Main extends Application {
         PageManager.registerPage("instructor", new InstructorPage());
         PageManager.registerPage("student", new StudentPage());
         PageManager.registerPage("admin", new AdminPage());
-
-
+        PageManager.registerPage("accountsetup", new AccountSetupScreen());
 
         // switch to the login page on open
         PageManager.switchToPage("login");
