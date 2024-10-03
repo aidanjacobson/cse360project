@@ -61,7 +61,7 @@ public class LoginPage implements Page {
 	        			if(user.OTP) {
 	        				if(today.before(user.OTP_expiration)) {
 	        					ApplicationStateManager.setLoggedInUser(user);
-	        		    		PageManager.switchToPage("accountsetup");
+	        		    		PageManager.switchToPage("userpasssetup");
 	        				}else {
 	        			        Alert emailAlert = new Alert(AlertType.ERROR, "Your One Time Password has expired", ButtonType.OK);
 	        			        emailAlert.showAndWait();
@@ -74,6 +74,10 @@ public class LoginPage implements Page {
 	        			Alert emailAlert = new Alert(AlertType.ERROR, "Your Username and/or Password is invalid", ButtonType.OK);
     			        emailAlert.showAndWait();
 	        		}
+	        	}
+	        	else {
+	        		Alert emailAlert = new Alert(AlertType.ERROR, "Your Username is invalid please set up an account", ButtonType.OK);
+			        emailAlert.showAndWait();
 	        	}
         	} catch (SQLException e1) {
 				// TODO Auto-generated catch block
