@@ -1,7 +1,8 @@
-package cse360project;
+package test;
 
 import java.sql.SQLException;
 
+import cse360project.User;
 import cse360project.utils.DatabaseHelper;
 
 public class DBTest {
