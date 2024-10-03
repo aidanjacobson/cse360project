@@ -7,6 +7,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import cse360project.utils.ValidationHelper;
+
 
 public class AccountSetupScreen implements Page {
     StackPane root = new StackPane();
