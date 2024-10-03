@@ -7,6 +7,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import cse360project.User;
+import cse360project.utils.ApplicationStateManager;
+import cse360project.utils.DatabaseHelper;
+import cse360project.utils.PageManager;
 import cse360project.utils.ValidationHelper;
 
 
@@ -81,22 +85,64 @@ public class AccountSetupScreen implements Page {
                 return;
             }
             
+            // determine preferred name by validating the given name or setting it to null.
             String preferredName = preferredNameField.getText().trim();
             if (preferredName.isEmpty()) {
-                preferredName = firstName;
+                preferredName = null;
+            } else {
+                if (!ValidationHelper.isValidName(preferredName)) {
+                    errorMessage.setText("Invalid preferred name.");
+                    return;
+                }
             }
 
-            // Optionally, you can validate other fields like preferred name and middle name here
+            // validate the middle name
+            String middleName = middleNameField.getText().trim();
+            // if the middle name is not empty and not valid, error
+            // if it is empty, should be null
+            if (middleName.isEmpty()) {
+                middleName = null;
+            } else {
+                if (!ValidationHelper.isValidName(preferredName)) {
+                    errorMessage.setText("Invalid middle name.");
+                    return;
+                }
+            }
 
             // If all checks pass
             errorMessage.setText("Account setup successful!");
+
+            // update the user's info
+            User current = ApplicationStateManager.getLoggedInUser();
+            current.email =  email;
+            current.firstName = firstName;
+            current.middleName = middleName;
+            current.lastName = lastName;
+            current.preferredName = preferredName;
+            current.accountSetUp = true;
+
+            DatabaseHelper.updateUser(current);
+            PageManager.switchToPage("roleselection");
         });
 
         root.getChildren().add(vbox);
     }
 
     public void onPageOpen() {
-        System.out.println("You visited the account setup page");
+        // check assumptions
+        // assumption: user is logged in
+        // failure mode: log the user out
+        if (! ApplicationStateManager.isLoggedIn()) {
+            ApplicationStateManager.logout();
+            return;
+        }
+
+        // assumption: The account is not set up
+        // failure mode: redirect to role selection
+        if (ApplicationStateManager.getLoggedInUser().accountSetUp) {
+            PageManager.switchToPage("roleselection");
+            return;
+        }
     }
 
     public StackPane getRoot() {
