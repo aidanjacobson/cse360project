@@ -83,7 +83,7 @@ public class AccountSetupScreen implements Page {
             
             String preferredName = preferredNameField.getText().trim();
             if (preferredName.isEmpty()) {
-                preferredName = firstName + " " + lastName;
+                preferredName = firstName;
             }
 
             // Optionally, you can validate other fields like preferred name and middle name here
