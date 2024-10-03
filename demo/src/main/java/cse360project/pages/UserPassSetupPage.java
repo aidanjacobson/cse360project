@@ -192,6 +192,6 @@ public class UserPassSetupPage implements Page {
 
     @Override
     public void onPageOpen() {
-        // Actions to perform when the page is opened (if needed)
+        // Actions to perform when the page is opened (if needed )
     }
 }
