@@ -11,7 +11,7 @@ public class PasswordGenerator {
      * - 3 of the following: Uppercase, Lowercase, Numeric, Special
      * @return the generated password
      */
-    public static String generate() {
+    public static char[] generate() {
         final int length = 8;
         char characters[] = new char[length];
 
@@ -19,26 +19,23 @@ public class PasswordGenerator {
         characters[0] = generateLowercaseCharacter();
         characters[1] = generateUppercaseCharacter();
         characters[2] = generateNumericCharacter();
-        characters[3] = generateSpecialCharacter();
 
-        // generate the remaining characters, with upper/lower twice as likely to occur as numeric/special
-        for (int i = 4; i < length; i++) {
-            int choice = rand.nextInt(6);
-            if (choice >= 0 && choice < 2) {
+        // generate the remaining characters
+        for (int i = 3; i < length; i++) {
+            int choice = rand.nextInt(3);
+            if (choice == 0) {
                 characters[i] = generateLowercaseCharacter();
-            } else if (choice >= 2 && choice < 4) {
+            } else if (choice == 1) {
                 characters[i] = generateUppercaseCharacter();
-            } else if (choice == 4) {
+            } else if (choice == 2) {
                 characters[i] = generateNumericCharacter();
-            } else if (choice == 5) {
-                characters[i] = generateSpecialCharacter();
             }
         }
 
         // we have all the characters, but in a semi-predictable order. Shuffle them to make it completely random.
         shuffleCharArray(characters);
 
-        return String.valueOf(characters);
+        return characters;
     }
 
     /**

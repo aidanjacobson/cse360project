@@ -47,15 +47,15 @@ public class PasswordResetPage implements Page {
     }
 
     private void handlePasswordUpdate() {
-        String newPassword = newPasswordField.getText();
-        String confirmPassword = confirmPasswordField.getText();
+        char[] newPassword = newPasswordField.getText().toCharArray();
+        char[] confirmPassword = confirmPasswordField.getText().toCharArray();
 
         if (! ValidationHelper.doPasswordsMatch(newPassword, confirmPassword)) {
             showAlert("Password Mismatch", "Passwords do not match. Please try again.");
             return;
         }
 
-        if (! ValidationHelper.isValidPassword(newPassword.toCharArray())) {
+        if (! ValidationHelper.isValidPassword(newPassword)) {
             showAlert("Invalid Password", "Password must be at least 6 characters long and contain at least 3 of the following character types: uppercase, lowercase, numeric, special");
             return;
         }
@@ -73,7 +73,7 @@ public class PasswordResetPage implements Page {
         PageManager.switchToPage("login");
     }
 
-    private void updatePasswordInDatabase(String newPassword) {
+    private void updatePasswordInDatabase(char[] newPassword) {
         User current = ApplicationStateManager.getLoggedInUser();
         current.password = newPassword;
         DatabaseHelper.updateUser(current);
@@ -102,8 +102,7 @@ public class PasswordResetPage implements Page {
     @Override
     public void onPageOpen() {
         // Check assumptions
-        System.out.println("This is the Password Reset Page");
-     // Check if user is logged in
+        // Check if user is logged in
         if (!isUserLoggedIn()) {
             showAlert("Error", "You must be logged in to reset your password.");
             PageManager.switchToPage("login");

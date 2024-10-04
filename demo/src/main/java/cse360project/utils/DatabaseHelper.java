@@ -37,6 +37,7 @@ public class DatabaseHelper {
 		} catch (ClassNotFoundException e) {
 			System.err.println("JDBC Driver not found: " + e.getMessage());
 		} catch (SQLException e) {
+            e.printStackTrace();
             System.err.println("Could not connect to database");
         }
 	}
@@ -49,7 +50,7 @@ public class DatabaseHelper {
 		String userTable = "CREATE TABLE IF NOT EXISTS cse360users ("
 				+ "id INT AUTO_INCREMENT PRIMARY KEY, "
 				+ "username VARCHAR(255) UNIQUE, "
-				+ "password VARCHAR(255), "
+				+ "password BLOB, "
 				+ "email VARCHAR(255) UNIQUE, "
                 + "inviteCode VARCHAR(255), "
                 + "accountSetUp BOOLEAN, "
@@ -221,7 +222,14 @@ public class DatabaseHelper {
             String updateQuery = "UPDATE cse360users SET username=?, password=?, email=?, inviteCode=?, accountSetUp=?, OTP=?, OTP_expiration=?, firstName=?, middleName=?, lastName=?, preferredName=?, is_admin=?, is_instructor=?, is_student=? WHERE id=?";
             PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
             updateStatement.setString(1, user.username);
-            updateStatement.setString(2, user.password);
+            
+            // convert password char array to byte array for db storage
+            byte[] passwordBytes = new byte[user.password.length];
+            for (int i = 0; i < user.password.length; i++) {
+                passwordBytes[i] = (byte) user.password[i];
+            }
+            updateStatement.setBytes(2, passwordBytes);
+
             updateStatement.setString(3, user.email);
             updateStatement.setString(4, user.inviteCode);
             updateStatement.setBoolean(5, user.accountSetUp);
@@ -261,7 +269,14 @@ public class DatabaseHelper {
             String insertQuery = "INSERT INTO cse360users (username, password, email, inviteCode, accountSetUp, OTP, OTP_expiration, firstName, middleName, lastName, preferredName, is_admin, is_instructor, is_student) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement insertStatement = connection.prepareStatement(insertQuery, returnId);
             insertStatement.setString(1, user.username);
-            insertStatement.setString(2, user.password);
+
+            // convert password char array to byte array for db storage
+            byte[] passwordBytes = new byte[user.password.length];
+            for (int i = 0; i < user.password.length; i++) {
+                passwordBytes[i] = (byte) user.password[i];
+            }
+            insertStatement.setBytes(2, passwordBytes);
+
             insertStatement.setString(3, user.email);
             insertStatement.setString(4, user.inviteCode);
             insertStatement.setBoolean(5, user.accountSetUp);
@@ -315,6 +330,7 @@ public class DatabaseHelper {
       * @return true/false whether the delete succeeded
       */
     public static boolean deleteAllUsers() {
+        if (isDatabaseEmpty()) return true;
         String sql = "DELETE FROM cse360users";
         try {
             int rows = statement.executeUpdate(sql);

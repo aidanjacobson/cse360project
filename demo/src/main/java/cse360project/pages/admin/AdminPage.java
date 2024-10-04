@@ -258,6 +258,8 @@ public class AdminPage implements Page {
 
         // reset the user's password, set OTP status
         userToReset.password = User.getRandomOTP();
+        String newPass =  String.valueOf(userToReset.password);
+
         userToReset.OTP = true;
         userToReset.OTP_expiration = User.getNewOTPExpirationTimestamp();
 
@@ -265,7 +267,7 @@ public class AdminPage implements Page {
         DatabaseHelper.updateUser(userToReset);
         
         // draft and show email with OTP
-        String emailContents = String.format("From: passwords@cse360.com%nTo: %s%nSubject: Password Reset%nHi %s,%nYour temporary password is \"%s\".%nPlease log in and reset it within 30 days.", userToReset.email, userToReset.getPreferredName(), userToReset.password);
+        String emailContents = String.format("From: passwords@cse360.com%nTo: %s%nSubject: Password Reset%nHi %s,%nYour temporary password is \"%s\".%nPlease log in and reset it within 30 days.", userToReset.email, userToReset.getPreferredName(), newPass);
         Alert emailAlert = new Alert(AlertType.INFORMATION, emailContents, ButtonType.OK);
         emailAlert.showAndWait();
 

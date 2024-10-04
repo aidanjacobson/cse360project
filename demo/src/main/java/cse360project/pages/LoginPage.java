@@ -38,12 +38,10 @@ public class LoginPage implements Page {
         final TextField username = new TextField(); // the textbox which they will enter their username in
         username.setPromptText("Enter Username"); //prompt for username
         username.setMaxWidth(200); // dimensions of the box
-        username.getText(); //get password
         vbox.getChildren().add(username);
         final PasswordField password = new PasswordField(); // the textbox which they will enter their password in
         password.setPromptText("Enter Password"); //prompt for password
         password.setMaxWidth(200); // dimensions of the box
-        password.getText(); //get password
         vbox.getChildren().add(password);
         Button login = new Button("Login"); // the login button
         vbox.getChildren().add(login);
@@ -53,7 +51,7 @@ public class LoginPage implements Page {
 				PreparedStatement ps = DatabaseHelper.prepareStatement("SELECT * FROM cse360users WHERE username=?"); //check if the user exist
 				ps.setString(1, username.getText());
 				User user = DatabaseHelper.getOneUser(ps); // get the user, if they don't exist then sets to null
-				if (user != null && ValidationHelper.doPasswordsMatch(password.getText(), user.password)) { // the username exists and the password matches
+				if (user != null && ValidationHelper.doPasswordsMatch(password.getText().toCharArray(), user.password)) { // the username exists and the password matches
 					if(user.OTP) { // the user is using a one time password
 						// make sure the OTP has not expired
 						if(today.before(user.OTP_expiration)) {
@@ -98,7 +96,8 @@ public class LoginPage implements Page {
         join.setOnAction(e -> {
             try { 
 				PreparedStatement ps2 = DatabaseHelper.prepareStatement("SELECT * FROM cse360users WHERE inviteCode=?"); //check if the invite code exist
-				ps2.setString(1, invite_code.getText());
+				String inviteCode = invite_code.getText();
+				ps2.setString(1, inviteCode);
 				User user2 = DatabaseHelper.getOneUser(ps2); // get the user, if they don't exist then sets to null
 				if (user2 != null) {
 					ApplicationStateManager.setLoggedInUser(user2); //log the user in
