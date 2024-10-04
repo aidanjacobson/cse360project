@@ -3,7 +3,6 @@ package cse360project.pages;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import cse360project.User;
@@ -18,11 +17,10 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 public class LoginPage implements Page {
     BorderPane root = new BorderPane();
@@ -39,7 +37,7 @@ public class LoginPage implements Page {
         username.setMaxWidth(200); // dimensions of the box
         username.getText(); //get password
         vbox.getChildren().add(username);
-        final TextField password = new TextField(); // the textbox which they will enter their password in
+        final PasswordField password = new PasswordField(); // the textbox which they will enter their password in
         password.setPromptText("Enter Password"); //prompt for password
         password.setMaxWidth(200); // dimensions of the box
         password.getText(); //get password
