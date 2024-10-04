@@ -121,6 +121,13 @@ public class AccountSetupScreen implements Page {
             current.preferredName = preferredName;
             current.accountSetUp = true;
 
+            // clear fields
+            firstNameField.clear();
+            middleNameField.clear();
+            lastNameField.clear();
+            preferredNameField.clear();
+            emailField.clear();
+
             DatabaseHelper.updateUser(current);
             PageManager.switchToPage("roleselection");
         });
