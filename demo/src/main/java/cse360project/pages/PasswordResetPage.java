@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class PasswordResetPage implements Page {
@@ -20,7 +21,11 @@ public class PasswordResetPage implements Page {
 
     public PasswordResetPage() {
         VBox vbox = new VBox(10); // Vertical layout with spacing
+        vbox.setMaxWidth(200);
+
         Text titleText = new Text("Reset Password");
+        titleText.setFont(Font.font(25));
+
         vbox.getChildren().add(titleText);
         vbox.setAlignment(Pos.CENTER);
 
