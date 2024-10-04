@@ -46,7 +46,7 @@ public class AccountSetupScreen implements Page {
         vbox.getChildren().addAll(lastNameLabel, lastNameField);
 
         // Preferred name field
-        Label preferredNameLabel = new Label("Preferred Name:");
+        Label preferredNameLabel = new Label("Preferred Name (Optional):");
         TextField preferredNameField = new TextField();
         preferredNameField.setPromptText("Enter Preferred Name");
         preferredNameField.setMaxWidth(200);
