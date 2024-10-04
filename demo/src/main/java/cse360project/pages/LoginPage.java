@@ -21,6 +21,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 public class LoginPage implements Page {
     BorderPane root = new BorderPane();
@@ -29,7 +30,9 @@ public class LoginPage implements Page {
  
         VBox vbox = new VBox(10);
 		
-        Label label = new Label("Login here"); // indicate where to login
+        Label label = new Label("Login"); // indicate where to login
+		label.setFont(Font.font(25));
+
         vbox.getChildren().add(label);
         vbox.setAlignment(Pos.CENTER);
         final TextField username = new TextField(); // the textbox which they will enter their username in
