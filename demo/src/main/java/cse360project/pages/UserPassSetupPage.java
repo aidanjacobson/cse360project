@@ -152,6 +152,11 @@ public class UserPassSetupPage implements Page {
             Alert setupDoneAlert = new Alert(AlertType.CONFIRMATION, "User saved successfully", ButtonType.OK);
 	        setupDoneAlert.show();
 
+            // Clear the fields
+            usernameField.clear();
+            passwordField.clear();
+            confirmPasswordField.clear();
+
             // Clear the char[] for security reasons
             java.util.Arrays.fill(password, '\0');
             java.util.Arrays.fill(confirmPassword, '\0');
