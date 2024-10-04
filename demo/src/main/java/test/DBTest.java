@@ -31,7 +31,7 @@ public class DBTest {
             System.out.printf("Database empty: %s%n", empty ? "true" : "false");
 
             if (empty) {
-                User newUser = new User(-1, "admin", "password", "a@a.a", null, true, false, null, "a", "b", "c", "a", true, false, false);
+                User newUser = new User(-1, "admin", "password".toCharArray(), "a@a.a", null, true, false, null, "a", "b", "c", "a", true, false, false);
                 DatabaseHelper.addUser(newUser);
 
                 System.out.printf("New User ID: %d%n", newUser.id);

@@ -125,7 +125,7 @@ public class UserPassSetupPage implements Page {
 
             if (isDatabaseEmpty) {
                 // First user, automatically set as admin
-                newUser = new User(-1, usernameField.getText(), new String(password), null, null, false, false, null, "", "", "", "", true, false, false);
+                newUser = new User(-1, usernameField.getText(), password, null, null, false, false, null, "", "", "", "", true, false, false);
             } else {
                 // Get the logged-in user (assumed to be an invited user)
                 newUser = ApplicationStateManager.getLoggedInUser();
@@ -141,7 +141,7 @@ public class UserPassSetupPage implements Page {
 
                 // Update the invited user's details with the username and password they entered
                 newUser.username = usernameField.getText();
-                newUser.password = new String(password); // Convert char[] to String for the User object
+                newUser.password = password;
                 newUser.inviteCode = null; // Invalidate the invite code after it's used
                 
             }
