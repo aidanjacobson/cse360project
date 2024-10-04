@@ -69,7 +69,7 @@ public class UserPassSetupPage implements Page {
 
             // Validate passwords match using ValidationHelper
             if (!ValidationHelper.doPasswordsMatch(password, confirmPassword)) {
-                System.err.println("Passwords do not match");
+                
                 Alert passwordAlert = new Alert(AlertType.ERROR, "Passwords do not match", ButtonType.OK);
 		        passwordAlert.showAndWait();
                 java.util.Arrays.fill(password, '\0'); // Clear immediately if validation fails
@@ -79,7 +79,7 @@ public class UserPassSetupPage implements Page {
 
             // Validate password strength using ValidationHelper
             if (!ValidationHelper.isValidPassword(password)) {
-                System.err.println("Password must be at least 6 characters and include at least 3 of the following: uppercase, lowercase, number, special character.");
+                
                 Alert passwordAlert = new Alert(AlertType.ERROR, "Password must be at least 6 characters and include at least 3 of the following: uppercase, lowercase, number, special character.", ButtonType.OK);
 		        passwordAlert.showAndWait();
                 java.util.Arrays.fill(password, '\0'); // Clear immediately if validation fails
@@ -89,7 +89,7 @@ public class UserPassSetupPage implements Page {
 
             // Validate that the username meets the constraints using ValidationHelper
             if (!ValidationHelper.isValidUsername(usernameField.getText())) {
-                System.err.println("Invalid username. Must be at least 3 characters and contain only alphanumeric characters, underscores, or periods.");
+                
                 Alert usernameAlert = new Alert(AlertType.ERROR, "Invalid username. Must be at least 3 characters and contain only alphanumeric characters, underscores, or periods.", ButtonType.OK);
 		        usernameAlert.showAndWait();
                 java.util.Arrays.fill(password, '\0'); // Clear immediately if validation fails
@@ -103,7 +103,7 @@ public class UserPassSetupPage implements Page {
                 ps.setString(1, usernameField.getText());
                 User existingUser = DatabaseHelper.getOneUser(ps);
                 if (existingUser != null) {
-                    System.err.println("Username is already taken");
+                    
                     Alert usernameAlert = new Alert(AlertType.ERROR, "Username is already taken", ButtonType.OK);
     		        usernameAlert.showAndWait();
                     java.util.Arrays.fill(password, '\0'); // Clear immediately if validation fails
@@ -111,8 +111,8 @@ public class UserPassSetupPage implements Page {
                     return;
                 }
             } catch (SQLException ex) {
-                System.err.println("Error checking for existing username: " + ex.getMessage());
-                Alert usernameAlert = new Alert(AlertType.ERROR, "Error checking for existing username: ", ButtonType.OK);
+                
+                Alert usernameAlert = new Alert(AlertType.ERROR, "Error checking for existing username: "+ ex.getMessage(), ButtonType.OK);
 		        usernameAlert.showAndWait();
                 java.util.Arrays.fill(password, '\0'); // Clear immediately if an error occurs
                 java.util.Arrays.fill(confirmPassword, '\0'); 
@@ -126,15 +126,12 @@ public class UserPassSetupPage implements Page {
             if (isDatabaseEmpty) {
                 // First user, automatically set as admin
                 newUser = new User(-1, usernameField.getText(), new String(password), null, null, false, false, null, "", "", "", "", true, false, false);
-                System.out.println("Setting up the first user as admin");
-                Alert adminAlert = new Alert(AlertType.CONFIRMATION, "Setting up the first user as admin", ButtonType.OK);
-		        adminAlert.show();
             } else {
                 // Get the logged-in user (assumed to be an invited user)
                 newUser = ApplicationStateManager.getLoggedInUser();
 
                 if (newUser == null || newUser.inviteCode == null || newUser.inviteCode.isEmpty()) {
-                    System.err.println("Invite code is required for new user setup");
+                    
                     Alert inviteCodeAlert = new Alert(AlertType.ERROR, "Invite code is required for new user setup", ButtonType.OK);
     		        inviteCodeAlert.showAndWait();
                     java.util.Arrays.fill(password, '\0'); // Clear immediately if validation fails
@@ -151,7 +148,7 @@ public class UserPassSetupPage implements Page {
             
             // Save the user details using the DatabaseHelper
             DatabaseHelper.addOrUpdateUser(newUser);
-            System.out.println("User saved successfully");
+            
             Alert setupDoneAlert = new Alert(AlertType.CONFIRMATION, "User saved successfully", ButtonType.OK);
 	        setupDoneAlert.show();
 
@@ -193,5 +190,9 @@ public class UserPassSetupPage implements Page {
     @Override
     public void onPageOpen() {
         // Actions to perform when the page is opened (if needed )
+    	if (DatabaseHelper.isDatabaseEmpty()) {            
+            Alert adminAlert = new Alert(AlertType.CONFIRMATION, "Setting up the first user as admin", ButtonType.OK);
+	        adminAlert.show();
+        }
     }
 }
