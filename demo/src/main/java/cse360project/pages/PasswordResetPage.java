@@ -1,6 +1,10 @@
 package cse360project.pages;
 
+import cse360project.User;
+import cse360project.utils.ApplicationStateManager;
+import cse360project.utils.DatabaseHelper;
 import cse360project.utils.PageManager;
+import cse360project.utils.ValidationHelper;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -41,12 +45,12 @@ public class PasswordResetPage implements Page {
         String newPassword = newPasswordField.getText();
         String confirmPassword = confirmPasswordField.getText();
 
-        if (!newPassword.equals(confirmPassword)) {
+        if (! ValidationHelper.doPasswordsMatch(newPassword, confirmPassword)) {
             showAlert("Password Mismatch", "Passwords do not match. Please try again.");
             return;
         }
 
-        if (!isValidPassword(newPassword)) {
+        if (! ValidationHelper.isValidPassword(newPassword.toCharArray())) {
             showAlert("Invalid Password", "Password must be at least 8 characters long and contain a mix of letters and numbers.");
             return;
         }
@@ -61,19 +65,17 @@ public class PasswordResetPage implements Page {
         PageManager.switchToPage("login");
     }
 
-    private boolean isValidPassword(String password) {
-        // Simple validation: at least 8 characters, and must contain letters and digits
-        return password.length() >= 8 && password.matches(".*[A-Za-z].*") && password.matches(".*[0-9].*");
-    }
-
     private void updatePasswordInDatabase(String newPassword) {
-        // Placeholder for actual password update logic
-        System.out.println("Password updated to: " + newPassword); // For demonstration
+        User current = ApplicationStateManager.getLoggedInUser();
+        current.password = newPassword;
+        DatabaseHelper.updateUser(current);
     }
 
     private void setOtpFlagToFalse() {
         // Logic to set the OTP flag to false in the user's record
-        System.out.println("OTP flag set to false.");
+        User current = ApplicationStateManager.getLoggedInUser();
+        current.OTP = false;
+        DatabaseHelper.updateUser(current);
     }
 
     private void showAlert(String title, String message) {
