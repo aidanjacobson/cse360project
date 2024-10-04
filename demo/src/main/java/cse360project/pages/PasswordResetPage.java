@@ -51,7 +51,7 @@ public class PasswordResetPage implements Page {
         }
 
         if (! ValidationHelper.isValidPassword(newPassword.toCharArray())) {
-            showAlert("Invalid Password", "Password must be at least 8 characters long and contain a mix of letters and numbers.");
+            showAlert("Invalid Password", "Password must be at least 6 characters long and contain at least 3 of the following character types: uppercase, lowercase, numeric, special");
             return;
         }
 
@@ -60,6 +60,9 @@ public class PasswordResetPage implements Page {
         
         // Set the OTP flag to false
         setOtpFlagToFalse();
+
+        // clear the fields
+        clearFields();
 
         // Logout the user and redirect to login
         PageManager.switchToPage("login");
@@ -84,6 +87,11 @@ public class PasswordResetPage implements Page {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void clearFields() {
+        newPasswordField.clear();
+        confirmPasswordField.clear();
     }
 
     @Override
