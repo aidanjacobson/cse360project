@@ -149,7 +149,7 @@ public class AdminPage implements Page {
      */
     void updateUserList() {
         // get all the users in the database
-        ArrayList<User> allUsers = DatabaseHelper.getAllUsers();
+        ArrayList<User> allUsers = DatabaseHelper.getAllUsers("SELECT * FROM cse360users WHERE username IS NOT NULL");
 
         // add each user to the table
         for (int i = 0; i < allUsers.size(); i++) {
