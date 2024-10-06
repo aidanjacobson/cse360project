@@ -13,6 +13,9 @@ import javafx.scene.text.Text;
 public class InstructorPage implements Page {
     StackPane root = new StackPane();
 
+    /**
+     * Constructor for Instructor Page
+     */
     public InstructorPage() {
         VBox mainLayout = new VBox(10);
         mainLayout.setAlignment(Pos.CENTER);
@@ -33,11 +36,18 @@ public class InstructorPage implements Page {
         root.getChildren().add(mainLayout);
     }
 
+    /**
+     * Getter for the root element of the page
+     * @return the root element of the page
+     */
     @Override
     public StackPane getRoot() {
         return root;
     }
 
+    /**
+     * Method to run when the page is opened
+     */
     @Override
     public void onPageOpen() {
         if (!ApplicationStateManager.isLoggedIn() || !ApplicationStateManager.getRole().equals(Role.INSTRUCTOR)) {

@@ -25,6 +25,10 @@ import javafx.scene.text.Font;
 
 public class LoginPage implements Page {
     BorderPane root = new BorderPane();
+
+	/**
+	 * Constructor for the LoginPage class
+	 */
     public LoginPage() {
 		root.setPadding(new Insets(100, 100, 100, 100)); // padding to distance the vboxes
  
@@ -117,6 +121,9 @@ public class LoginPage implements Page {
 		root.setBottom(vbox2); //position vbox2 on screen
 	}
 
+	/**
+	 * Method to run when the page is opened
+	 */
     public void onPageOpen() {
         boolean isDatabaseEmpty = DatabaseHelper.isDatabaseEmpty(); //check to see if there are no users in the database
     	if(isDatabaseEmpty) {
@@ -124,6 +131,10 @@ public class LoginPage implements Page {
     	}
     }
 
+	/**
+	 * Method to get the root of the page
+	 * @return the root of the page
+	 */
     public BorderPane getRoot() {
         return root;
     }

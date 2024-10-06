@@ -17,6 +17,9 @@ import cse360project.utils.ValidationHelper;
 public class AccountSetupScreen implements Page {
     StackPane root = new StackPane();
 
+    /**
+     * Constructor for Account Setup Screen
+     */
     public AccountSetupScreen() {
         VBox vbox = new VBox(10);
         vbox.setAlignment(Pos.CENTER);
@@ -135,6 +138,9 @@ public class AccountSetupScreen implements Page {
         root.getChildren().add(vbox);
     }
 
+    /**
+     * Method to run when the page is opened
+     */
     public void onPageOpen() {
         // check assumptions
         // assumption: user is logged in
@@ -152,6 +158,10 @@ public class AccountSetupScreen implements Page {
         }
     }
 
+    /**
+     * get the root stackpane, for use in PageManager class
+     * @return the root stackpane
+     */
     public StackPane getRoot() {
         return root;
     }

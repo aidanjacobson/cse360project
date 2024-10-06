@@ -23,6 +23,9 @@ public class UserInviteWindow {
     static Button inviteButton;
     static Stage inviteStage;
 
+    /**
+     * Open the invite user dialog
+     */
     public static void openInviteUserDialog() {
         // prepare to create a new window for inviting the user
         inviteStage = new Stage();
@@ -97,6 +100,10 @@ public class UserInviteWindow {
         pageContent.getChildren().add(inviteButton);
     }
 
+
+    /**
+     * Update the invite button based on the checkboxes
+     */
     static void checkboxWasClicked() {
         // count how many roles are selected
         int selectedCount = 0;
@@ -112,6 +119,9 @@ public class UserInviteWindow {
         }
     }
 
+    /**
+     * Submit the invite and create the user
+     */
     static void submitInvite() {
         // determine new roles
         boolean is_admin = adminCB.isSelected();
@@ -132,6 +142,13 @@ public class UserInviteWindow {
         inviteStage.hide();
     }
 
+    /**
+     * Get a string of the roles selected
+     * @param is_admin
+     * @param is_student
+     * @param is_instructor
+     * @return a string of the roles selected
+     */
     static String getRoleListString(boolean is_admin, boolean is_student, boolean is_instructor) {
         String out = "";
         if (is_admin) {
