@@ -27,7 +27,9 @@ public class UserPassSetupPage implements Page {
     // Root element for this page
     StackPane root = new StackPane();
 
-    // Constructor for the UserPassSetupPage
+    /**
+     * Constructor for the UserPassSetupPage class
+     */
     public UserPassSetupPage() {
         // VBox for the main layout, holding all the elements vertically
         VBox mainLayout = new VBox(10);
@@ -186,15 +188,22 @@ public class UserPassSetupPage implements Page {
         root.getChildren().add(mainLayout); // Add the main layout to the root StackPane
     }
 
+    /**
+     * Method to return the root StackPane
+     * @return root StackPane
+     */
     @Override
     public StackPane getRoot() {
         // Return the root StackPane when needed
         return root;
     }
 
+    /**
+     * Method to perform actions when the page is opened
+     */
     @Override
     public void onPageOpen() {
-        // Actions to perform when the page is opened (if needed )
+        // If the database is empty, inform the user they will be setting up admin
     	if (DatabaseHelper.isDatabaseEmpty()) {            
             Alert adminAlert = new Alert(AlertType.CONFIRMATION, "Setting up the first user as admin", ButtonType.OK);
 	        adminAlert.show();
