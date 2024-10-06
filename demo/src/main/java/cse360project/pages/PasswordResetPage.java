@@ -19,10 +19,14 @@ public class PasswordResetPage implements Page {
     private PasswordField newPasswordField;
     private PasswordField confirmPasswordField;
 
+    /**
+     * Constructor for the PasswordResetPage class
+     */
     public PasswordResetPage() {
         VBox vbox = new VBox(10); // Vertical layout with spacing
         vbox.setMaxWidth(200);
 
+        // Title for the page
         Text titleText = new Text("Reset Password");
         titleText.setFont(Font.font(25));
 
@@ -46,15 +50,20 @@ public class PasswordResetPage implements Page {
         root.getChildren().add(vbox);
     }
 
+    /**
+     * Method to handle the password update, when reset button is clicked
+     */
     private void handlePasswordUpdate() {
         char[] newPassword = newPasswordField.getText().toCharArray();
         char[] confirmPassword = confirmPasswordField.getText().toCharArray();
 
+        // make sure the passwords match
         if (! ValidationHelper.doPasswordsMatch(newPassword, confirmPassword)) {
             showAlert("Password Mismatch", "Passwords do not match. Please try again.");
             return;
         }
 
+        // Validate the new password
         if (! ValidationHelper.isValidPassword(newPassword)) {
             showAlert("Invalid Password", "Password must be at least 6 characters long and contain at least 3 of the following character types: uppercase, lowercase, numeric, special");
             return;
@@ -73,12 +82,19 @@ public class PasswordResetPage implements Page {
         PageManager.switchToPage("login");
     }
 
+    /**
+     * Method to update the password in the database
+     * @param newPassword the new password to be updated
+     */
     private void updatePasswordInDatabase(char[] newPassword) {
         User current = ApplicationStateManager.getLoggedInUser();
         current.password = newPassword;
         DatabaseHelper.updateUser(current);
     }
 
+    /**
+     * Method to set the OTP flag to false in the user's record
+     */
     private void setOtpFlagToFalse() {
         // Logic to set the OTP flag to false in the user's record
         User current = ApplicationStateManager.getLoggedInUser();
@@ -86,6 +102,11 @@ public class PasswordResetPage implements Page {
         DatabaseHelper.updateUser(current);
     }
 
+    /**
+     * Method to show an alert dialog
+     * @param title the title of the alert
+     * @param message the message to be displayed
+     */
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -94,11 +115,17 @@ public class PasswordResetPage implements Page {
         alert.showAndWait();
     }
 
+    /**
+     * Method to clear the input fields
+     */
     private void clearFields() {
         newPasswordField.clear();
         confirmPasswordField.clear();
     }
 
+    /**
+     * Method to check assumptions when the page is opened
+     */
     @Override
     public void onPageOpen() {
         // Check assumptions
@@ -115,28 +142,25 @@ public class PasswordResetPage implements Page {
             PageManager.switchToPage("login");
             return;
         }
-
-        // Check if OTP expiration is valid
-        if (!isOtpValid()) {
-            showAlert("Error", "Your OTP has expired. Please request a new OTP.");
-            PageManager.switchToPage("login");
-            return;
-        }
     }
+
+    /**
+     * Method to check if the user is logged in
+     * @return true if the user is logged in, false otherwise
+     */
     private boolean isUserLoggedIn() {
-        // Implement actual check logic here
-        return true;
+        return ApplicationStateManager.isLoggedIn();
     }
 
+    /**
+     * Method to check if the OTP flag is true
+     * @return true if the OTP flag is true, false otherwise
+     */
     private boolean isOtpFlagTrue() {
         // Implement actual check logic here
-        return true;
+        return ApplicationStateManager.getLoggedInUser().OTP;
     }
 
-    private boolean isOtpValid() {
-        // Implement actual check logic here
-        return true;
-    }
     @Override
     public StackPane getRoot() {
         return root;
