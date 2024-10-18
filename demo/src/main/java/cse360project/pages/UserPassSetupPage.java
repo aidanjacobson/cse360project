@@ -3,7 +3,6 @@ package cse360project.pages;
 import cse360project.utils.ApplicationStateManager;
 import cse360project.User;
 import cse360project.utils.DatabaseHelper;
-import cse360project.utils.PageManager;
 import cse360project.utils.ValidationHelper;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
