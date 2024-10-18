@@ -333,7 +333,7 @@ public class DatabaseHelper {
         if (isDatabaseEmpty()) return true;
         String sql = "DELETE FROM cse360users";
         try {
-            int rows = statement.executeUpdate(sql);
+            statement.executeUpdate(sql);
             return true;
         } catch(SQLException e) {
             e.printStackTrace();
