@@ -57,4 +57,21 @@ public class ApplicationStateManager {
     public static void setRole(Role newRole) {
         loggedInRole = newRole;
     }
+
+    public static void switchToRolePage() {
+        switch (loggedInRole) {
+            case ADMIN:
+                PageManager.switchToPage("admin");
+                break;
+            case STUDENT:
+                PageManager.switchToPage("student");
+                break;
+            case INSTRUCTOR:
+                PageManager.switchToPage("instructor");
+                break;
+            default:
+                PageManager.switchToPage("login");
+                break;
+        }
+    }
 }
