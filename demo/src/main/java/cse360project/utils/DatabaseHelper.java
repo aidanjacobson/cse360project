@@ -423,7 +423,7 @@ public class DatabaseHelper {
         }
     }
     
-  public boolean articleWithIdExists(long id) {
+  public static boolean articleWithIdExists(long id) {
       String existingUserQuery = "SELECT * FROM cse360articles WHERE article_id=?";
       try {
       PreparedStatement pstmt = connection.prepareStatement(existingUserQuery);
