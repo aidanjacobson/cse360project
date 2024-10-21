@@ -79,53 +79,23 @@ public class Article implements Serializable{
 		return false;
 	}
 	
-	public static String levelToString(Level level) {
-		if (level == Level.BEGINNER) {
-			return "BEGINNER";
-		}
-		if (level == level.INTERMEDIATE) {
-			return "INTERMEDIATE";
-		}
-		if (level == level.ADVANCED) {
-			return "ADVANCED";
-		}
-		if (level == level.EXPERT) {
-			return "EXPERT";
-		}
-		return "level unclear";
-		
-	}
-	
-	public static Level stringToLevel(String level) {
-		if (level.toUpperCase() == "BEGINNER") {
-			return Level.BEGINNER;
-		}
-		if (level.toUpperCase() == "INTERMEDIATE") {
-			return Level.INTERMEDIATE;
-		}
-		if (level.toUpperCase() == "ADVANCED") {
-			return Level.ADVANCED;
-		}
-		return Level.EXPERT;
-	}
-	
 	public static Article fromResultSet(ResultSet rs) throws SQLException {
-		String g = rs.getString("groups");
+		String allGroups = rs.getString("groups");
 		ArrayList<String> group = new ArrayList<>();
-		String gr[];
-		gr = (g.split("\n"));
-		for (int i = 0; i < gr.length; i++) {
-			group.add(gr[i]);
+		String groupArray[];
+		groupArray = (allGroups.split("\n"));
+		for (int i = 0; i < groupArray.length; i++) {
+			group.add(groupArray[i]);
 		}
-		String l = rs.getString("links");
+		String allLinks = rs.getString("links");
 		ArrayList<String> link = new ArrayList<>();
-		String li[];
-		li = (l.split("\n"));
-		for (int j = 0; j < li.length; j++) {
-			link.add(li[j]);
+		String linkArray[];
+		linkArray = (allLinks.split("\n"));
+		for (int j = 0; j < linkArray.length; j++) {
+			link.add(linkArray[j]);
 		}
-		Level level = stringToLevel(rs.getString("level"));
-	        return new Article(rs.getLong("article_id"), level, group, rs.getString("title"), rs.getString("description"), rs.getString("keywords"), rs.getString("body"), link);
+		Level level = Level.stringToLevel(rs.getString("level"));
+	    return new Article(rs.getLong("article_id"), level, group, rs.getString("title"), rs.getString("description"), rs.getString("keywords"), rs.getString("body"), link);
 	    }
 	
 	public boolean isLevel(Level level) {
@@ -138,43 +108,44 @@ public class Article implements Serializable{
 	public void addGroup(String group) {
 		group.stripLeading();
 		group.stripTrailing();
-		String gr[] = group.split(" ");
+		String groupArray[] = group.split(" ");
 		String newGroup = "";
 		int index[] = new int[10];
 		int indexc = 0;
-		for (int i = 0; i < gr.length; i++) {
-			if(!gr[i].contains(" ")) {
-				gr[i] = gr[i].toLowerCase();
-				gr[i] = gr[i].substring(0, 1).toUpperCase() + gr[i].substring(1);
+		for (int i = 0; i < groupArray.length; i++) {
+			if(!groupArray[i].contains(" ")) {
+				groupArray[i] = groupArray[i].toLowerCase();
+				groupArray[i] = groupArray[i].substring(0, 1).toUpperCase() + groupArray[i].substring(1);
 				index[indexc] = i;
 				indexc++;
 			}
 		}
 		for (int j = 0; j < index.length; j++) {
-			newGroup += gr[j];
+			newGroup += groupArray[j];
 		}
 		newGroup.stripTrailing();
 		if(!this.groups.contains(newGroup)) {
 			this.groups.add(newGroup);
 		}
 	}
+	
 	public void removeGroup(String group) {
 		group.stripLeading();
 		group.stripTrailing();
-		String gr[] = group.split(" ");
+		String groupArray[] = group.split(" ");
 		String newGroup = "";
 		int index[] = new int[10];
 		int indexc = 0;
-		for (int i = 0; i < gr.length; i++) {
-			if(!gr[i].contains(" ")) {
-				gr[i] = gr[i].toLowerCase();
-				gr[i] = gr[i].substring(0, 1).toUpperCase() + gr[i].substring(1);
+		for (int i = 0; i < groupArray.length; i++) {
+			if(!groupArray[i].contains(" ")) {
+				groupArray[i] = groupArray[i].toLowerCase();
+				groupArray[i] = groupArray[i].substring(0, 1).toUpperCase() + groupArray[i].substring(1);
 				index[indexc] = i;
 				indexc++;
 			}
 		}
 		for (int j = 0; j < index.length; j++) {
-			newGroup += gr[j];
+			newGroup += groupArray[j];
 		}
 		newGroup.stripTrailing();
 		if(this.groups.contains(newGroup)) {
