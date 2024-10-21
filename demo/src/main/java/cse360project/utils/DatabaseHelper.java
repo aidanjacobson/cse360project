@@ -34,6 +34,7 @@ public class DatabaseHelper {
 			connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
 			statement = connection.createStatement(); 
 			createTables();  // Create the necessary tables if they don't exist
+            createArticleTables();
             System.out.println("Connection successful");
 		} catch (ClassNotFoundException e) {
 			System.err.println("JDBC Driver not found: " + e.getMessage());
@@ -66,6 +67,20 @@ public class DatabaseHelper {
                 + "is_instructor BOOLEAN"
                 +")";
 		statement.execute(userTable);
+	}
+
+    public static void createArticleTables() throws SQLException {
+		String ArticleTable = "CREATE TABLE IF NOT EXISTS cse360articles ("
+				+ "article_id BIGINT AUTO_INCREMENT PRIMARY KEY, "
+				+ "level VARCHAR(15) NOT NULL, "
+				+ "groups VARCHAR(500), "
+				+ "title VARCHAR(20) NOT NULL, "
+				+ "description VARCHAR(500) NOT NULL, "
+                + "keywords VARCHAR(300) NOT NULL, "
+                + "body VARCHAR(10000) NOT NULL, "
+                + "links VARCHAR(1000) NOT NULL"
+                +")";
+		statement.execute(ArticleTable);
 	}
     
     /**
@@ -341,20 +356,6 @@ public class DatabaseHelper {
             return false;
         }
     }
-    
-    public static void createArticleTables() throws SQLException {
-		String ArticleTable = "CREATE TABLE IF NOT EXISTS cse360articles ("
-				+ "article_id BIGINT AUTO_INCREMENT PRIMARY KEY, "
-				+ "level VARCHAR(15) NOT NULL, "
-				+ "groups VARCHAR(500), "
-				+ "title VARCHAR(20) NOT NULL, "
-				+ "description VARCHAR(500) NOT NULL, "
-                + "keywords VARCHAR(300) NOT NULL, "
-                + "body VARCHAR(10000) NOT NULL, "
-                + "links VARCHAR(1000) NOT NULL"
-                +")";
-		statement.execute(ArticleTable);
-	}
     
     public static void addArticle(Article article) {
         // if the user id is not -1, we should not add to database
