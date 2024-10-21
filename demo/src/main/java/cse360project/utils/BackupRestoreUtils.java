@@ -1,7 +1,6 @@
 package cse360project.utils;
 
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Array;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -9,7 +8,6 @@ import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import cse360project.Article;
 
@@ -61,18 +59,15 @@ public class BackupRestoreUtils {
             FileInputStream fin = new FileInputStream(path);
             ObjectInputStream ois = new ObjectInputStream(fin);
             ArrayList<Article> articles = (ArrayList<Article>) ois.readObject();
+            
+            // delete all articles in the database, then add the new articles
+            DatabaseHelper.deleteAllArticles();
+            System.out.println("Deleted all articles");
             for (Article article : articles) {
-                // print out the articles to show that they were restored
-                System.out.println("Restored article:");
-                System.out.println("ID: " + article.ID);
-                System.out.println("Level: " + article.level);
-                System.out.println("Groups: " + article.groups);
-                System.out.println("Title: " + article.title);
-                System.out.println("Description: " + article.description);
-                System.out.println("Keywords: " + article.keywords);
-                System.out.println("Body: " + article.body);
-                System.out.println("Links: " + article.links);
+                DatabaseHelper.addArticle(article);
+                System.out.println("Added article: " + article.title);
             }
+            ois.close();
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -84,8 +79,34 @@ public class BackupRestoreUtils {
     }
 
     public static boolean softRestoreDatabase(String path, boolean mergeOverwrite) {
-        // TODO: implement this method
-        return hardRestoreDatabase(path);
+        try {
+            FileInputStream fin = new FileInputStream(path);
+            ObjectInputStream ois = new ObjectInputStream(fin);
+            ArrayList<Article> articlesToMerge = (ArrayList<Article>) ois.readObject();
+            
+            for (Article article : articlesToMerge) {
+                if (DatabaseHelper.articleWithIdExists(article.ID)) {
+                    if (mergeOverwrite) {
+                        DatabaseHelper.updateArticle(article);
+                        System.out.println("Updated article: " + article.title);
+                    } else {
+                        System.out.println("Skipped article: " + article.title);
+                        continue;
+                    }
+                } else {
+                    System.out.println("Added article: " + article.title);
+                    DatabaseHelper.addArticle(article);
+                }
+            }
+            ois.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static boolean softRestoreDatabase(String path) {
@@ -96,6 +117,7 @@ public class BackupRestoreUtils {
     // TODO: delete this method when the actual method is implemented
     static ArrayList<Article> getArticlesByGroups(ArrayList<String> groups) {
         ArrayList<Article> articles = new ArrayList<>();
+        ArrayList<Article> testArticles = DatabaseHelper.getAllArticles();
         for (Article article : testArticles) {
             for (String group : groups) {
                 if (article.groups.contains(group) && !articles.contains(article)) {
@@ -111,6 +133,7 @@ public class BackupRestoreUtils {
     // TODO: delete this method when the actual method is implemented
     public static ArrayList<String> getAllArticleGroups() {
         ArrayList<String> groups = new ArrayList<String>();
+        ArrayList<Article> testArticles = DatabaseHelper.getAllArticles();
         for (Article article : testArticles) {
             for (String group : article.groups) {
                 if (!groups.contains(group)) {
@@ -119,16 +142,5 @@ public class BackupRestoreUtils {
             }
         }
         return groups;
-    }
-
-    static ArrayList<Article> testArticles = new ArrayList<Article>();
-    public static void initializeTestArticles() {
-        Article article = new Article(1, Level.LOW, new ArrayList<String>(Arrays.asList("Group 1", "Group 2")), "Title", "Description", "Keywords", "Body", new ArrayList<String>());
-        Article article2 = new Article(2, Level.MEDIUM, new ArrayList<String>(Arrays.asList("The third group")), "Title2", "Description2", "Keywords2", "Body2", new ArrayList<String>());
-        Article article3 = new Article(3, Level.HIGH, new ArrayList<String>(Arrays.asList("Group 2", "a fourth group")), "Title3", "Description3", "Keywords3", "Body3", new ArrayList<String>());
-        testArticles = new ArrayList<Article>();
-        testArticles.add(article);
-        testArticles.add(article2);
-        testArticles.add(article3);
     }
 }
