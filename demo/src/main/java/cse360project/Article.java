@@ -83,13 +83,13 @@ public class Article implements Serializable{
 		if (level == Level.BEGINNER) {
 			return "BEGINNER";
 		}
-		if (level == level.INTERMEDIATE) {
+		if (level == Level.INTERMEDIATE) {
 			return "INTERMEDIATE";
 		}
-		if (level == level.ADVANCED) {
+		if (level == Level.ADVANCED) {
 			return "ADVANCED";
 		}
-		if (level == level.EXPERT) {
+		if (level == Level.EXPERT) {
 			return "EXPERT";
 		}
 		return "level unclear";
