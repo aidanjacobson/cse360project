@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import cse360project.User;
 import cse360project.pages.Page;
+import cse360project.pages.backup.BackupWizard;
+import cse360project.pages.backup.RestoreWizard;
 import cse360project.utils.ApplicationStateManager;
 import cse360project.utils.DatabaseHelper;
 import cse360project.utils.PageManager;
@@ -24,6 +26,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
@@ -70,6 +73,9 @@ public class AdminPage implements Page {
         // the toolbar should have logout and invite buttons
         topContent.getChildren().add(createLogoutButton());
         topContent.getChildren().add(createInviteButton());
+
+        // create the bottom buttons including list articles, backup, restore
+        createBottomButtons();
     }
     
     /** 
@@ -108,7 +114,7 @@ public class AdminPage implements Page {
     /**
      * Clear user table and re-render
      */
-    void renderUserTable() {
+    private void renderUserTable() {
         // remove everything from the table so we can rebuild it
         clearUserTable();
 
@@ -122,7 +128,7 @@ public class AdminPage implements Page {
     /**
      * Clear all users from table, reset gridlines
      */
-    void clearUserTable() {
+    private void clearUserTable() {
         userListGrid.getChildren().clear();
         userListGrid.setGridLinesVisible(false);
         userListGrid.setGridLinesVisible(true);
@@ -131,7 +137,7 @@ public class AdminPage implements Page {
     /**
      * Add the header row to the table
      */
-    void populateUserListHeaders() {
+    private void populateUserListHeaders() {
         userListGrid.setPadding(new Insets(20)); // Padding around the grid
         userListGrid.setAlignment(Pos.CENTER);
         
@@ -147,7 +153,7 @@ public class AdminPage implements Page {
     /**
      * Add all the users to the table
      */
-    void updateUserList() {
+    private void updateUserList() {
         // get all the users in the database
         ArrayList<User> allUsers = DatabaseHelper.getAllUsers("SELECT * FROM cse360users WHERE username IS NOT NULL");
 
@@ -182,7 +188,7 @@ public class AdminPage implements Page {
      * @param bold whether it should be bold
      * @return Label
      */
-    Label createTextElement(String text, boolean bold) {
+    private Label createTextElement(String text, boolean bold) {
         // create label, set alignment, set padding
         Label out = new Label(text);
         out.setTextAlignment(TextAlignment.CENTER);
@@ -203,7 +209,7 @@ public class AdminPage implements Page {
      * @param text the text string
      * @return Label
      */
-    Label createTextElement(String text) {
+    private Label createTextElement(String text) {
         // if bold is not specified, default to false
         return createTextElement(text, false);
     }
@@ -213,7 +219,7 @@ public class AdminPage implements Page {
      * @param userId the id of the user to reset when clicked
      * @return the button
      */
-    Button createResetButton(int userId) {
+    private Button createResetButton(int userId) {
         Button resetBtn = new Button("Reset");
         resetBtn.setPrefWidth(100);
         GridPane.setMargin(resetBtn, new Insets(5, 15, 5, 15));
@@ -227,7 +233,7 @@ public class AdminPage implements Page {
      * @param userId the id of the user to delete when clicked
      * @return the button
      */
-    Button createDeleteButton(int userId) {
+    private Button createDeleteButton(int userId) {
         Button deleteBtn = new Button("Delete");
         deleteBtn.setPrefWidth(100);
         GridPane.setMargin(deleteBtn, new Insets(5, 15, 5, 15));
@@ -245,7 +251,7 @@ public class AdminPage implements Page {
      * Ask the user if they want to reset, then take action accordingly
      * @param userId the user to reset
      */
-    void attemptUserReset(int userId) {
+    private void attemptUserReset(int userId) {
         // who are we resetting?
         User userToReset = DatabaseHelper.getUserByID(userId);
 
@@ -281,7 +287,7 @@ public class AdminPage implements Page {
      * Ask the user if they want to delete, then take action accordingly
      * @param userId the user to delete
      */
-    void attemptUserDelete(int userId) {
+    private void attemptUserDelete(int userId) {
         // since we cant delete ourselves, if we somehow manage to click the button, silently fail
         if (userId == ApplicationStateManager.getLoggedInUser().id) return;
 
@@ -306,7 +312,7 @@ public class AdminPage implements Page {
      * @param role - the role that the checkbox controls
      * @return the checkbox
      */
-    CheckBox createRoleCheckbox(User user, Role role) {
+    private CheckBox createRoleCheckbox(User user, Role role) {
         // create/align checkbox
         CheckBox check = new CheckBox();
         GridPane.setHalignment(check, HPos.CENTER);
@@ -331,7 +337,7 @@ public class AdminPage implements Page {
      * Create/style invite button and set click action
      * @return the invite button's stackpane
      */
-    StackPane createInviteButton() {
+    private StackPane createInviteButton() {
         // create the invite button
         Button inviteButton = new Button("Invite User");
 
@@ -357,7 +363,7 @@ public class AdminPage implements Page {
      * Create/style logout button and set click action
      * @return the button
      */
-    Button createLogoutButton() {
+    private Button createLogoutButton() {
         // create the logout button
         Button logoutButton = new Button("Log Out");
         
@@ -370,5 +376,50 @@ public class AdminPage implements Page {
         // set the top node to be the logout button
         // root.setTop(logoutButton);
         return logoutButton;
+    }
+
+    /**
+     * Create the bottom buttons for the page
+     */
+    private void createBottomButtons() {
+        // create buttons for: list articles, backup, and restore buttons
+        // each button will be styled and have a click action
+        // they will be added to the bottom of the page, horizontally in an HBox
+        // the HBox will be added to the bottom of the borderpane in the center
+
+        // create the HBox to hold the buttons
+        HBox bottomButtons = new HBox(20);
+        bottomButtons.setAlignment(Pos.CENTER);
+        root.setBottom(bottomButtons);
+        
+        BorderPane.setMargin(bottomButtons, new Insets(20));
+
+        // create the list articles button
+        Button listArticlesButton = new Button("List Articles");
+        listArticlesButton.setOnAction(e -> PageManager.switchToPage("listarticles"));
+        setLinkButtonStyles(listArticlesButton);
+
+        // create the backup button
+        Button backupButton = new Button("Backup Articles");
+        backupButton.setOnAction(e -> BackupWizard.openBackupWindow());
+        setLinkButtonStyles(backupButton);
+
+        // create the restore button
+        Button restoreButton = new Button("Restore Articles");
+        restoreButton.setOnAction(e -> RestoreWizard.openRestoreWindow());
+        setLinkButtonStyles(restoreButton);
+
+        // add the buttons to the HBox
+        bottomButtons.getChildren().addAll(listArticlesButton, backupButton, restoreButton);
+    }
+
+    private void setLinkButtonStyles(Button linkButton) {
+        final String btnBackgroundColor = "#0088ff";
+        final Color textColor = Color.WHITE;
+        final int btnWidth = 200;
+
+        linkButton.setStyle("-fx-background-color: " + btnBackgroundColor + "; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px;");
+        linkButton.setTextFill(textColor);
+        linkButton.setPrefWidth(btnWidth);
     }
 }

@@ -359,30 +359,44 @@ public class DatabaseHelper {
     
     public static void addArticle(Article article) {
         // if the user id is not -1, we should not add to database
-        if (article.ID != -1) {
-            System.err.printf("Error: Attempted to add article to db, but article.id was not -1 (got %d)%n", article.ID);
-            return;
-        }
         try {
             // we want to obtain the new id of the added user
             String[] returnId = { "article_id" };
             String group = String.join("\n", article.groups);
             String link = String.join("\n", article.links);
             String lev = Level.levelToString(article.level);
-            
-            // craft INSERT query
-            String insertQuery = "INSERT INTO cse360articles (level, groups, title, description, keywords, body, links) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement insertStatement = connection.prepareStatement(insertQuery, returnId);
-            insertStatement.setString(1, lev);
-            insertStatement.setString(2, group);
-            insertStatement.setString(3, article.title);
-            insertStatement.setString(4, article.description);
-            insertStatement.setString(5, article.keywords);
-            insertStatement.setString(6, article.body);
-            insertStatement.setString(7, link);
+            PreparedStatement insertStatement;
 
-            // execute the query
-            insertStatement.executeUpdate();
+            if (article.ID == -1) {
+                // craft INSERT query
+                String insertQuery = "INSERT INTO cse360articles (level, groups, title, description, keywords, body, links) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                insertStatement = connection.prepareStatement(insertQuery, returnId);
+                insertStatement.setString(1, lev);
+                insertStatement.setString(2, group);
+                insertStatement.setString(3, article.title);
+                insertStatement.setString(4, article.description);
+                insertStatement.setString(5, article.keywords);
+                insertStatement.setString(6, article.body);
+                insertStatement.setString(7, link);
+
+                // execute the query
+                insertStatement.executeUpdate();
+            } else {
+                // craft INSERT query
+                String insertQuery = "INSERT INTO cse360articles (article_id, level, groups, title, description, keywords, body, links) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                insertStatement = connection.prepareStatement(insertQuery, returnId);
+                insertStatement.setLong(1, article.ID);
+                insertStatement.setString(2, lev);
+                insertStatement.setString(3, group);
+                insertStatement.setString(4, article.title);
+                insertStatement.setString(5, article.description);
+                insertStatement.setString(6, article.keywords);
+                insertStatement.setString(7, article.body);
+                insertStatement.setString(8, link);
+
+                // execute the query
+                insertStatement.executeUpdate();
+            }
 
             // capture id of new user, and update the User object id to match
             try (ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
@@ -423,7 +437,7 @@ public class DatabaseHelper {
         }
     }
     
-  public boolean articleWithIdExists(long id) {
+  public static boolean articleWithIdExists(long id) {
       String existingUserQuery = "SELECT * FROM cse360articles WHERE article_id=?";
       try {
       PreparedStatement pstmt = connection.prepareStatement(existingUserQuery);
@@ -487,7 +501,7 @@ public class DatabaseHelper {
           String lev = Level.levelToString(article.level);
           
           // the user exists, craft the UPDATE query for the user
-          String updateQuery = "UPDATE cse360articles SET level=?, groups=?, title=?, description=?, keywords=?, body=?, links=?";
+          String updateQuery = "UPDATE cse360articles SET level=?, groups=?, title=?, description=?, keywords=?, body=?, links=? WHERE article_id=?";
           PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
           updateStatement.setString(1, lev);
           updateStatement.setString(2, group);
@@ -496,6 +510,7 @@ public class DatabaseHelper {
           updateStatement.setString(5, article.keywords);
           updateStatement.setString(6, article.body);
           updateStatement.setString(7, link);
+          updateStatement.setLong(8, article.ID);
 
           // execute the query
           updateStatement.executeUpdate();
