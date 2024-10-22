@@ -501,7 +501,7 @@ public class DatabaseHelper {
           String lev = Level.levelToString(article.level);
           
           // the user exists, craft the UPDATE query for the user
-          String updateQuery = "UPDATE cse360articles SET level=?, groups=?, title=?, description=?, keywords=?, body=?, links=?";
+          String updateQuery = "UPDATE cse360articles SET level=?, groups=?, title=?, description=?, keywords=?, body=?, links=? WHERE article_id=?";
           PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
           updateStatement.setString(1, lev);
           updateStatement.setString(2, group);
@@ -510,6 +510,7 @@ public class DatabaseHelper {
           updateStatement.setString(5, article.keywords);
           updateStatement.setString(6, article.body);
           updateStatement.setString(7, link);
+          updateStatement.setLong(8, article.ID);
 
           // execute the query
           updateStatement.executeUpdate();
