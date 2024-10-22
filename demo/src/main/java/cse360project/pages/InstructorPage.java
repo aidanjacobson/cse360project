@@ -55,14 +55,14 @@ public class InstructorPage implements Page {
         setLinkButtonStyles(articleListButton);
         
         // Backup Database
-        Button backupButton = new Button("Backup Database");
+        Button backupButton = new Button("Backup Articles");
         backupButton.setOnAction(e -> {
             BackupWizard.openBackupWindow();
         });
         setLinkButtonStyles(backupButton);
 
         // Restore Database
-        Button restoreButton = new Button("Restore Database");
+        Button restoreButton = new Button("Restore Articles");
         restoreButton.setOnAction(e -> {
             RestoreWizard.openRestoreWindow();
         });
