@@ -27,16 +27,16 @@ public enum Level{
 	}
 	
 	public static Level stringToLevel(String level) {
-		if (level.toUpperCase() == "BEGINNER") {
+		if (level.toUpperCase().equals("BEGINNER")) {
 			return Level.BEGINNER;
 		}
-		if (level.toUpperCase() == "INTERMEDIATE") {
+		if (level.toUpperCase().equals("INTERMEDIATE")) {
 			return Level.INTERMEDIATE;
 		}
-		if (level.toUpperCase() == "ADVANCED") {
+		if (level.toUpperCase().equals("ADVANCED")) {
 			return Level.ADVANCED;
 		}
-		if (level.toUpperCase() == "EXPERT") {
+		if (level.toUpperCase().equals("EXPERT")) {
 			return Level.EXPERT;
 		}
 		return null;
