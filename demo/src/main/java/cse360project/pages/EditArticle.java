@@ -7,15 +7,23 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class EditArticle implements Page{
 	private Article article; // Assume this is initialized with an Article object
+	StackPane root = new StackPane();
 	public EditArticle() {
         // Sample data
-        article = new Article(1, Level.MEDIUM, new ArrayList<>(), "Sample Article",
+        article = new Article(1, Level.BEGINNER, new ArrayList<>(), "Sample Article",
                 "This is a sample article description.", "sample, article", "This is the body of the sample article.", new ArrayList<>());
-
+        article = new Article(1, Level.INTERMEDIATE, new ArrayList<>(), "Sample Article",
+                "This is a sample article description.", "sample, article", "This is the body of the sample article.", new ArrayList<>());
+        article = new Article(1, Level.ADVANCED, new ArrayList<>(), "Sample Article",
+                "This is a sample article description.", "sample, article", "This is the body of the sample article.", new ArrayList<>());
+        article = new Article(1, Level.EXPERT, new ArrayList<>(), "Sample Article",
+                "This is a sample article description.", "sample, article", "This is the body of the sample article.", new ArrayList<>());
+        
         VBox layout = new VBox(10);
         
         // Article editing fields
@@ -45,16 +53,17 @@ public class EditArticle implements Page{
         layout.getChildren().addAll(titleLabel, titleField, descriptionLabel, descriptionArea,
                 keywordsLabel, keywordsField, bodyLabel, bodyArea, saveButton);
 }
-
+	Article editingArticle=null;
+	public void setEditingArticle(Article article) {
+    	editingArticle=article;
+    }
 	@Override
 	public Pane getRoot() {
-		// TODO Auto-generated method stub
-		return null;
+		return root;
 	}
 
 	@Override
 	public void onPageOpen() {
-		// TODO Auto-generated method stub
 		
 	}
 }

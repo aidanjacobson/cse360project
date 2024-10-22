@@ -18,10 +18,19 @@ import javafx.stage.Stage;
 	    @Override
 	    public void start(Stage primaryStage) {
 	        // Sample data
-	        article = new Article(1, Level.MEDIUM, new ArrayList<>(), "Sample Article",
+	    	Article article = new Article(1, Level.BEGINNER, new ArrayList<>(), "Sample Article",
+	                "This is a sample article description.", "sample, article", "This is the body of the sample article.", new ArrayList<>());
+	        userRole = "student"; // Change as needed for testing
+	        Article article2 = new Article(1, Level.INTERMEDIATE, new ArrayList<>(), "Sample Article",
+	                "This is a sample article description.", "sample, article", "This is the body of the sample article.", new ArrayList<>());
+	        userRole="admin";
+	        Article article3 = new Article(1, Level.ADVANCED, new ArrayList<>(), "Sample Article",
 	                "This is a sample article description.", "sample, article", "This is the body of the sample article.", new ArrayList<>());
 	        userRole = "admin"; // Change as needed for testing
-
+	        Article article4 = new Article(1, Level.EXPERT, new ArrayList<>(), "Sample Article",
+	                "This is a sample article description.", "sample, article", "This is the body of the sample article.", new ArrayList<>());
+	        userRole = "admin"; 
+	        
 	        VBox layout = new VBox(10);
 	        
 	        // Article details
@@ -53,14 +62,18 @@ import javafx.stage.Stage;
 	        primaryStage.setScene(scene);
 	        primaryStage.show();
 	    }
-
+	    
+	    Article viewingArticle=null;
+	    public void setViewingArticle(Article article) {
+	    	viewingArticle=article;
+	    }
 	    private void editArticle() {
-	        // Logic to navigate to the edit page
+	        
 	        System.out.println("Navigating to edit page for article: " + article.title);
 	    }
 
 	    private void deleteArticle() {
-	        // Implement delete functionality
+	        
 	        System.out.println("Article deleted!");
 	    }
 
