@@ -29,13 +29,16 @@ public class BackupRestoreUtils {
      * @return True if the backup was successful, false otherwise
      */
     public static boolean backupDatabase(String path, ArrayList<String> groups) {
-        File file = new File(path);
-        if (file.exists()) {
-            file.delete();
-        }
+        
         ArrayList<Article> articles = getArticlesByGroups(groups);
-        System.out.println(articles);
+
         try {
+            File file = new File(path);
+            if (file.exists()) {
+                file.delete();
+            }
+            file.createNewFile();
+
             ObjectOutputStream write = new ObjectOutputStream(new FileOutputStream(path));
             write.writeObject(articles);
             write.close();
@@ -62,10 +65,8 @@ public class BackupRestoreUtils {
             
             // delete all articles in the database, then add the new articles
             DatabaseHelper.deleteAllArticles();
-            System.out.println("Deleted all articles");
             for (Article article : articles) {
                 DatabaseHelper.addArticle(article);
-                System.out.println("Added article: " + article.title);
             }
             ois.close();
             return true;
@@ -88,13 +89,10 @@ public class BackupRestoreUtils {
                 if (DatabaseHelper.articleWithIdExists(article.ID)) {
                     if (mergeOverwrite) {
                         DatabaseHelper.updateArticle(article);
-                        System.out.println("Updated article: " + article.title);
                     } else {
-                        System.out.println("Skipped article: " + article.title);
                         continue;
                     }
                 } else {
-                    System.out.println("Added article: " + article.title);
                     DatabaseHelper.addArticle(article);
                 }
             }
