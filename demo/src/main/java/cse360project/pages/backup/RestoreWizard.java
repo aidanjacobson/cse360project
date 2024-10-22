@@ -14,6 +14,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
@@ -42,6 +43,9 @@ public class RestoreWizard {
     public static void openRestoreWindow() {
         restoreStage = new Stage();
         restoreStage.setTitle("Restore Database");
+
+        // Set the modality to block interaction with other windows
+        restoreStage.initModality(Modality.APPLICATION_MODAL);
 
         // the root should be a borderpane
         root = new BorderPane();

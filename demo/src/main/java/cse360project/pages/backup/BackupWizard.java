@@ -11,6 +11,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
@@ -53,6 +54,9 @@ public class BackupWizard {
     public static void openBackupWindow() {
         backupStage = new Stage();
         backupStage.setTitle("Backup Database");
+
+        // Set the modality to block interaction with other windows
+        backupStage.initModality(Modality.APPLICATION_MODAL);
         
         // the root should be a borderpane
         root = new BorderPane();
