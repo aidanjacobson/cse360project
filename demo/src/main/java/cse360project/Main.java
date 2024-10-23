@@ -1,6 +1,7 @@
 package cse360project;
 
 import javafx.application.Application;
+
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -13,7 +14,9 @@ import cse360project.pages.UserPassSetupPage;
 import cse360project.pages.admin.AdminPage;
 import cse360project.pages.StudentPage;
 import cse360project.pages.AccountSetupScreen;
+import cse360project.pages.EditArticle;
 import cse360project.pages.InstructorPage;
+import cse360project.pages.ListPage;
 
  
 public class Main extends Application {
@@ -48,6 +51,8 @@ public class Main extends Application {
         PageManager.registerPage("admin", new AdminPage());
         PageManager.registerPage("accountsetup", new AccountSetupScreen());
         PageManager.registerPage("passwordreset", new PasswordResetPage());
+        PageManager.registerPage("listarticles", new ListPage());
+
         // switch to the login page on open
         PageManager.switchToPage("login");
     }
