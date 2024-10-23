@@ -2,6 +2,7 @@ package cse360project.pages;
 
 import cse360project.Article;
 import cse360project.utils.ApplicationStateManager;
+import cse360project.utils.DatabaseHelper;
 import cse360project.utils.Level;
 import cse360project.utils.PageManager;
 import cse360project.utils.Role;
@@ -17,23 +18,47 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ListPage implements Page {
 
     // Root element for this page
     StackPane root = new StackPane();
 
-    // List to store all articles
+    // List to store all articles (combining both dummy and database articles)
     ArrayList<Article> allArticles = new ArrayList<>();
 
     // UI Elements for displaying feedback
     Label feedbackLabel = new Label(); // Label to display feedback messages
     ListView<Article> articleListView = new ListView<>(); // ListView for displaying articles
 
+    // Group dropdown
+    ComboBox<String> groupComboBox;
+
     // Constructor for the ListPage
     public ListPage() {
-        // Sample hardcoded articles (add your actual data or database connection later)
+        // Step 1: Fetch articles from the database
+        ArrayList<Article> databaseArticles = DatabaseHelper.getAllArticles();
+        
+        // Step 2: Add database articles to the main article list (if any exist)
+        if (!databaseArticles.isEmpty()) {
+            allArticles.addAll(databaseArticles);
+        }
+
+        // Step 3: Add dummy data for testing purposes if needed
+        addDummyData();
+
+        // Create the UI
+        setupUI();
+    }
+
+    /**
+     * Add dummy data to the article list for testing purposes
+     */
+    private void addDummyData() {
+        // Sample hardcoded articles (you can replace this with actual data once the database is populated)
         allArticles.add(new Article(1, Level.BEGINNER, new ArrayList<>(List.of("Group1", "Group2")), "Beginner Java Tutorial", "Learn Java from scratch", "Java, programming", "This article introduces Java basics.", new ArrayList<>()));
         allArticles.add(new Article(2, Level.INTERMEDIATE, new ArrayList<>(List.of("Group2", "Group3")), "Intermediate SQL Guide", "Deep dive into SQL queries", "SQL, database, joins", "This article explains intermediate SQL concepts.", new ArrayList<>()));
         allArticles.add(new Article(3, Level.BEGINNER, new ArrayList<>(List.of("Group1")), "Java Basics for Beginners", "A basic introduction to Java", "Java, basics", "This article explains basic concepts in Java.", new ArrayList<>()));
@@ -44,9 +69,6 @@ public class ListPage implements Page {
         allArticles.add(new Article(8, Level.BEGINNER, new ArrayList<>(List.of("Group1", "Group2")), "Java Programming Basics", "A beginner’s guide to Java programming", "Java, basics, programming", "This article introduces Java basics.", new ArrayList<>()));
         allArticles.add(new Article(9, Level.INTERMEDIATE, new ArrayList<>(List.of("Group2")), "Python Functions and Modules", "An intermediate guide to Python functions", "Python, functions, modules", "This article covers Python functions and modules.", new ArrayList<>()));
         allArticles.add(new Article(10, Level.ADVANCED, new ArrayList<>(List.of("Group3", "Group4")), "Advanced Java Techniques", "Learn advanced Java techniques", "Java, advanced", "This article explains advanced techniques in Java.", new ArrayList<>()));
-
-        // Create the UI
-        setupUI();
     }
 
     /**
@@ -66,16 +88,19 @@ public class ListPage implements Page {
         searchField.setOnKeyReleased(e -> handleSearch(searchField.getText()));
 
         Label groupLabel = new Label("Filter by Group:");
-        ObservableList<String> groups = FXCollections.observableArrayList("All Groups", "Group1", "Group2", "Group3");
-        ComboBox<String> groupComboBox = new ComboBox<>(groups);
+
+        // Fetch distinct groups from both dummy data and database
+        Set<String> distinctGroups = getDistinctGroups(allArticles);
+        distinctGroups.add("All Groups"); // Include an option for "All Groups"
+        ObservableList<String> groups = FXCollections.observableArrayList(distinctGroups);
+        groupComboBox = new ComboBox<>(groups);
         groupComboBox.setValue("All Groups");
         groupComboBox.setOnAction(e -> handleGroupFilter(groupComboBox.getValue()));
 
         feedbackLabel.setFont(new Font("Arial", 14));
         feedbackLabel.setStyle("-fx-text-fill: red;");
 
-        // Increase the height of the ListView
-        articleListView.setPrefHeight(500); // Increased from 300 to 500
+        articleListView.setPrefHeight(500);
         articleListView.setCellFactory(param -> new ListCell<Article>() {
             @Override
             protected void updateItem(Article article, boolean empty) {
@@ -158,6 +183,18 @@ public class ListPage implements Page {
         root.getChildren().add(mainLayout);
     }
 
+    /**
+     * Helper method to extract distinct groups from the list of articles.
+     * This includes both database and dummy data.
+     */
+    private Set<String> getDistinctGroups(ArrayList<Article> articles) {
+        Set<String> distinctGroups = new HashSet<>();
+        for (Article article : articles) {
+            distinctGroups.addAll(article.groups);
+        }
+        return distinctGroups;
+    }
+
     private void handleSearch(String query) {
         if (query.isEmpty()) {
             feedbackLabel.setText("Please enter a search query.");
@@ -175,6 +212,17 @@ public class ListPage implements Page {
 
     private void handleGroupFilter(String group) {
         feedbackLabel.setText("Filtering by group: " + group);
+        if ("All Groups".equals(group)) {
+            updateArticleList(allArticles); // Show all articles
+        } else {
+            ArrayList<Article> filteredArticles = new ArrayList<>();
+            for (Article article : allArticles) {
+                if (article.groups.contains(group)) {
+                    filteredArticles.add(article);
+                }
+            }
+            updateArticleList(filteredArticles);
+        }
     }
 
     private void updateArticleList(ArrayList<Article> articles) {
