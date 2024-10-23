@@ -3,7 +3,9 @@ package cse360project.pages;
 import java.util.ArrayList;
 
 import cse360project.Article;
+import cse360project.utils.ApplicationStateManager;
 import cse360project.utils.Level;
+import cse360project.utils.Role;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -18,18 +20,9 @@ import javafx.stage.Stage;
 	    @Override
 	    public void start(Stage primaryStage) {
 	        // Sample data
-	    	Article article = new Article(1, Level.BEGINNER, new ArrayList<>(), "Sample Article",
-	                "This is a sample article description.", "sample, article", "This is the body of the sample article.", new ArrayList<>());
-	        userRole = "student"; // Change as needed for testing
-	        Article article2 = new Article(1, Level.INTERMEDIATE, new ArrayList<>(), "Sample Article",
-	                "This is a sample article description.", "sample, article", "This is the body of the sample article.", new ArrayList<>());
-	        userRole="admin";
-	        Article article3 = new Article(1, Level.ADVANCED, new ArrayList<>(), "Sample Article",
+	    	Article article = new Article(1, Level.EXPERT, new ArrayList<>(), "Sample Article",
 	                "This is a sample article description.", "sample, article", "This is the body of the sample article.", new ArrayList<>());
 	        userRole = "admin"; // Change as needed for testing
-	        Article article4 = new Article(1, Level.EXPERT, new ArrayList<>(), "Sample Article",
-	                "This is a sample article description.", "sample, article", "This is the body of the sample article.", new ArrayList<>());
-	        userRole = "admin"; 
 	        
 	        VBox layout = new VBox(10);
 	        
@@ -43,8 +36,9 @@ import javafx.stage.Stage;
 	        Button editButton = new Button("Edit");
 	        Button deleteButton = new Button("Delete");
 
-	        // Show buttons based on user role
-	        if ("admin".equals(userRole) || "instructor".equals(userRole)) {
+	        Role userRole = ApplicationStateManager.getRole();
+
+	        if (userRole == Role.ADMIN || userRole == Role.INSTRUCTOR) {
 	            editButton.setVisible(true);
 	            deleteButton.setVisible(true);
 	        } else {
