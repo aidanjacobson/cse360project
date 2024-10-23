@@ -28,30 +28,31 @@ public class EditArticle implements Page{
         
         // Article editing fields
         Label titleLabel = new Label("Title:");
-        TextField titleField = new TextField(article.title);
+        TextField titleField = new TextField(article.getTitle());
         
         Label descriptionLabel = new Label("Description:");
-        TextArea descriptionArea = new TextArea(article.description);
+        TextArea descriptionArea = new TextArea(article.getDescription());
         
         Label keywordsLabel = new Label("Keywords:");
-        TextField keywordsField = new TextField(article.keywords);
+        TextField keywordsField = new TextField(article.getKeywords());
         
         Label bodyLabel = new Label("Body:");
-        TextArea bodyArea = new TextArea(article.body);
+        TextArea bodyArea = new TextArea(article.getBody());
 
         Button saveButton = new Button("Save Changes");
 
         saveButton.setOnAction(e -> {
             // Logic to save changes
-            article.title = titleField.getText();
-            article.description = descriptionArea.getText();
-            article.keywords = keywordsField.getText();
-            article.body = bodyArea.getText();
+            article.setTitle(titleField.getText());
+            article.setDescription(descriptionArea.getText());
+            article.setKeywords(keywordsField.getText());
+            article.setBody(bodyArea.getText());
             System.out.println("Article updated!");
         });
 
         layout.getChildren().addAll(titleLabel, titleField, descriptionLabel, descriptionArea,
                 keywordsLabel, keywordsField, bodyLabel, bodyArea, saveButton);
+        root.getChildren().add(layout);
 }
 	Article editingArticle=null;
 	public void setEditingArticle(Article article) {
