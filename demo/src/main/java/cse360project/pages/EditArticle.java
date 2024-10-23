@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 
 public class EditArticle implements Page{
 	private Article article; // Assume this is initialized with an Article object
+	
 	StackPane root = new StackPane();
 	public EditArticle() {
         // Sample data
@@ -61,10 +62,22 @@ public class EditArticle implements Page{
 	@Override
 	public Pane getRoot() {
 		return root;
-	}
-
+	}	
+	
+	private TextField titleField;
+	private TextArea descriptionArea;
+	private TextField keywordsField;
+	private TextArea bodyArea;
+	
 	@Override
 	public void onPageOpen() {
-		
+		if (editingArticle != null) {
+	        titleField.setText(editingArticle.getTitle());
+	        descriptionArea.setText(editingArticle.getDescription());
+	        keywordsField.setText(editingArticle.getKeywords());
+	        bodyArea.setText(editingArticle.getBody());
+	    } else {
+	        System.err.println("No article set for editing.");
+	    }
 	}
 }
