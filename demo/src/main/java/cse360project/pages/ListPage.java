@@ -72,7 +72,7 @@ public class ListPage implements Page {
     }
 
     /**
-     * Set up the UI for the list page
+     * Set up the UI for the lis t page
      */
     private void setupUI() {
         VBox mainLayout = new VBox(10);
