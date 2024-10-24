@@ -16,10 +16,10 @@ public class ArticleDBTest {
          * This is a general test of the database.
          * It will destroy the testdb database, then will test the commands.
          * First it verifies the db is empty.
-         * Then it adds an admin user.
-         * Then it attempts to find the admin user.
-         * Then it changes the admin preferred name.
-         * Then it deletes the admin user, and verifies the db is once again empty.
+         * Then it adds an an article.
+         * Then it attempts to find the article.
+         * Then it changes the article title.
+         * Then it deletes the article, and verifies the db is once again empty.
          */
         try {
             DatabaseHelper.setDatabasePath("~/testdb");

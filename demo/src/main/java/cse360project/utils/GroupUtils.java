@@ -60,7 +60,7 @@ public class GroupUtils {
      * @param groupName The group name to format.
      * @return A formatted group name.
      */
-    public String formatGroupName(String groupName) {
+    public static String formatGroupName(String groupName) {
         groupName = groupName.trim();
         String[] words = groupName.split("\\s+");
         StringBuilder formattedGroupName = new StringBuilder();
