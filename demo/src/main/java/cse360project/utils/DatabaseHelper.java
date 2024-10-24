@@ -370,7 +370,12 @@ public class DatabaseHelper {
         try {
             // we want to obtain the new id of the added user
             String[] returnId = { "article_id" };
-            String group = String.join("\n", article.groups);
+            ArrayList<String> unprocessedGroups = article.groups;
+            ArrayList<String> groups = new ArrayList<>();
+            for (String group : unprocessedGroups) {
+                groups.add(GroupUtils.formatGroupName(group));
+            }
+            String group = String.join("\n", groups);
             String link = String.join("\n", article.links);
             String lev = Level.levelToString(article.level);
             PreparedStatement insertStatement;

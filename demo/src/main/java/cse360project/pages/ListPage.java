@@ -1,6 +1,7 @@
 package cse360project.pages;
 
 import cse360project.Article;
+import cse360project.pages.viewedit.ViewPage;
 import cse360project.utils.ApplicationStateManager;
 import cse360project.utils.DatabaseHelper;
 import cse360project.utils.Level;
@@ -123,7 +124,7 @@ public class ListPage implements Page {
                     	Article selectedArticle = articleListView.getSelectionModel().getSelectedItem();
                     	if (selectedArticle != null) {
                             // Get the ViewArticle page from the PageManager
-                            ViewArticle viewPage = (ViewArticle) PageManager.getPageByName("viewpage");
+                            ViewPage viewPage = (ViewPage) PageManager.getPageByName("viewpage");
 
                             // Set the selected article to be viewed
                             viewPage.setViewingArticle(selectedArticle);

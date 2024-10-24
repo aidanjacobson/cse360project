@@ -8,13 +8,19 @@ import javafx.stage.Stage;
 import cse360project.pages.LoginPage;
 import cse360project.pages.PasswordResetPage;
 import cse360project.pages.RoleSelectionPage;
+import cse360project.utils.ApplicationStateManager;
 import cse360project.utils.DatabaseHelper;
+import cse360project.utils.Level;
 import cse360project.utils.PageManager;
+import cse360project.utils.Role;
 import cse360project.pages.UserPassSetupPage;
 import cse360project.pages.admin.AdminPage;
 import cse360project.pages.StudentPage;
+
+import java.util.ArrayList;
+
 import cse360project.pages.AccountSetupScreen;
-import cse360project.pages.EditArticle;
+import cse360project.pages.viewedit.ViewPage;
 import cse360project.pages.InstructorPage;
 import cse360project.pages.ListPage;
 
@@ -52,6 +58,8 @@ public class Main extends Application {
         PageManager.registerPage("accountsetup", new AccountSetupScreen());
         PageManager.registerPage("passwordreset", new PasswordResetPage());
         PageManager.registerPage("listarticles", new ListPage());
+
+        PageManager.registerPage("viewpage", new ViewPage());
 
         // switch to the login page on open
         PageManager.switchToPage("login");
