@@ -2,6 +2,8 @@ package cse360project.pages;
 import cse360project.utils.Level;
 import java.util.ArrayList; 
 import cse360project.Article;
+import javafx.application.Application;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -9,8 +11,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-public class EditArticle implements Page{
+public class EditArticle extends Application implements Page{
 	private Article article; // Assume this is initialized with an Article object
 	
 	StackPane root = new StackPane();
@@ -79,5 +82,16 @@ public class EditArticle implements Page{
 	    } else {
 	        System.err.println("No article set for editing.");
 	    }
+	}
+	public static void main(String[] args) {
+        launch(args);
+    }
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		Scene scene = new Scene(root, 400, 300);
+        primaryStage.setTitle("Edit Article");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+		
 	}
 }
