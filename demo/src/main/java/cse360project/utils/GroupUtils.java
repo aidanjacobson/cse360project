@@ -54,6 +54,14 @@ public class GroupUtils {
         return new ArrayList<>(uniqueGroups);
     }
 
+    /**
+     * Consolidate all unique group names from the entire database.
+     * @return A list of unique group names.
+     */
+    public ArrayList<String> consolidateGroups() {
+        return consolidateGroups(DatabaseHelper.getAllArticles());
+    }
+
 
     /**
      * Format the group name properly.
