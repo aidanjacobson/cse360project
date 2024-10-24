@@ -41,15 +41,6 @@ public class ListPage implements Page {
 
     // Constructor for the ListPage
     public ListPage() {
-        // Step 1: Fetch articles from the database
-        ArrayList<Article> databaseArticles = DatabaseHelper.getAllArticles();
-        
-
-        // Add database articles to the main article list
-        allArticles.addAll(databaseArticles);
-        
-        // Create the UI
-        setupUI();
         
     }
 
@@ -57,6 +48,8 @@ public class ListPage implements Page {
      * Set up the UI for the list page
      */
     private void setupUI() {
+        allArticles = DatabaseHelper.getAllArticles(); // Fetch articles from the database
+        root.getChildren().clear(); // Clear the root element before adding new elements
         VBox mainLayout = new VBox(10);
         mainLayout.setPadding(new Insets(20));
         mainLayout.setAlignment(Pos.TOP_CENTER);
@@ -238,5 +231,6 @@ public class ListPage implements Page {
     @Override
     public void onPageOpen() {
         feedbackLabel.setText("");
+        setupUI();
     }
 }
