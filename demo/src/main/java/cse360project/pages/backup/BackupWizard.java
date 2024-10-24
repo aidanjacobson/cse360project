@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import cse360project.utils.BackupRestoreUtils;
+import cse360project.utils.GroupUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -211,8 +212,7 @@ public class BackupWizard {
         groupCheckboxContainer.getChildren().add(searchBar);
 
         // get a list of all groups (no duplicates) and make a checkbox for each group
-        // TODO: replace getAllArticleGroups() with the actual method to get all article groups pending Div and Dan's changes
-        ArrayList<String> groups = BackupRestoreUtils.getAllArticleGroups();
+        ArrayList<String> groups = GroupUtils.consolidateGroups();
         for (String group : groups) {
             CheckBox groupCheckbox = new CheckBox(group);
             groupCheckboxContainer.getChildren().add(groupCheckbox);

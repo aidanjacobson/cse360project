@@ -19,7 +19,8 @@ public class BackupRestoreUtils {
      */
     public static boolean backupDatabase(String path) {
         // TODO: replace getAllArticleGroups() with the actual method to get all article groups
-        return backupDatabase(path, getAllArticleGroups());
+        ArrayList<String> allGroups = GroupUtils.consolidateGroups();
+        return backupDatabase(path, allGroups);
     }
 
     /**
@@ -30,7 +31,7 @@ public class BackupRestoreUtils {
      */
     public static boolean backupDatabase(String path, ArrayList<String> groups) {
         
-        ArrayList<Article> articles = getArticlesByGroups(groups);
+        ArrayList<Article> articles = GroupUtils.getAllArticlesWithGroups(groups);
 
         try {
             File file = new File(path);
@@ -109,36 +110,5 @@ public class BackupRestoreUtils {
 
     public static boolean softRestoreDatabase(String path) {
         return softRestoreDatabase(path, true);
-    }
-
-    // temporary method to get all article groups
-    // TODO: delete this method when the actual method is implemented
-    static ArrayList<Article> getArticlesByGroups(ArrayList<String> groups) {
-        ArrayList<Article> articles = new ArrayList<>();
-        ArrayList<Article> testArticles = DatabaseHelper.getAllArticles();
-        for (Article article : testArticles) {
-            for (String group : groups) {
-                if (article.groups.contains(group) && !articles.contains(article)) {
-                    articles.add(article);
-                    break;
-                }
-            }
-        }
-        return articles;
-    }
-
-    // temporary method to get all article groups
-    // TODO: delete this method when the actual method is implemented
-    public static ArrayList<String> getAllArticleGroups() {
-        ArrayList<String> groups = new ArrayList<String>();
-        ArrayList<Article> testArticles = DatabaseHelper.getAllArticles();
-        for (Article article : testArticles) {
-            for (String group : article.groups) {
-                if (!groups.contains(group)) {
-                    groups.add(group);
-                }
-            }
-        }
-        return groups;
     }
 }
