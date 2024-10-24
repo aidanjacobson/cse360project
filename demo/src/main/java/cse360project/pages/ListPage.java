@@ -45,6 +45,9 @@ public class ListPage implements Page {
         ArrayList<Article> databaseArticles = DatabaseHelper.getAllArticles();
         
 
+        // Add database articles to the main article list
+        allArticles.addAll(databaseArticles);
+        
         // Create the UI
         setupUI();
         
