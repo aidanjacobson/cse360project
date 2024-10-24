@@ -12,7 +12,7 @@ public class GroupUtils {
      * @param group The group to filter by.
      * @return A list of articles that belong to the specified group.
      */
-    public ArrayList<Article> getAllArticlesWithGroup(ArrayList<Article> articles, String group) {
+    public static ArrayList<Article> getAllArticlesWithGroup(ArrayList<Article> articles, String group) {
         ArrayList<Article> articlesInGroup = new ArrayList<>();
         for (Article article : articles) {
             if (article.hasGroup(group)) {
@@ -28,7 +28,7 @@ public class GroupUtils {
      * @param groups The list of groups to search for.
      * @return A list of articles that are in any of the specified groups.
      */
-    public ArrayList<Article> getAllArticlesWithGroups(ArrayList<Article> articles, ArrayList<String> groups) {
+    public static ArrayList<Article> getAllArticlesWithGroups(ArrayList<Article> articles, ArrayList<String> groups) {
         ArrayList<Article> articlesInGroups = new ArrayList<>();
         for (Article article : articles) {
             for (String group : groups) {
@@ -46,12 +46,22 @@ public class GroupUtils {
      * @param articles The list of articles to extract groups from.
      * @return A list of unique group names.
      */
-    public ArrayList<String> consolidateGroups(ArrayList<Article> articles) {
+    public static ArrayList<String> consolidateGroups(ArrayList<Article> articles) {
         HashSet<String> uniqueGroups = new HashSet<>(); // To ensure uniqueness
         for (Article article : articles) {
-            uniqueGroups.addAll(article.groups); // Directly access the groups field
+            for (String group : article.groups) {
+                uniqueGroups.add(formatGroupName(group));
+            }
         }
         return new ArrayList<>(uniqueGroups);
+    }
+
+    /**
+     * Consolidate all unique group names from the entire database.
+     * @return A list of unique group names.
+     */
+    public static ArrayList<String> consolidateGroups() {
+        return consolidateGroups(DatabaseHelper.getAllArticles());
     }
 
 
@@ -60,7 +70,7 @@ public class GroupUtils {
      * @param groupName The group name to format.
      * @return A formatted group name.
      */
-    public String formatGroupName(String groupName) {
+    public static String formatGroupName(String groupName) {
         groupName = groupName.trim();
         String[] words = groupName.split("\\s+");
         StringBuilder formattedGroupName = new StringBuilder();
@@ -81,7 +91,7 @@ public class GroupUtils {
      * @param group The group name to filter by.
      * @return A list of articles from the database that match the specified group.
      */
-    public ArrayList<Article> getAllArticlesWithGroup(String group) {
+    public static ArrayList<Article> getAllArticlesWithGroup(String group) {
         ArrayList<Article> allArticles = DatabaseHelper.getAllArticles(); // Retrieve articles from the database
         return getAllArticlesWithGroup(allArticles, group);
     }
@@ -91,7 +101,7 @@ public class GroupUtils {
      * @param groups The list of group names to filter by.
      * @return A list of articles from the database that match any of the specified groups.
      */
-    public ArrayList<Article> getAllArticlesWithGroups(ArrayList<String> groups) {
+    public static ArrayList<Article> getAllArticlesWithGroups(ArrayList<String> groups) {
         ArrayList<Article> allArticles = DatabaseHelper.getAllArticles(); // Retrieve articles from the database
         return getAllArticlesWithGroups(allArticles, groups);
     }

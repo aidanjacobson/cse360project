@@ -9,6 +9,11 @@ public enum Level{
 	ADVANCED,
 	EXPERT;
 
+	  /**
+	   * convert an enum level into a string specifying the level
+	   * @param level the level of the article
+	   * @return a string specifying the level of the article
+	   */
 	public static String levelToString(Level level) {
 		if (level == Level.BEGINNER) {
 			return "BEGINNER";
@@ -26,6 +31,11 @@ public enum Level{
 		
 	}
 	
+	  /**
+	   * convert an string specifying a level into a level
+	   * @param level a string that specifies level of the article
+	   * @return a Level of the article
+	   */
 	public static Level stringToLevel(String level) {
 		if (level.toUpperCase().equals("BEGINNER")) {
 			return Level.BEGINNER;

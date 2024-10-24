@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import cse360project.utils.GroupUtils;
 import cse360project.utils.Level;
 
 public class Article implements Serializable{
@@ -39,39 +40,100 @@ public class Article implements Serializable{
         this.body = body;
         this.links = link;
     }
+	
+    /**
+     * Set an id for the article
+     * @param id the id to set
+     */
 	public void setID(long id) {
 		this.ID = id;
 	}
+	
+    /**
+     * Get the id the article has
+     * @return a long of the id
+     */
 	public long getID() {
 		return this.ID;
 	}
+	
+    /**
+     * Set the level for the article
+     * @param level the level to set
+     */
 	public void setLevel(Level level) {
 		this.level = level;
 	}
+	
+    /**
+     * Set the title for the article
+     * @param title the title to set
+     */
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	
+    /**
+     * Get the title the article has
+     * @return a String of the title
+     */
 	public String getTitle() {
 		return this.title;
 	}
+	
+    /**
+     * Set the description for the article
+     * @param description the description to set
+     */
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+    /**
+     * Get the description the article has
+     * @return a String of the description
+     */
 	public String getDescription() {
 		return this.description;
 	}
+	
+    /**
+     * Set the keywords for the article
+     * @param keywords the keywords to set
+     */
 	public void setKeywords(String keywords) {
 		this.keywords = keywords;
 	}
+	
+    /**
+     * Get the keywords the article has
+     * @return a String of the keywords
+     */
 	public String getKeywords() {
 		return this.keywords;
 	}
+	
+    /**
+     * Set the body for the article
+     * @param body the body to set
+     */
 	public void setBody(String body) {
 		this.body = body;
 	}
+	
+    /**
+     * Get the body the article has
+     * @return a String of the body
+     */
 	public String getBody() {
 		return this.body;
 	}
+	
+    /**
+     * Check if the article has a given group
+     * @param group the group to check
+     * @return true if the article has the group, false otherwise
+     */
 	public boolean hasGroup(String group) {
 		if (this.groups.contains(group)) {
 			return true;
@@ -79,6 +141,12 @@ public class Article implements Serializable{
 		return false;
 	}
 	
+    /**
+     * Create an article from a result set from the database
+     * @param rs the result set
+     * @return the article
+     * @throws SQLException
+     */
 	public static Article fromResultSet(ResultSet rs) throws SQLException {
 		String allGroups = rs.getString("groups");
 		ArrayList<String> group = new ArrayList<>();
@@ -98,6 +166,11 @@ public class Article implements Serializable{
 	    return new Article(rs.getLong("article_id"), level, group, rs.getString("title"), rs.getString("description"), rs.getString("keywords"), rs.getString("body"), link);
 	    }
 	
+    /**
+     * Check if the article is the level of a specified level
+     * @param level the level to check
+     * @return true if the article is the level, false otherwise
+     */
 	public boolean isLevel(Level level) {
 		if (this.level == level) {
 			return true;
@@ -105,49 +178,23 @@ public class Article implements Serializable{
 		return false;
 	}
 	
+    /**
+     * Add the group to the ArrayList of groups
+     * @param group the group to add
+     */
 	public void addGroup(String group) {
-		group.stripLeading();
-		group.stripTrailing();
-		String groupArray[] = group.split(" ");
-		String newGroup = "";
-		int index[] = new int[10];
-		int indexc = 0;
-		for (int i = 0; i < groupArray.length; i++) {
-			if(!groupArray[i].contains(" ")) {
-				groupArray[i] = groupArray[i].toLowerCase();
-				groupArray[i] = groupArray[i].substring(0, 1).toUpperCase() + groupArray[i].substring(1);
-				index[indexc] = i;
-				indexc++;
-			}
-		}
-		for (int j = 0; j < index.length; j++) {
-			newGroup += groupArray[j];
-		}
-		newGroup.stripTrailing();
+		String newGroup = GroupUtils.formatGroupName(group);
 		if(!this.groups.contains(newGroup)) {
 			this.groups.add(newGroup);
 		}
 	}
 	
+    /**
+     * Remove the group from the ArrayList of groups
+     * @param group the group to remove
+     */
 	public void removeGroup(String group) {
-		group.stripLeading();
-		group.stripTrailing();
-		String groupArray[] = group.split(" ");
-		String newGroup = "";
-		int index[] = new int[10];
-		int indexc = 0;
-		for (int i = 0; i < groupArray.length; i++) {
-			if(!groupArray[i].contains(" ")) {
-				groupArray[i] = groupArray[i].toLowerCase();
-				groupArray[i] = groupArray[i].substring(0, 1).toUpperCase() + groupArray[i].substring(1);
-				index[indexc] = i;
-				indexc++;
-			}
-		}
-		for (int j = 0; j < index.length; j++) {
-			newGroup += groupArray[j];
-		}
-		newGroup.stripTrailing();
+		String newGroup = GroupUtils.formatGroupName(group);
 		if(this.groups.contains(newGroup)) {
 			this.groups.remove(newGroup);
 		}

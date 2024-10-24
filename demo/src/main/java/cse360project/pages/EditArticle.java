@@ -1,7 +1,6 @@
 package cse360project.pages;
-import cse360project.utils.Level;
-import java.util.ArrayList; 
 import cse360project.Article;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -11,71 +10,73 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class EditArticle implements Page{
-	private Article article; // Assume this is initialized with an Article object
 	
+	private Article article; // Assume this is initialized with an Article object
+	private TextField titleField;
+    private TextArea descriptionArea;
+    private TextField keywordsField;
+    private TextArea bodyArea;
 	StackPane root = new StackPane();
+	
 	public EditArticle() {
-        // Sample data
-        article = new Article(1, Level.BEGINNER, new ArrayList<>(), "Sample Article",
-                "This is a sample article description.", "sample, article", "This is the body of the sample article.", new ArrayList<>());
-        article = new Article(1, Level.INTERMEDIATE, new ArrayList<>(), "Sample Article",
-                "This is a sample article description.", "sample, article", "This is the body of the sample article.", new ArrayList<>());
-        article = new Article(1, Level.ADVANCED, new ArrayList<>(), "Sample Article",
-                "This is a sample article description.", "sample, article", "This is the body of the sample article.", new ArrayList<>());
-        article = new Article(1, Level.EXPERT, new ArrayList<>(), "Sample Article",
-                "This is a sample article description.", "sample, article", "This is the body of the sample article.", new ArrayList<>());
+		titleField = new TextField();
+        descriptionArea = new TextArea();
+        keywordsField = new TextField();
+        bodyArea = new TextArea();
         
         VBox layout = new VBox(10);
+        layout.getChildren().addAll(
+            new Label("Title:"), titleField,
+            new Label("Description:"), descriptionArea,
+            new Label("Keywords:"), keywordsField,
+            new Label("Body:"), bodyArea,
+            createSaveButton());
         
-        // Article editing fields
-        Label titleLabel = new Label("Title:");
-        TextField titleField = new TextField(article.getTitle());
-        
-        Label descriptionLabel = new Label("Description:");
-        TextArea descriptionArea = new TextArea(article.getDescription());
-        
-        Label keywordsLabel = new Label("Keywords:");
-        TextField keywordsField = new TextField(article.getKeywords());
-        
-        Label bodyLabel = new Label("Body:");
-        TextArea bodyArea = new TextArea(article.getBody());
-
+        root.getChildren().add(layout);
+}
+	private Button createSaveButton() {
         Button saveButton = new Button("Save Changes");
-
-        saveButton.setOnAction(e -> {
-            // Logic to save changes
+        saveButton.setOnAction(e -> saveArticle());
+        return saveButton;
+    }
+	
+	private void saveArticle() {
+        if (article != null) {
             article.setTitle(titleField.getText());
             article.setDescription(descriptionArea.getText());
             article.setKeywords(keywordsField.getText());
             article.setBody(bodyArea.getText());
-            System.out.println("Article updated!");
-        });
-
-        layout.getChildren().addAll(titleLabel, titleField, descriptionLabel, descriptionArea,
-                keywordsLabel, keywordsField, bodyLabel, bodyArea, saveButton);
-        root.getChildren().add(layout);
-}
-	Article editingArticle=null;
-	public void setEditingArticle(Article article) {
-    	editingArticle=article;
+            showAlert("Success", "Article updated!");
+        } else {
+            showAlert("Error", "No article to save.");
+        }
     }
+	private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+	
+	
+	public void setEditingArticle(Article article) {
+    	this.article=article;
+    	onPageOpen();
+    }
+	
 	@Override
 	public Pane getRoot() {
 		return root;
 	}	
 	
-	private TextField titleField;
-	private TextArea descriptionArea;
-	private TextField keywordsField;
-	private TextArea bodyArea;
-	
 	@Override
 	public void onPageOpen() {
-		if (editingArticle != null) {
-	        titleField.setText(editingArticle.getTitle());
-	        descriptionArea.setText(editingArticle.getDescription());
-	        keywordsField.setText(editingArticle.getKeywords());
-	        bodyArea.setText(editingArticle.getBody());
+		if (article != null) {
+	        titleField.setText(article.getTitle());
+	        descriptionArea.setText(article.getDescription());
+	        keywordsField.setText(article.getKeywords());
+	        bodyArea.setText(article.getBody());
 	    } else {
 	        System.err.println("No article set for editing.");
 	    }

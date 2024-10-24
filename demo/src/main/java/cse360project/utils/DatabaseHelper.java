@@ -69,6 +69,10 @@ public class DatabaseHelper {
 		statement.execute(userTable);
 	}
 
+    /**
+     * Create the necessary tables if they dont exist already.
+     * @throws SQLException
+     */
     public static void createArticleTables() throws SQLException {
 		String ArticleTable = "CREATE TABLE IF NOT EXISTS cse360articles ("
 				+ "article_id BIGINT AUTO_INCREMENT PRIMARY KEY, "
@@ -357,6 +361,10 @@ public class DatabaseHelper {
         }
     }
     
+    /**
+     * Add an article to the database. If the article already exists in the database, this command will fail.
+     * @param article The article to add
+     */
     public static void addArticle(Article article) {
         // if the user id is not -1, we should not add to database
         try {
@@ -409,10 +417,19 @@ public class DatabaseHelper {
         }
     }
     
+    /**
+     * Get a list of all articles in database.
+     * @return an ArrayList<Article> with all articles in the database.
+     */
     public static ArrayList<Article> getAllArticles() {
         return getAllArticles("SELECT * FROM cse360articles");
     }
     
+    /**
+     * Get one article that matches query.
+     * @param query the SQL query to select an article
+     * @return the first article that matches the selection, or null if none match
+     */
     public static Article getOneArticle(String query) {
         try {
             PreparedStatement pstmt = connection.prepareStatement(query);
@@ -423,6 +440,11 @@ public class DatabaseHelper {
         }
     }
     
+    /**
+     * Get one article that matches the PreparedStatement.
+     * @param pstmt a PreparedStatement created with DatabaseHelper.prepareStatement(query)
+     * @return the first article that matches the selection, or null if none match
+     */
     public static Article getOneArticle(PreparedStatement pstmt) {
         try {
             ResultSet rs = pstmt.executeQuery();
@@ -437,6 +459,11 @@ public class DatabaseHelper {
         }
     }
     
+    /**
+     * Test if article with id exists in the database
+     * @param id the id of the article
+     * @return true/false whether the article exists
+     */
   public static boolean articleWithIdExists(long id) {
       String existingUserQuery = "SELECT * FROM cse360articles WHERE article_id=?";
       try {
@@ -452,7 +479,12 @@ public class DatabaseHelper {
 	}
 	return false;
   }
-  
+
+  /**
+   * Get all articles that match the query.
+   * @param query the query to select the articles
+   * @return an ArrayList<Article> of all matching articles
+   */
   public static ArrayList<Article> getAllArticles(String query) {
       try {
           PreparedStatement pstmt = connection.prepareStatement(query);
@@ -462,7 +494,12 @@ public class DatabaseHelper {
           return new ArrayList<>();
       }
   }
-  
+
+  /**
+   * Get all articles that match the prepared statement.
+   * @param pstmt a PreparedStatement created with DatabaseHelper.prepareStatement(query)
+   * @return an ArrayList<Article> of all matching articles
+   */
   public static ArrayList<Article> getAllArticles(PreparedStatement pstmt) {
       ArrayList<Article> article = new ArrayList<>();
       try {
@@ -476,7 +513,12 @@ public class DatabaseHelper {
       }
       return article;
   }
-    
+
+  /**
+   * If article is not in database (i.e. article.ID == -1) add to database.
+   * Else update existing article in database.
+   * @param article the article to add/update
+   */
   public static void addOrUpdateArticle(Article article) {
       if (article.ID == -1) { // we need to add the user
           addArticle(article);
@@ -485,6 +527,10 @@ public class DatabaseHelper {
       }
   }
   
+  /**
+   * Update existing article with database. If article with given article.ID is not found, this will not affect the database.
+   * @param article the article to update
+   */
   public static void updateArticle(Article article) {
       // first, check to see if user with id exists
       String existingUserQuery = "SELECT * FROM cse360articles WHERE article_id=?";
@@ -519,6 +565,11 @@ public class DatabaseHelper {
       }
   }
   
+  /**
+   * Delete an Article from the database.
+   * @param article The article object to delete
+   * @return true/false whether the delete succeeded
+   */
   public static boolean deleteArticle(Article article) {
       try {
           String deleteQuery = "DELETE FROM cse360articles WHERE article_id=?";
@@ -534,6 +585,11 @@ public class DatabaseHelper {
       }
   }
   
+  /**
+   * Warning! This function will delete ALL ARTICLES in the connected database!
+   * Use with caution!
+   * @return true/false whether the delete succeeded
+   */
   public static boolean deleteAllArticles() {
       if (isArticleDatabaseEmpty()) return true;
       String sql = "DELETE FROM cse360articles";
@@ -546,6 +602,11 @@ public class DatabaseHelper {
       }
   }
   
+  /**
+   * Test if Articles exist in database
+   * @return true/false
+   * @throws SQLException
+   */
   public static boolean isArticleDatabaseEmpty() {
       try {
           String query = "SELECT COUNT(*) AS count FROM cse360articles";
