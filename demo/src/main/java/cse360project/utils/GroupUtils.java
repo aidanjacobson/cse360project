@@ -49,7 +49,9 @@ public class GroupUtils {
     public static ArrayList<String> consolidateGroups(ArrayList<Article> articles) {
         HashSet<String> uniqueGroups = new HashSet<>(); // To ensure uniqueness
         for (Article article : articles) {
-            uniqueGroups.addAll(article.groups); // Directly access the groups field
+            for (String group : article.groups) {
+                uniqueGroups.add(formatGroupName(group));
+            }
         }
         return new ArrayList<>(uniqueGroups);
     }
