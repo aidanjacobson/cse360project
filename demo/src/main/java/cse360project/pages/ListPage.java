@@ -47,6 +47,7 @@ public class ListPage implements Page {
 
         // Create the UI
         setupUI();
+        
     }
 
     /**
