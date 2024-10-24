@@ -5,7 +5,7 @@ import cse360project.utils.ApplicationStateManager;
 import cse360project.utils.DatabaseHelper;
 import cse360project.utils.Level;
 import cse360project.utils.PageManager;
-import cse360project.utils.Role;
+import cse360project.utils.GroupUtils;
 import cse360project.utils.SearchUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,9 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class ListPage implements Page {
 
@@ -29,6 +27,7 @@ public class ListPage implements Page {
 
     // List to store all articles (combining both dummy and database articles)
     ArrayList<Article> allArticles = new ArrayList<>();
+    ArrayList<Article> filteredArticles = new ArrayList<>(); // Store filtered articles based on search query
 
     // UI Elements for displaying feedback
     Label feedbackLabel = new Label(); // Label to display feedback messages
@@ -72,7 +71,7 @@ public class ListPage implements Page {
     }
 
     /**
-     * Set up the UI for the lis t page
+     * Set up the UI for the list page
      */
     private void setupUI() {
         VBox mainLayout = new VBox(10);
@@ -89,9 +88,11 @@ public class ListPage implements Page {
 
         Label groupLabel = new Label("Filter by Group:");
 
-        // Fetch distinct groups from both dummy data and database
-        Set<String> distinctGroups = getDistinctGroups(allArticles);
+        // Use GroupUtils to consolidate groups and format them
+        GroupUtils groupUtils = new GroupUtils();
+        ArrayList<String> distinctGroups = groupUtils.consolidateGroups(allArticles);
         distinctGroups.add("All Groups"); // Include an option for "All Groups"
+        distinctGroups.replaceAll(groupUtils::formatGroupName); // Format group names consistently
         ObservableList<String> groups = FXCollections.observableArrayList(distinctGroups);
         groupComboBox = new ComboBox<>(groups);
         groupComboBox.setValue("All Groups");
@@ -183,47 +184,45 @@ public class ListPage implements Page {
         root.getChildren().add(mainLayout);
     }
 
-    /**
-     * Helper method to extract distinct groups from the list of articles.
-     * This includes both database and dummy data.
-     */
-    private Set<String> getDistinctGroups(ArrayList<Article> articles) {
-        Set<String> distinctGroups = new HashSet<>();
-        for (Article article : articles) {
-            distinctGroups.addAll(article.groups);
-        }
-        return distinctGroups;
-    }
-
     private void handleSearch(String query) {
         if (query.isEmpty()) {
-            feedbackLabel.setText("Please enter a search query.");
-            return;
+            feedbackLabel.setText("Showing all articles.");
+            filteredArticles = new ArrayList<>(allArticles); // Reset to show all articles if no search query
+        } else {
+            filteredArticles = SearchUtil.searchArticles(allArticles, query); // Store the search results
+            if (filteredArticles.isEmpty()) {
+                feedbackLabel.setText("No articles found for query: \"" + query + "\".");
+            } else {
+                feedbackLabel.setText(filteredArticles.size() + " articles found for query: " + query);
+            }
         }
 
-        ArrayList<Article> filteredArticles = SearchUtil.searchArticles(allArticles, query);
-        if (filteredArticles.isEmpty()) {
-            feedbackLabel.setText("No articles found for query: \"" + query + "\".");
+        // After searching, apply the group filter if any is selected
+        String selectedGroup = groupComboBox.getValue();
+        if (!"All Groups".equals(selectedGroup)) {
+            handleGroupFilter(selectedGroup); // Reapply the group filter if a group is selected
         } else {
-            feedbackLabel.setText(filteredArticles.size() + " articles found for query: " + query);
+            updateArticleList(filteredArticles); // Otherwise, just show the search results
         }
-        updateArticleList(filteredArticles);
     }
+
 
     private void handleGroupFilter(String group) {
+        GroupUtils groupUtils = new GroupUtils();
         feedbackLabel.setText("Filtering by group: " + group);
+
+        // Use filteredArticles list which holds the articles from the search query
+        ArrayList<Article> articlesToFilter = filteredArticles.isEmpty() ? allArticles : filteredArticles;
+
         if ("All Groups".equals(group)) {
-            updateArticleList(allArticles); // Show all articles
+            updateArticleList(articlesToFilter); // If "All Groups" is selected, show the filteredArticles (search results)
         } else {
-            ArrayList<Article> filteredArticles = new ArrayList<>();
-            for (Article article : allArticles) {
-                if (article.groups.contains(group)) {
-                    filteredArticles.add(article);
-                }
-            }
-            updateArticleList(filteredArticles);
+            // Filter based on the group from the already filtered list (either search results or allArticles)
+            ArrayList<Article> filteredArticlesByGroup = groupUtils.getAllArticlesWithGroup(articlesToFilter, group);
+            updateArticleList(filteredArticlesByGroup);
         }
     }
+
 
     private void updateArticleList(ArrayList<Article> articles) {
         ObservableList<Article> observableArticles = FXCollections.observableArrayList(articles);
