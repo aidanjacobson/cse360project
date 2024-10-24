@@ -89,10 +89,9 @@ public class ListPage implements Page {
         Label groupLabel = new Label("Filter by Group:");
 
         // Use GroupUtils to consolidate groups and format them
-        GroupUtils groupUtils = new GroupUtils();
-        ArrayList<String> distinctGroups = groupUtils.consolidateGroups(allArticles);
+        ArrayList<String> distinctGroups = GroupUtils.consolidateGroups(allArticles);
         distinctGroups.add("All Groups"); // Include an option for "All Groups"
-        distinctGroups.replaceAll(groupUtils::formatGroupName); // Format group names consistently
+        distinctGroups.replaceAll(GroupUtils::formatGroupName); // Format group names consistently
         ObservableList<String> groups = FXCollections.observableArrayList(distinctGroups);
         groupComboBox = new ComboBox<>(groups);
         groupComboBox.setValue("All Groups");
