@@ -210,7 +210,6 @@ public class ListPage implements Page {
 
 
     private void handleGroupFilter(String group) {
-        GroupUtils groupUtils = new GroupUtils();
         feedbackLabel.setText("Filtering by group: " + group);
 
         // Use filteredArticles list which holds the articles from the search query
@@ -220,7 +219,7 @@ public class ListPage implements Page {
             updateArticleList(articlesToFilter); // If "All Groups" is selected, show the filteredArticles (search results)
         } else {
             // Filter based on the group from the already filtered list (either search results or allArticles)
-            ArrayList<Article> filteredArticlesByGroup = groupUtils.getAllArticlesWithGroup(articlesToFilter, group);
+            ArrayList<Article> filteredArticlesByGroup = GroupUtils.getAllArticlesWithGroup(articlesToFilter, group);
             updateArticleList(filteredArticlesByGroup);
         }
     }
