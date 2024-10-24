@@ -9,9 +9,12 @@ import cse360project.utils.GroupUtils;
 import cse360project.utils.SearchUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -41,33 +44,9 @@ public class ListPage implements Page {
         // Step 1: Fetch articles from the database
         ArrayList<Article> databaseArticles = DatabaseHelper.getAllArticles();
         
-        // Step 2: Add database articles to the main article list (if any exist)
-        if (!databaseArticles.isEmpty()) {
-            allArticles.addAll(databaseArticles);
-        }
-
-        // Step 3: Add dummy data for testing purposes if needed
-        addDummyData();
 
         // Create the UI
         setupUI();
-    }
-
-    /**
-     * Add dummy data to the article list for testing purposes
-     */
-    private void addDummyData() {
-        // Sample hardcoded articles (you can replace this with actual data once the database is populated)
-        allArticles.add(new Article(1, Level.BEGINNER, new ArrayList<>(List.of("Group1", "Group2")), "Beginner Java Tutorial", "Learn Java from scratch", "Java, programming", "This article introduces Java basics.", new ArrayList<>()));
-        allArticles.add(new Article(2, Level.INTERMEDIATE, new ArrayList<>(List.of("Group2", "Group3")), "Intermediate SQL Guide", "Deep dive into SQL queries", "SQL, database, joins", "This article explains intermediate SQL concepts.", new ArrayList<>()));
-        allArticles.add(new Article(3, Level.BEGINNER, new ArrayList<>(List.of("Group1")), "Java Basics for Beginners", "A basic introduction to Java", "Java, basics", "This article explains basic concepts in Java.", new ArrayList<>()));
-        allArticles.add(new Article(4, Level.ADVANCED, new ArrayList<>(List.of("Group3", "Group4")), "Advanced SQL Techniques", "Learn advanced SQL techniques", "SQL, advanced", "This article explores advanced SQL concepts.", new ArrayList<>()));
-        allArticles.add(new Article(5, Level.BEGINNER, new ArrayList<>(List.of("Group1")), "Intro to Java", "A beginner's guide to Java", "Java, programming", "This article explains introductory Java concepts.", new ArrayList<>()));
-        allArticles.add(new Article(6, Level.INTERMEDIATE, new ArrayList<>(List.of("Group2", "Group3")), "Intermediate Python Tutorial", "Enhance your Python skills", "Python, programming, intermediate", "This article explains intermediate concepts in Python.", new ArrayList<>()));
-        allArticles.add(new Article(7, Level.EXPERT, new ArrayList<>(List.of("Group4")), "Expert SQL Performance Tuning", "Optimize SQL queries for performance", "SQL, performance, tuning", "This article discusses SQL performance tuning.", new ArrayList<>()));
-        allArticles.add(new Article(8, Level.BEGINNER, new ArrayList<>(List.of("Group1", "Group2")), "Java Programming Basics", "A beginner’s guide to Java programming", "Java, basics, programming", "This article introduces Java basics.", new ArrayList<>()));
-        allArticles.add(new Article(9, Level.INTERMEDIATE, new ArrayList<>(List.of("Group2")), "Python Functions and Modules", "An intermediate guide to Python functions", "Python, functions, modules", "This article covers Python functions and modules.", new ArrayList<>()));
-        allArticles.add(new Article(10, Level.ADVANCED, new ArrayList<>(List.of("Group3", "Group4")), "Advanced Java Techniques", "Learn advanced Java techniques", "Java, advanced", "This article explains advanced techniques in Java.", new ArrayList<>()));
     }
 
     /**
@@ -126,7 +105,7 @@ public class ListPage implements Page {
             }
         });
 
-        // Handle article click to switch to view page
+     /*   // Handle article click to switch to view page
         articleListView.setOnMouseClicked(event -> {
             Article selectedArticle = articleListView.getSelectionModel().getSelectedItem();
             if (selectedArticle != null) {
@@ -138,6 +117,26 @@ public class ListPage implements Page {
 
                 // Switch to the viewpage
                 PageManager.switchToPage("viewpage");
+            }
+        });*/
+        
+        articleListView.setOnMouseClicked((EventHandler<? super MouseEvent>) new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent mouseEvent) {
+                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+                    if(mouseEvent.getClickCount() == 2){
+                    	Article selectedArticle = articleListView.getSelectionModel().getSelectedItem();
+                    	if (selectedArticle != null) {
+                            // Get the ViewArticle page from the PageManager
+                            ViewArticle viewPage = (ViewArticle) PageManager.getPageByName("viewpage");
+
+                            // Set the selected article to be viewed
+                            viewPage.setViewingArticle(selectedArticle);
+
+                            // Switch to the viewpage
+                            PageManager.switchToPage("viewpage");
+                        }
+                    }
+                }
             }
         });
 
