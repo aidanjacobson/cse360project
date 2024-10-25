@@ -1,6 +1,7 @@
 package cse360project.pages;
 
 import cse360project.Article;
+import cse360project.pages.viewedit.EditPage;
 import cse360project.pages.viewedit.ViewPage;
 import cse360project.utils.ApplicationStateManager;
 import cse360project.utils.DatabaseHelper;
@@ -42,7 +43,7 @@ public class ListPage implements Page {
 
     // Constructor for the ListPage
     public ListPage() {
-        
+        setupUI(); // Set up the UI for the list page
     }
 
     /**
@@ -159,14 +160,14 @@ public class ListPage implements Page {
         Button createArticleButton = new Button("Create New Article");
         createArticleButton.setOnAction(e -> {
             // Get the EditArticle page from the PageManager
-            EditArticle editPage = (EditArticle) PageManager.getPageByName("editarticle");
+            EditPage editPage = (EditPage) PageManager.getPageByName("editpage");
 
             // Set up the page with placeholders for creating a new article
-            Article newArticle = new Article(-1, Level.BEGINNER, new ArrayList<>(), "Enter Title", "Enter description", "Enter keywords", "Enter article body", new ArrayList<>());
+            Article newArticle = new Article(-1, Level.BEGINNER, new ArrayList<>(), "", "", "", "", new ArrayList<>());
             editPage.setEditingArticle(newArticle); // Pass the new article to the edit page
 
             // Switch to the edit article page
-            PageManager.switchToPage("editarticle");
+            PageManager.switchToPage("editpage");
         });
 
         // HBox for the back, logout, and create article buttons

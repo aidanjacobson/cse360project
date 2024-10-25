@@ -1,7 +1,15 @@
 package cse360project.pages.viewedit;
 
+import java.awt.Desktop;
+import java.net.URI;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import cse360project.utils.Role;
 import cse360project.Article;
 import cse360project.pages.Page;
+import cse360project.utils.ApplicationStateManager;
+import cse360project.utils.DatabaseHelper;
 import cse360project.utils.Level;
 import cse360project.utils.PageManager;
 import javafx.geometry.Insets;
@@ -17,7 +25,11 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.chart.PieChart.Data;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Hyperlink;
 
 public class ViewPage implements Page {
     BorderPane root = new BorderPane();
@@ -28,6 +40,7 @@ public class ViewPage implements Page {
     Label keywordsValueLabel;
     Text bodyText;
     VBox linksContainer;
+    HBox editButtonContainer;
 
     public ViewPage() {
         createInterface();
@@ -37,14 +50,35 @@ public class ViewPage implements Page {
         // first we need an "edit article" button
         Button editButton = new Button("Edit This Article");
         editButton.setOnAction(event -> {
-            System.out.println("Editing!");
+            EditPage editPage = (EditPage) PageManager.getPageByName("editpage");
+            editPage.setEditingArticle(viewingArticle);
+            PageManager.switchToPage("editpage");
         });
         setLinkButtonStyles(editButton);
 
-        HBox editButtonContainer = new HBox();
+        Button deleteButton = new Button("Delete This Article");
+        deleteButton.setOnAction(event -> {
+            // confirm deletion
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Delete Confirmation");
+            alert.setHeaderText("Are you sure you want to delete this article?");
+            alert.setContentText("This action cannot be undone.");
+
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    // Perform the deletion of the article
+                    DatabaseHelper.deleteArticle(viewingArticle);
+                    PageManager.switchToPage("listarticles");
+                }
+            });
+        });
+        setLinkButtonStyles(deleteButton);
+
+        editButtonContainer = new HBox(10);
         editButtonContainer.setAlignment(Pos.CENTER_LEFT);
-        editButtonContainer.getChildren().add(editButton);
-        editButtonContainer.setPadding(new Insets(0, 0, 20, 20));
+        editButtonContainer.getChildren().addAll(editButton, deleteButton);
+
+        editButtonContainer.setPadding(new Insets(20, 20, 0, 20));
 
         root.setTop(editButtonContainer);
 
@@ -64,6 +98,7 @@ public class ViewPage implements Page {
 
         // Create the left container for the existing components
         VBox leftContainer = new VBox();
+        leftContainer.setPadding(new Insets(10, 20, 10, 20));
 
         // the article should have a title at the top
         // the font size should be larger than the rest of the article
@@ -81,7 +116,7 @@ public class ViewPage implements Page {
         
         leftContainer.getChildren().addAll(levelLabel, descriptionLabel);
         levelLabel.setStyle("-fx-font-size: 20px;");
-        descriptionLabel.setStyle("-fx-font-size: 20px;");
+        descriptionLabel.setStyle("-fx-font-size: 15px;");
         descriptionLabel.setWrapText(true);
 
         // add some margin to the bottom of the description
@@ -122,6 +157,7 @@ public class ViewPage implements Page {
         // Make the body container scrollable
         ScrollPane bodyScrollPane = new ScrollPane(bodyContainer);
         bodyScrollPane.setFitToWidth(true);
+        bodyScrollPane.setPrefHeight(400);
 
         // Add the body scroll pane to the right side of the SplitPane
         splitPane.getItems().add(bodyScrollPane);
@@ -188,6 +224,8 @@ public class ViewPage implements Page {
             return;
         }
 
+        updateEditButtonVisibility();
+
         // set the article title
         titleLabel.setText(viewingArticle.title);
 
@@ -210,14 +248,71 @@ public class ViewPage implements Page {
         setLinks();
     }
 
+    private void updateEditButtonVisibility() {
+        Role loggedInRole = ApplicationStateManager.getRole();
+
+        if (loggedInRole == Role.ADMIN || loggedInRole == Role.INSTRUCTOR) {
+            editButtonContainer.setVisible(true);
+        } else {
+            editButtonContainer.setVisible(false);
+        }
+    }
+
     private void setLinks() {
         // clear the links container
         linksContainer.getChildren().clear();
 
         // add the links
         for (int i = 0; i < viewingArticle.links.size(); i++) {
-            Label linkLabel = new Label(viewingArticle.links.get(i));
-            linksContainer.getChildren().add(linkLabel);
+            String link = viewingArticle.links.get(i);
+            if (linkContainsValidURL(link)) {
+                createURLLink(link);
+            } else {
+                addTextLink(link);
+            }
         }
+    }
+
+    private String urlRegexp = "((?:https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|])";
+
+    private boolean linkContainsValidURL(String link) {
+        Pattern pattern = Pattern.compile(urlRegexp);
+        Matcher matcher = pattern.matcher(link);
+        boolean found = matcher.find();
+        return found;
+    }
+
+    private void createURLLink(String link) {
+        Pattern pattern = Pattern.compile(urlRegexp);
+        Matcher matcher = pattern.matcher(link);
+
+        if (!matcher.find()) {
+            addTextLink(link);
+            return;
+        }
+
+        String url = matcher.group(1);
+
+        Hyperlink linkLabel = new Hyperlink(link);
+        linkLabel.setStyle("-fx-font-size: 15px;");
+
+        linkLabel.setOnAction(e -> {
+            try {
+                // open the link in the browser
+                Desktop.getDesktop().browse(new URI(url));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                addTextLink(link);
+                return;
+            }
+        });
+
+        linksContainer.getChildren().add(linkLabel);
+    }
+
+    private void addTextLink(String link) {
+        Label linkLabel = new Label(link);
+        linkLabel.setStyle("-fx-font-size: 15px;");
+        linksContainer.getChildren().add(linkLabel);
     }
 }
