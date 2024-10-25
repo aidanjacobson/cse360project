@@ -35,18 +35,18 @@ import java.net.URI;
  * It is accessed by calling the "setEditingArticle" method, then switching to this page
  */
 public class EditPage implements Page {
-    StackPane stackRoot = new StackPane();
-    ScrollPane scrollRoot = new ScrollPane();
-    BorderPane root = new BorderPane();
+    private StackPane stackRoot = new StackPane();
+    private ScrollPane scrollRoot = new ScrollPane();
+    private BorderPane root = new BorderPane();
     
-    VBox editorContainer;
-    TextField titleTextField;
-    TextField descriptionTextField;
-    ComboBox<String> levelComboBox;
-    Label groupsLabel;
-    TextField keywordsTextField;
-    TextArea bodyTextField;
-    VBox linksContainer;
+    private VBox editorContainer;
+    private TextField titleTextField;
+    private TextField descriptionTextField;
+    private ComboBox<String> levelComboBox;
+    private Label groupsLabel;
+    private TextField keywordsTextField;
+    private TextArea bodyTextField;
+    private VBox linksContainer;
 
     /**
      * Constructor for EditPage

@@ -29,25 +29,25 @@ import javafx.scene.layout.HBox;
 public class BackupWizard {
     // create the necessary fields for the backup wizard
     // these fields should will be accessed by the other methods in the class
-    static Stage backupStage;
-    static VBox centerBox;
-    static BorderPane root;
+    private static Stage backupStage;
+    private static VBox centerBox;
+    private static BorderPane root;
 
     // where the group checkboxes will be stored
-    static VBox groupCheckboxContainer;
+    private static VBox groupCheckboxContainer;
 
     // create the search bar
-    static TextField searchBar;
+    private static TextField searchBar;
 
     // create the backup button
-    static Button backupButton;
+    private static Button backupButton;
 
     // create the radio buttons for the group selection options
-    static RadioButton allGroupsOption;
-    static RadioButton specificGroupsOption;
+    private static RadioButton allGroupsOption;
+    private static RadioButton specificGroupsOption;
 
     // create the backup location field
-    static File backupLocation;
+    private static File backupLocation;
     
     /**
      * Call this method from any location to open the backup window
@@ -160,7 +160,7 @@ public class BackupWizard {
     /**
      * Method to set the title of the backup wizard
      */
-    static void setTitle() {
+    private static void setTitle() {
         // the top of the borderpane should be a title that says "Backup Database"
         Label titleLabel = new Label("Backup Database");
         titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
@@ -171,7 +171,7 @@ public class BackupWizard {
     /**
      * Method to create the group selection radio options, as well as the group checkboxes
      */
-    static void createGroupSelectionOptions() {
+    private static void createGroupSelectionOptions() {
         ToggleGroup backupOptions = new ToggleGroup();
 
         allGroupsOption = new RadioButton("Backup All Groups");
@@ -198,7 +198,7 @@ public class BackupWizard {
      * Method to create the group checkboxes, one for each group
      * This will also create a search bar to filter the groups
      */
-    static void createGroupCheckboxContent() {
+    private static void createGroupCheckboxContent() {
         // create a section underneath the backup radio selection
         // this section should contain checkboxes for each group
         // as well as a search bar to filter the groups
@@ -241,7 +241,7 @@ public class BackupWizard {
      * Method to render the visibility of the group checkboxes based on the search bar input
      * A checkbox should always be visible if it is selected or if the search bar input is contained in the checkbox text
      */
-    static void renderCheckboxVisibility() {
+    private static void renderCheckboxVisibility() {
         for (javafx.scene.Node node : groupCheckboxContainer.getChildren()) {
             if (node instanceof CheckBox) {
                 // get the checkbox and the text value of the search bar
@@ -266,7 +266,7 @@ public class BackupWizard {
      * Method to get the selected groups from the group checkboxes
      * @return An ArrayList<String> of the selected groups
      */
-    static ArrayList<String> getSelectedGroups() {
+    private static ArrayList<String> getSelectedGroups() {
         // go through each checkbox and add the text of the selected checkboxes to the selectedGroups list
         ArrayList<String> selectedGroups = new ArrayList<>();
         for (javafx.scene.Node node : groupCheckboxContainer.getChildren()) {
@@ -285,7 +285,7 @@ public class BackupWizard {
      * This will only show the group checkboxes if the "Backup Specific Groups" option is selected
      * @param newValue
      */
-    static void groupSelectionUpdated(Object newValue) {
+    private static void groupSelectionUpdated(Object newValue) {
         // if the user selects the "Backup All Groups" option, hide the group checkbox container
         // if the user selects the "Backup Specific Groups" option, show the group checkbox container
         if (((RadioButton) newValue).getText().equals("Backup All Groups")) {
@@ -299,7 +299,7 @@ public class BackupWizard {
     /**
      * Method to create the buttons at the bottom of the borderpane
      */
-    static void createButtons() {
+    private static void createButtons() {
         
         HBox buttonBox = new HBox(10);
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
@@ -328,7 +328,7 @@ public class BackupWizard {
      * Called when the user clicks the backup button
      * Meaning the user has selected a backup location and at least one group to backup
      */
-    static void startBackup() {
+    private static void startBackup() {
         // if the user has selected a backup location, start the backup process
         // otherwise, show an error message
         if (backupLocation != null) {

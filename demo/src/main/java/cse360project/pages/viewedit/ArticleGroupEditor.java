@@ -24,15 +24,15 @@ import javafx.stage.Stage;
  * This class is used to edit the groups of an article
  */
 public class ArticleGroupEditor {
-    static Stage groupsStage;
-    static BorderPane root;
+    private static Stage groupsStage;
+    private static BorderPane root;
 
-    static VBox groupCheckboxContainer;
-    static VBox centerBox;
-    static TextField newGroupTextField;
+    private static VBox groupCheckboxContainer;
+    private static VBox centerBox;
+    private static TextField newGroupTextField;
     
     // The article that is being edited
-    static Article editingArticle;
+    private static Article editingArticle;
 
     /**
      * This method is used to edit the groups of an article
@@ -198,7 +198,7 @@ public class ArticleGroupEditor {
     }
     
     // This is a list of extra groups that don't exist in the database but are added by the user
-    static ArrayList<String> extraGroups = new ArrayList<>();
+    private static ArrayList<String> extraGroups = new ArrayList<>();
 
     /**
      * This method renders the list of checkboxes for the groups

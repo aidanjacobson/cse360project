@@ -20,15 +20,15 @@ import javafx.stage.Stage;
  * This class is used to edit the links of an article
  */
 public class ArticleLinkEditor {
-    static Stage linksStage;
-    static BorderPane root;
+    private static Stage linksStage;
+    private static BorderPane root;
 
-    static VBox linkContainer;
-    static VBox centerBox;
-    static TextField newLinkTextField;
+    private static VBox linkContainer;
+    private static VBox centerBox;
+    private static TextField newLinkTextField;
 
     // The article that is being edited
-    static Article editingArticle;
+    private static Article editingArticle;
 
     /**
      * This method is used to edit the links of an article

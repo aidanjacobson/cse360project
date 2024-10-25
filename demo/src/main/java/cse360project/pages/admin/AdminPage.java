@@ -32,10 +32,9 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
 public class AdminPage implements Page {
-    BorderPane root = new BorderPane();
-    // Pane main = new Pane();
-    GridPane userListGrid = new GridPane();
-    StackPane pageContent = new StackPane();
+    private BorderPane root = new BorderPane();
+    private GridPane userListGrid = new GridPane();
+    private StackPane pageContent = new StackPane();
 
     /**
      * Constructor for admin page

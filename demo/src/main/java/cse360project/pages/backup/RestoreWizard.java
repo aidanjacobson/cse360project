@@ -26,16 +26,16 @@ import javafx.scene.text.TextFlow;
  */
 public class RestoreWizard {
     // global variables for the restore wizard
-    static Stage restoreStage;
-    static BorderPane root;
-    static VBox centerBox;
-    static Button restoreButton;
+    private static Stage restoreStage;
+    private static BorderPane root;
+    private static VBox centerBox;
+    private static Button restoreButton;
 
-    static RadioButton mergeOverwriteButton;
-    static RadioButton mergeKeepButton;
-    static RadioButton replaceAllButton;
+    private static RadioButton mergeOverwriteButton;
+    private static RadioButton mergeKeepButton;
+    private static RadioButton replaceAllButton;
 
-    static File backupLocation;
+    private static File backupLocation;
 
     /**
      * Call this method from any location to open the restore wizard

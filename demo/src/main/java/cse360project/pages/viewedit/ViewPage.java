@@ -34,15 +34,15 @@ import javafx.scene.control.Hyperlink;
  * This class is used to view an article
  */
 public class ViewPage implements Page {
-    BorderPane root = new BorderPane();
-    Label titleLabel;
-    Label levelLabel;
-    Label descriptionLabel;
-    Label groupsLabel;
-    Label keywordsValueLabel;
-    Text bodyText;
-    VBox linksContainer;
-    HBox editButtonContainer;
+    private BorderPane root = new BorderPane();
+    private Label titleLabel;
+    private Label levelLabel;
+    private Label descriptionLabel;
+    private Label groupsLabel;
+    private Label keywordsValueLabel;
+    private Text bodyText;
+    private VBox linksContainer;
+    private HBox editButtonContainer;
 
     /**
      * Constructor for the ViewPage

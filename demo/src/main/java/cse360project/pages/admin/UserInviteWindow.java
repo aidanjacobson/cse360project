@@ -19,9 +19,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class UserInviteWindow {
-    static CheckBox adminCB, studentCB, instructorCB;
-    static Button inviteButton;
-    static Stage inviteStage;
+    private static CheckBox adminCB, studentCB, instructorCB;
+    private static Button inviteButton;
+    private static Stage inviteStage;
 
     /**
      * Open the invite user dialog
@@ -104,7 +104,7 @@ public class UserInviteWindow {
     /**
      * Update the invite button based on the checkboxes
      */
-    static void checkboxWasClicked() {
+    private static void checkboxWasClicked() {
         // count how many roles are selected
         int selectedCount = 0;
         if (adminCB.isSelected()) selectedCount++;
@@ -122,7 +122,7 @@ public class UserInviteWindow {
     /**
      * Submit the invite and create the user
      */
-    static void submitInvite() {
+    private static void submitInvite() {
         // determine new roles
         boolean is_admin = adminCB.isSelected();
         boolean is_student = studentCB.isSelected();
@@ -149,7 +149,7 @@ public class UserInviteWindow {
      * @param is_instructor
      * @return a string of the roles selected
      */
-    static String getRoleListString(boolean is_admin, boolean is_student, boolean is_instructor) {
+    private static String getRoleListString(boolean is_admin, boolean is_student, boolean is_instructor) {
         String out = "";
         if (is_admin) {
             if (out.equals("")) {
