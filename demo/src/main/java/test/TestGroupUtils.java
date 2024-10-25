@@ -4,7 +4,6 @@ import cse360project.utils.GroupUtils;
 import cse360project.Article;
 import cse360project.utils.Level;
 
-
 import java.util.ArrayList;
 
 public class TestGroupUtils {
@@ -16,13 +15,13 @@ public class TestGroupUtils {
         System.out.println("____________________________________________________________________________");
         System.out.println("\nGroupUtils Testing Automation");
 
-        
+      
         ArrayList<Article> articles = createTestArticles();
 
         // test getAllArticlesWithGroup
         performGroupTest(1, "Group 1", 2); 
         performGroupTest(2, "Group 2", 2); 
-        performGroupTest(3, "Group 3", 1); 
+        performGroupTest(3, "Group 3", 1);
         performGroupTest(4, "NonExistentGroup", 0); 
 
         // test getAllArticlesWithGroups
@@ -32,7 +31,7 @@ public class TestGroupUtils {
         performGroupsTest(5, groupList, 3);  
 
         // test consolidateGroups
-        performConsolidateGroupsTest(6, articles, 3); 
+        performConsolidateGroupsTest(6, articles, 3);
 
         // test formatGroupName
         performFormatGroupNameTest(7, " group1 test ", "Group1 Test");
@@ -89,7 +88,6 @@ public class TestGroupUtils {
         }
     }
 
-    // Creates a list of test articles
     private static ArrayList<Article> createTestArticles() {
         ArrayList<Article> articles = new ArrayList<>();
 
@@ -118,6 +116,7 @@ public class TestGroupUtils {
         
         ArrayList<String> groups3 = new ArrayList<>();
         groups3.add("Group 1");
+        groups3.add("Group 3");  
 
         ArrayList<String> links3 = new ArrayList<>();
         links3.add("Link 3");
@@ -129,4 +128,3 @@ public class TestGroupUtils {
         return articles;
     }
 }
-
