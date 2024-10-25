@@ -18,7 +18,6 @@ public class BackupRestoreUtils {
      * @return True if the backup was successful, false otherwise
      */
     public static boolean backupDatabase(String path) {
-        // TODO: replace getAllArticleGroups() with the actual method to get all article groups
         ArrayList<String> allGroups = GroupUtils.consolidateGroups();
         return backupDatabase(path, allGroups);
     }

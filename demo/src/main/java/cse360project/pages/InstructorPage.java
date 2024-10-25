@@ -50,7 +50,7 @@ public class InstructorPage implements Page {
         // See article list
         Button articleListButton = new Button("See Article List");
         articleListButton.setOnAction(e -> {
-            PageManager.switchToPage("listarticles"); // TODO: change this to the actual page name once it is created
+            PageManager.switchToPage("listarticles");
         });
         setLinkButtonStyles(articleListButton);
         

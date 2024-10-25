@@ -83,7 +83,6 @@ public class LoginPage implements Page {
 					password.clear();
 				}
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
         });
@@ -112,7 +111,6 @@ public class LoginPage implements Page {
 					emailAlert.showAndWait();//alert them their invite code is invalid
 				}
 			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
             	
