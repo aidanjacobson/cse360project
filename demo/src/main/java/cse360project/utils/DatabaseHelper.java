@@ -78,7 +78,7 @@ public class DatabaseHelper {
 				+ "article_id BIGINT AUTO_INCREMENT PRIMARY KEY, "
 				+ "level VARCHAR(15) NOT NULL, "
 				+ "groups VARCHAR(500), "
-				+ "title VARCHAR(20) NOT NULL, "
+				+ "title VARCHAR(50) NOT NULL, "
 				+ "description VARCHAR(500) NOT NULL, "
                 + "keywords VARCHAR(300) NOT NULL, "
                 + "body VARCHAR(10000) NOT NULL, "
