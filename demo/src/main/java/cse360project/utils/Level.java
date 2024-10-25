@@ -1,7 +1,7 @@
 package cse360project.utils;
 
 /**
- * Enum for the different levels a user can have
+ * Enum for the different levels an article can have
  */
 public enum Level{
 	BEGINNER,

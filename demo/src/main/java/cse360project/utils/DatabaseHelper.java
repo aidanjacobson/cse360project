@@ -366,9 +366,9 @@ public class DatabaseHelper {
      * @param article The article to add
      */
     public static void addArticle(Article article) {
-        // if the user id is not -1, we should not add to database
+        // if the article id is not -1, we should not add to database
         try {
-            // we want to obtain the new id of the added user
+            // we want to obtain the new id of the added article
             String[] returnId = { "article_id" };
             ArrayList<String> unprocessedGroups = article.groups;
             ArrayList<String> groups = new ArrayList<>();
@@ -411,7 +411,7 @@ public class DatabaseHelper {
                 insertStatement.executeUpdate();
             }
 
-            // capture id of new user, and update the User object id to match
+            // capture id of new article, and update the Article object id to match
             try (ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     article.ID = generatedKeys.getInt(1);
@@ -537,13 +537,13 @@ public class DatabaseHelper {
    * @param article the article to update
    */
   public static void updateArticle(Article article) {
-      // first, check to see if user with id exists
+      // first, check to see if article with id exists
       String existingUserQuery = "SELECT * FROM cse360articles WHERE article_id=?";
       try {
           PreparedStatement pstmt = connection.prepareStatement(existingUserQuery);
           pstmt.setLong(1, article.ID);
           ResultSet rs = pstmt.executeQuery();
-          if (! rs.next()) { // requesting to update existing user with id, but id does not exist
+          if (! rs.next()) { // requesting to update existing article with id, but id does not exist
               System.err.printf("Error: Attempted to update article with id %d, but id was not found%n", article.ID);
               return;
           }
@@ -551,7 +551,7 @@ public class DatabaseHelper {
           String link = String.join("\n", article.links);
           String lev = Level.levelToString(article.level);
           
-          // the user exists, craft the UPDATE query for the user
+          // the user exists, craft the UPDATE query for the article
           String updateQuery = "UPDATE cse360articles SET level=?, groups=?, title=?, description=?, keywords=?, body=?, links=? WHERE article_id=?";
           PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
           updateStatement.setString(1, lev);

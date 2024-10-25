@@ -21,8 +21,8 @@ public class Article implements Serializable{
 	
 	
 	/**
-     * Constructor for User
-     * @param id the users id in the db, or -1 if not in db
+     * Constructor for Article
+     * @param id the article id in the db, or -1 if not in db
      * @param level the difficulty of the article cannot be null
      * @param groups list of the groupings of articles
      * @param title the title of the article cannot be null
