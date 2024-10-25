@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import cse360project.utils.GroupUtils;
 import cse360project.utils.Level;
@@ -148,23 +149,40 @@ public class Article implements Serializable{
      * @throws SQLException
      */
 	public static Article fromResultSet(ResultSet rs) throws SQLException {
-		String allGroups = rs.getString("groups");
-		ArrayList<String> group = new ArrayList<>();
-		String groupArray[];
-		groupArray = (allGroups.split("\n"));
-		for (int i = 0; i < groupArray.length; i++) {
-			group.add(groupArray[i]);
-		}
-		String allLinks = rs.getString("links");
-		ArrayList<String> link = new ArrayList<>();
-		String linkArray[];
-		linkArray = (allLinks.split("\n"));
-		for (int j = 0; j < linkArray.length; j++) {
-			link.add(linkArray[j]);
-		}
-		Level level = Level.stringToLevel(rs.getString("level"));
-	    return new Article(rs.getLong("article_id"), level, group, rs.getString("title"), rs.getString("description"), rs.getString("keywords"), rs.getString("body"), link);
-	    }
+	// 	String allGroups = rs.getString("groups");
+	// 	ArrayList<String> group = new ArrayList<>();
+	// 	String groupArray[];
+	// 	groupArray = (allGroups.split("\n"));
+	// 	for (int i = 0; i < groupArray.length; i++) {
+	// 		group.add(groupArray[i]);
+	// 	}
+	// 	String allLinks = rs.getString("links");
+	// 	ArrayList<String> link = new ArrayList<>();
+	// 	String linkArray[];
+	// 	linkArray = (allLinks.split("\n"));
+	// 	for (int j = 0; j < linkArray.length; j++) {
+	// 		link.add(linkArray[j]);
+	// 	}
+	// 	Level level = Level.stringToLevel(rs.getString("level"));
+	//     return new Article(rs.getLong("article_id"), level, group, rs.getString("title"), rs.getString("description"), rs.getString("keywords"), rs.getString("body"), link);
+          String allGroups = rs.getString("groups");
+          ArrayList<String> groups = new ArrayList<>(Arrays.asList(allGroups.split("\n")));
+          groups.removeIf(String::isEmpty);
+
+          String allLinks = rs.getString("links");
+          ArrayList<String> links = new ArrayList<>(Arrays.asList(allLinks.split("\n")));
+          links.removeIf(String::isEmpty);
+
+          Level level = Level.stringToLevel(rs.getString("level"));
+
+          long id = rs.getLong("article_id");
+          String title = rs.getString("title");
+          String description = rs.getString("description");
+          String keywords = rs.getString("keywords");
+          String body = rs.getString("body");
+
+          return new Article(id, level, groups, title, description, keywords, body, links);
+     }
 	
     /**
      * Check if the article is the level of a specified level
