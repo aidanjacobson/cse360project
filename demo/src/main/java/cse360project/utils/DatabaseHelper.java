@@ -469,162 +469,161 @@ public class DatabaseHelper {
      * @param id the id of the article
      * @return true/false whether the article exists
      */
-  public static boolean articleWithIdExists(long id) {
-      String existingUserQuery = "SELECT * FROM cse360articles WHERE article_id=?";
-      try {
-      PreparedStatement pstmt = connection.prepareStatement(existingUserQuery);
-      pstmt.setLong(1, id);
-      ResultSet rs = pstmt.executeQuery();
-		if (rs.next()) {
-			  return true;
-		  }
-	} catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	return false;
-  }
+    public static boolean articleWithIdExists(long id) {
+        String existingUserQuery = "SELECT * FROM cse360articles WHERE article_id=?";
+        try {
+        PreparedStatement pstmt = connection.prepareStatement(existingUserQuery);
+        pstmt.setLong(1, id);
+        ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return false;
+    }
 
   /**
    * Get all articles that match the query.
    * @param query the query to select the articles
    * @return an ArrayList<Article> of all matching articles
    */
-  public static ArrayList<Article> getAllArticles(String query) {
-      try {
-          PreparedStatement pstmt = connection.prepareStatement(query);
-          return getAllArticles(pstmt);
-      } catch(SQLException e) {
-          e.printStackTrace();
-          return new ArrayList<>();
-      }
-  }
+    public static ArrayList<Article> getAllArticles(String query) {
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            return getAllArticles(pstmt);
+        } catch(SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
 
   /**
    * Get all articles that match the prepared statement.
    * @param pstmt a PreparedStatement created with DatabaseHelper.prepareStatement(query)
    * @return an ArrayList<Article> of all matching articles
    */
-  public static ArrayList<Article> getAllArticles(PreparedStatement pstmt) {
-      ArrayList<Article> article = new ArrayList<>();
-      try {
-          ResultSet rs = pstmt.executeQuery();
-          while (rs.next()) {
-              Article newArticle = Article.fromResultSet(rs);
-              article.add(newArticle);
-          }
-      } catch(SQLException e) {
-          e.printStackTrace();
-      }
-      return article;
-  }
+    public static ArrayList<Article> getAllArticles(PreparedStatement pstmt) {
+        ArrayList<Article> article = new ArrayList<>();
+        try {
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Article newArticle = Article.fromResultSet(rs);
+                article.add(newArticle);
+            }
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return article;
+    }
 
   /**
    * If article is not in database (i.e. article.ID == -1) add to database.
    * Else update existing article in database.
    * @param article the article to add/update
    */
-  public static void addOrUpdateArticle(Article article) {
-      if (article.ID == -1) { // we need to add the user
-          addArticle(article);
-      } else { // update existing user
-          updateArticle(article);
-      }
-  }
+    public static void addOrUpdateArticle(Article article) {
+        if (article.ID == -1) { // we need to add the user
+            addArticle(article);
+        } else { // update existing user
+            updateArticle(article);
+        }
+    }
   
   /**
    * Update existing article with database. If article with given article.ID is not found, this will not affect the database.
    * @param article the article to update
    */
-  public static void updateArticle(Article article) {
-      // first, check to see if article with id exists
-      String existingUserQuery = "SELECT * FROM cse360articles WHERE article_id=?";
-      try {
-          PreparedStatement pstmt = connection.prepareStatement(existingUserQuery);
-          pstmt.setLong(1, article.ID);
-          ResultSet rs = pstmt.executeQuery();
-          if (! rs.next()) { // requesting to update existing article with id, but id does not exist
-              System.err.printf("Error: Attempted to update article with id %d, but id was not found%n", article.ID);
-              return;
-          }
-          String group = String.join("\n", article.groups);
-          String link = String.join("\n", article.links);
-          String lev = Level.levelToString(article.level);
-          
-          // the user exists, craft the UPDATE query for the article
-          String updateQuery = "UPDATE cse360articles SET level=?, groups=?, title=?, description=?, keywords=?, body=?, links=? WHERE article_id=?";
-          PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
-          updateStatement.setString(1, lev);
-          updateStatement.setString(2, group);
-          updateStatement.setString(3, article.title);
-          updateStatement.setString(4, article.description);
-          updateStatement.setString(5, article.keywords);
-          updateStatement.setString(6, article.body);
-          updateStatement.setString(7, link);
-          updateStatement.setLong(8, article.ID);
+    public static void updateArticle(Article article) {
+        // first, check to see if article with id exists
+        String existingUserQuery = "SELECT * FROM cse360articles WHERE article_id=?";
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(existingUserQuery);
+            pstmt.setLong(1, article.ID);
+            ResultSet rs = pstmt.executeQuery();
+            if (! rs.next()) { // requesting to update existing article with id, but id does not exist
+                System.err.printf("Error: Attempted to update article with id %d, but id was not found%n", article.ID);
+                return;
+            }
+            String group = String.join("\n", article.groups);
+            String link = String.join("\n", article.links);
+            String lev = Level.levelToString(article.level);
+            
+            // the user exists, craft the UPDATE query for the article
+            String updateQuery = "UPDATE cse360articles SET level=?, groups=?, title=?, description=?, keywords=?, body=?, links=? WHERE article_id=?";
+            PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
+            updateStatement.setString(1, lev);
+            updateStatement.setString(2, group);
+            updateStatement.setString(3, article.title);
+            updateStatement.setString(4, article.description);
+            updateStatement.setString(5, article.keywords);
+            updateStatement.setString(6, article.body);
+            updateStatement.setString(7, link);
+            updateStatement.setLong(8, article.ID);
 
-          // execute the query
-          updateStatement.executeUpdate();
-      } catch(SQLException e) {
-          e.printStackTrace();
-      }
-  }
+            // execute the query
+            updateStatement.executeUpdate();
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
   
   /**
    * Delete an Article from the database.
    * @param article The article object to delete
    * @return true/false whether the delete succeeded
    */
-  public static boolean deleteArticle(Article article) {
-      try {
-          String deleteQuery = "DELETE FROM cse360articles WHERE article_id=?";
-          PreparedStatement pstmt = connection.prepareStatement(deleteQuery);
-          pstmt.setLong(1, article.ID);
-          int affectedRows = pstmt.executeUpdate();
-          article.ID = -1;
-          if (affectedRows == 0) return false;
-          return true;
-      } catch(SQLException e) {
-          e.printStackTrace();
-          return false;
-      }
-  }
+    public static boolean deleteArticle(Article article) {
+        try {
+            String deleteQuery = "DELETE FROM cse360articles WHERE article_id=?";
+            PreparedStatement pstmt = connection.prepareStatement(deleteQuery);
+            pstmt.setLong(1, article.ID);
+            int affectedRows = pstmt.executeUpdate();
+            article.ID = -1;
+            if (affectedRows == 0) return false;
+            return true;
+        } catch(SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
   
   /**
    * Warning! This function will delete ALL ARTICLES in the connected database!
    * Use with caution!
    * @return true/false whether the delete succeeded
    */
-  public static boolean deleteAllArticles() {
-      if (isArticleDatabaseEmpty()) return true;
-      String sql = "DELETE FROM cse360articles";
-      try {
-          int rows = statement.executeUpdate(sql);
-          return true;
-      } catch(SQLException e) {
-          e.printStackTrace();
-          return false;
-      }
-  }
+    public static boolean deleteAllArticles() {
+        if (isArticleDatabaseEmpty()) return true;
+        String sql = "DELETE FROM cse360articles";
+        try {
+            int rows = statement.executeUpdate(sql);
+            return true;
+        } catch(SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
   
   /**
    * Test if Articles exist in database
    * @return true/false
    * @throws SQLException
    */
-  public static boolean isArticleDatabaseEmpty() {
-      try {
-          String query = "SELECT COUNT(*) AS count FROM cse360articles";
-          ResultSet resultSet = statement.executeQuery(query);
-          if (resultSet.next()) {
-              return resultSet.getInt("count") == 0;
-          }
-          return true;
-      } catch (SQLException e) {
-          e.printStackTrace();
-          System.err.println("Could not access the database");
-          return true;
-      }
+    public static boolean isArticleDatabaseEmpty() {
+        try {
+            String query = "SELECT COUNT(*) AS count FROM cse360articles";
+            ResultSet resultSet = statement.executeQuery(query);
+            if (resultSet.next()) {
+                return resultSet.getInt("count") == 0;
+            }
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Could not access the database");
+            return true;
+        }
 	}
-  
 }

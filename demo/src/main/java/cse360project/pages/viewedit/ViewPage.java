@@ -25,12 +25,14 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.chart.PieChart.Data;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 
+/**
+ * This class is used to view an article
+ */
 public class ViewPage implements Page {
     BorderPane root = new BorderPane();
     Label titleLabel;
@@ -42,21 +44,34 @@ public class ViewPage implements Page {
     VBox linksContainer;
     HBox editButtonContainer;
 
+    /**
+     * Constructor for the ViewPage
+     */
     public ViewPage() {
+        // create the interface
         createInterface();
     }
 
-    void createInterface() {
+    /**
+     * This method is used to create the interface for the view page
+     */
+    private void createInterface() {
         // first we need an "edit article" button
         Button editButton = new Button("Edit This Article");
+        setLinkButtonStyles(editButton);
+
+        // when clicked, it should switch to the edit page and set the article to edit
         editButton.setOnAction(event -> {
             EditPage editPage = (EditPage) PageManager.getPageByName("editpage");
             editPage.setEditingArticle(viewingArticle);
             PageManager.switchToPage("editpage");
         });
-        setLinkButtonStyles(editButton);
 
+        // create a delete button
         Button deleteButton = new Button("Delete This Article");
+        setLinkButtonStyles(deleteButton);
+
+        // when clicked, it should confirm deletion and then delete the article, then switch to the list page
         deleteButton.setOnAction(event -> {
             // confirm deletion
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -72,8 +87,8 @@ public class ViewPage implements Page {
                 }
             });
         });
-        setLinkButtonStyles(deleteButton);
 
+        // create a container for the buttons
         editButtonContainer = new HBox(10);
         editButtonContainer.setAlignment(Pos.CENTER_LEFT);
         editButtonContainer.getChildren().addAll(editButton, deleteButton);
@@ -89,14 +104,17 @@ public class ViewPage implements Page {
 
         BorderPane.setMargin(articleContainer, new Insets(20));
 
-        // Create the SplitPane
+        // The article container should contain a splitpane
+        // on the right side, it should contain the body of the article
+        // the left side should contain everything else
+        // this will allow the user to expand the body of the article
         SplitPane splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.HORIZONTAL);
 
         // the max height of the splitpane
         splitPane.setMaxHeight(400);
 
-        // Create the left container for the existing components
+        // Create the left container for everything except the body
         VBox leftContainer = new VBox();
         leftContainer.setPadding(new Insets(10, 20, 10, 20));
 
@@ -111,10 +129,11 @@ public class ViewPage implements Page {
         // example: BEGINNER - Article description...
         // the level and description should be individual labels
         levelLabel = new Label("BEGINNER");
-        descriptionLabel = new Label("kdfbbjk...Article description...Article description...Article description...Article description...Article description...Article description...Article description...");
-
-        
+        descriptionLabel = new Label("Description");
         leftContainer.getChildren().addAll(levelLabel, descriptionLabel);
+        
+        // set the font size of the level and description
+        // and the text of the description should wrap
         levelLabel.setStyle("-fx-font-size: 20px;");
         descriptionLabel.setStyle("-fx-font-size: 15px;");
         descriptionLabel.setWrapText(true);
@@ -125,7 +144,7 @@ public class ViewPage implements Page {
         // now we need to create the "Appears in" label, followed by a label that will contain the groups
         // should be in an hbox
         Label appearsInLabel = new Label("Appears in: ");
-        groupsLabel = new Label("Group 1, group 2 group 3");
+        groupsLabel = new Label("Group 1");
         groupsLabel.setWrapText(true);
 
         HBox appearsInContainer = new HBox(appearsInLabel, groupsLabel);
@@ -172,12 +191,6 @@ public class ViewPage implements Page {
         linksContainer = new VBox(5);
         articleContainer.getChildren().addAll(linksLabel, linksContainer);
 
-        // adding some dummy links
-        Label link1 = new Label("Link 1: https://example.com/1");
-        Label link2 = new Label("Link 2: https://example.com/2");
-        Label link3 = new Label("Link 3: https://example.com/3");
-        linksContainer.getChildren().addAll(link1, link2, link3);
-
         // now we need to add a back button. It should be at the bottom of the page
         // when clicked, it should go back to the list page
         // it should be on the left side of the page
@@ -194,10 +207,12 @@ public class ViewPage implements Page {
         root.setBottom(backButtonContainer);
 
        setLinkButtonStyles(backButton);
-
-
     }
 
+    /**
+     * This method is used to set the styles of the link buttons
+     * @param linkButton the button to set the styles for
+     */
     private void setLinkButtonStyles(Button linkButton) {
         final String btnBackgroundColor = "#0088ff";
         final Color textColor = Color.WHITE;
@@ -208,22 +223,36 @@ public class ViewPage implements Page {
         linkButton.setPrefWidth(btnWidth);
     }
 
+    /**
+     * This method is used to get the root of the view page
+     * @return the root of the view page
+     */
     public Pane getRoot() {
         return root;
     }
 
-    Article viewingArticle = null;
+    private Article viewingArticle = null;
+    
+    /**
+     * This method is used to set the article that is being viewed
+     * @param article the article to view
+     */
     public void setViewingArticle(Article article) {
         viewingArticle = article;
     }
 
+    /**
+     * This method is called when the page is opened
+     */
     public void onPageOpen() {
+        // if there is no article to view, switch to the list page
         if (viewingArticle == null) {
             System.err.println("Error - no article to view");
             PageManager.switchToPage("listarticles");
             return;
         }
 
+        // update the edit button visibility based on the logged in role
         updateEditButtonVisibility();
 
         // set the article title
@@ -248,9 +277,14 @@ public class ViewPage implements Page {
         setLinks();
     }
 
+    /**
+     * This method is used to update the visibility of the edit button
+     */
     private void updateEditButtonVisibility() {
         Role loggedInRole = ApplicationStateManager.getRole();
 
+        // if the user is an admin or instructor, show the edit and delete buttons
+        // otherwise, hide them
         if (loggedInRole == Role.ADMIN || loggedInRole == Role.INSTRUCTOR) {
             editButtonContainer.setVisible(true);
         } else {
@@ -258,6 +292,9 @@ public class ViewPage implements Page {
         }
     }
 
+    /**
+     * This method is used to set the links for the article
+     */
     private void setLinks() {
         // clear the links container
         linksContainer.getChildren().clear();
@@ -265,6 +302,9 @@ public class ViewPage implements Page {
         // add the links
         for (int i = 0; i < viewingArticle.links.size(); i++) {
             String link = viewingArticle.links.get(i);
+
+            // if the link contains a valid URL, create a hyperlink
+            // otherwise, add a text link
             if (linkContainsValidURL(link)) {
                 createURLLink(link);
             } else {
@@ -275,6 +315,11 @@ public class ViewPage implements Page {
 
     private String urlRegexp = "((?:https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|])";
 
+    /**
+     * This method is used to check if a link contains a valid URL
+     * @param link the link to check
+     * @return true if the link contains a valid URL, false otherwise
+     */
     private boolean linkContainsValidURL(String link) {
         Pattern pattern = Pattern.compile(urlRegexp);
         Matcher matcher = pattern.matcher(link);
@@ -282,27 +327,34 @@ public class ViewPage implements Page {
         return found;
     }
 
+    /**
+     * This method is used to create a hyperlink for a URL
+     * @param link the link to create a hyperlink for
+     */
     private void createURLLink(String link) {
         Pattern pattern = Pattern.compile(urlRegexp);
         Matcher matcher = pattern.matcher(link);
 
+        // if the URL is not found, add a text link
         if (!matcher.find()) {
             addTextLink(link);
             return;
         }
 
+        // get the URL from the link
         String url = matcher.group(1);
 
+        // create a hyperlink with the text content
         Hyperlink linkLabel = new Hyperlink(link);
         linkLabel.setStyle("-fx-font-size: 15px;");
 
+        // when clicked, open the link in the browser
         linkLabel.setOnAction(e -> {
             try {
                 // open the link in the browser
                 Desktop.getDesktop().browse(new URI(url));
             } catch (Exception ex) {
                 ex.printStackTrace();
-                addTextLink(link);
                 return;
             }
         });
@@ -310,6 +362,11 @@ public class ViewPage implements Page {
         linksContainer.getChildren().add(linkLabel);
     }
 
+    /**
+     * This method is used to add a text link to the links container
+     * It will not be clickable
+     * @param link
+     */
     private void addTextLink(String link) {
         Label linkLabel = new Label(link);
         linkLabel.setStyle("-fx-font-size: 15px;");

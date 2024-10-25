@@ -23,8 +23,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * This class represents the ListPage, which displays a list of articles
+ */
 public class ListPage implements Page {
 
     // Root element for this page
@@ -41,7 +43,9 @@ public class ListPage implements Page {
     // Group dropdown
     ComboBox<String> groupComboBox;
 
-    // Constructor for the ListPage
+    /**
+     * Constructor for the ListPage class
+     */
     public ListPage() {
         setupUI(); // Set up the UI for the list page
     }
@@ -102,21 +106,6 @@ public class ListPage implements Page {
                 }
             }
         });
-
-     /*   // Handle article click to switch to view page
-        articleListView.setOnMouseClicked(event -> {
-            Article selectedArticle = articleListView.getSelectionModel().getSelectedItem();
-            if (selectedArticle != null) {
-                // Get the ViewArticle page from the PageManager
-                ViewArticle viewPage = (ViewArticle) PageManager.getPageByName("viewpage");
-
-                // Set the selected article to be viewed
-                viewPage.setViewingArticle(selectedArticle);
-
-                // Switch to the viewpage
-                PageManager.switchToPage("viewpage");
-            }
-        });*/
         
         articleListView.setOnMouseClicked((EventHandler<? super MouseEvent>) new EventHandler<MouseEvent>() {
             public void handle(MouseEvent mouseEvent) {
