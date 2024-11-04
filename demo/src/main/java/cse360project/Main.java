@@ -13,6 +13,7 @@ import cse360project.utils.DatabaseHelper;
 import cse360project.utils.PageManager;
 import cse360project.pages.UserPassSetupPage;
 import cse360project.pages.admin.AdminPage;
+import cse360project.pages.usergroups.UserGroupEditListPage;
 import cse360project.pages.StudentPage;
 import cse360project.pages.AccountSetupScreen;
 import cse360project.pages.viewedit.EditPage;
@@ -57,6 +58,8 @@ public class Main extends Application {
 
         PageManager.registerPage("viewpage", new ViewPage());
         PageManager.registerPage("editpage", new EditPage());
+
+        PageManager.registerPage("editusergroups", new UserGroupEditListPage());
 
         // switch to the login page on open
         PageManager.switchToPage("login");
