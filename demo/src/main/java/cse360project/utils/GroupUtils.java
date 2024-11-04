@@ -3,6 +3,7 @@ package cse360project.utils;
 import java.util.ArrayList;
 import java.util.HashSet;
 import cse360project.Article;
+import cse360project.User;
 
 public class GroupUtils {
 
@@ -106,4 +107,29 @@ public class GroupUtils {
         return getAllArticlesWithGroups(allArticles, groups);
     }
 
+    public static boolean userCanAccessArticle(User user, Article article) {
+        // if a user is an admin, they can access any article
+        if (user.is_admin) {
+            return true;
+        }
+
+        // a user can access an article if they share a group with the article
+        for (String group : article.groups) {
+            if (user.groups.contains(group)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static ArrayList<Article> getAllArticlesForUser(User user) {
+        ArrayList<Article> allArticles = DatabaseHelper.getAllArticles(); // Retrieve articles from the database
+        ArrayList<Article> accessibleArticles = new ArrayList<>();
+        for (Article article : allArticles) {
+            if (canUserAccessArticle(user, article)) {
+                accessibleArticles.add(article);
+            }
+        }
+        return accessibleArticles;
+    }
 }

@@ -5,8 +5,10 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import cse360project.utils.DatabaseHelper;
+import cse360project.utils.GroupUtils;
 import cse360project.utils.PasswordGenerator;
 import cse360project.utils.Role;
 
@@ -26,6 +28,7 @@ public class User {
     public boolean is_admin;
     public boolean is_student;
     public boolean is_instructor;
+    public ArrayList<String> groups;
 
     /**
      * Constructor for User
@@ -45,7 +48,7 @@ public class User {
      * @param is_instructor whether or not the user is an instructor
      * @param is_student 
      */
-    public User(int id, String username, char[] password, String email, String inviteCode, boolean accountSetUp, boolean OTP, Timestamp OTP_expiration, String firstName, String middleName, String lastName, String preferredName, boolean is_admin, boolean is_instructor, boolean is_student) {
+    public User(int id, String username, char[] password, String email, String inviteCode, boolean accountSetUp, boolean OTP, Timestamp OTP_expiration, String firstName, String middleName, String lastName, String preferredName, boolean is_admin, boolean is_instructor, boolean is_student, ArrayList<String> groups) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -61,6 +64,7 @@ public class User {
         this.is_admin = is_admin;
         this.is_instructor = is_instructor;
         this.is_student = is_student;
+        this.groups = groups;
     }
 
     /**
@@ -154,7 +158,11 @@ public class User {
             passwordCharArray[i] = (char) passwordBytes[i];
         }
 
-        return new User(rs.getInt("id"), rs.getString("username"), passwordCharArray, rs.getString("email"), rs.getString("inviteCode"), rs.getBoolean("accountSetUp"), rs.getBoolean("OTP"), rs.getTimestamp("OTP_expiration"), rs.getString("firstName"), rs.getString("middleName"), rs.getString("lastName"), rs.getString("preferredName"), rs.getBoolean("is_admin"), rs.getBoolean("is_instructor"), rs.getBoolean("is_student"));
+        String allGroups = rs.getString("groups");
+        ArrayList<String> groups = new ArrayList<>(Arrays.asList(allGroups.split("\n")));
+        groups.removeIf(String::isEmpty);
+
+        return new User(rs.getInt("id"), rs.getString("username"), passwordCharArray, rs.getString("email"), rs.getString("inviteCode"), rs.getBoolean("accountSetUp"), rs.getBoolean("OTP"), rs.getTimestamp("OTP_expiration"), rs.getString("firstName"), rs.getString("middleName"), rs.getString("lastName"), rs.getString("preferredName"), rs.getBoolean("is_admin"), rs.getBoolean("is_instructor"), rs.getBoolean("is_student"), groups);
     }
 
     /**
@@ -165,7 +173,7 @@ public class User {
      * @return
      */
     public static User createInvitedUser(boolean is_admin, boolean is_instructor, boolean is_student) {
-        return new User(-1, null, "".toCharArray(), null, getRandomInviteCode(), false, false, null, null, null, null, null, is_admin, is_instructor, is_student);
+        return new User(-1, null, "".toCharArray(), null, getRandomInviteCode(), false, false, null, null, null, null, null, is_admin, is_instructor, is_student, new ArrayList<>());
     }
 
     /**
@@ -197,5 +205,28 @@ public class User {
 
         // convert to timestamp
         return Timestamp.valueOf(futureDateTime);
+    }
+
+    public boolean hasGroup(String group) {
+        if (this.groups.contains(group)) {
+            return true;
+        }
+        return false;
+    }
+
+    public void addGroup(String group) {
+        String newGroup = GroupUtils.formatGroupName(group);
+        if(!this.groups.contains(newGroup)) {
+            this.groups.add(newGroup);
+            DatabaseHelper.updateUser(this);
+        }
+    }
+
+    public void removeGroup(String group) {
+        String newGroup = GroupUtils.formatGroupName(group);
+        if(this.groups.contains(newGroup)) {
+            this.groups.remove(newGroup);
+            DatabaseHelper.updateUser(this);
+        }
     }
 }

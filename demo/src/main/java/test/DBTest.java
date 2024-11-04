@@ -1,6 +1,7 @@
 package test;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import cse360project.User;
 import cse360project.utils.DatabaseHelper;
@@ -31,7 +32,7 @@ public class DBTest {
             System.out.printf("Database empty: %s%n", empty ? "true" : "false");
 
             if (empty) {
-                User newUser = new User(-1, "admin", "password".toCharArray(), "a@a.a", null, true, false, null, "a", "b", "c", "a", true, false, false);
+                User newUser = new User(-1, "admin", "password".toCharArray(), "a@a.a", null, true, false, null, "a", "b", "c", "a", true, false, false, new ArrayList<String>());
                 DatabaseHelper.addUser(newUser);
 
                 System.out.printf("New User ID: %d%n", newUser.id);

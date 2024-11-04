@@ -64,7 +64,8 @@ public class DatabaseHelper {
                 + "preferredName VARCHAR(255), "
                 + "is_admin BOOLEAN, "
                 + "is_student BOOLEAN, "
-                + "is_instructor BOOLEAN"
+                + "is_instructor BOOLEAN, "
+                + "groups VARCHAR(500)"
                 +")";
 		statement.execute(userTable);
 	}
@@ -239,7 +240,7 @@ public class DatabaseHelper {
             }
 
             // the user exists, craft the UPDATE query for the user
-            String updateQuery = "UPDATE cse360users SET username=?, password=?, email=?, inviteCode=?, accountSetUp=?, OTP=?, OTP_expiration=?, firstName=?, middleName=?, lastName=?, preferredName=?, is_admin=?, is_instructor=?, is_student=? WHERE id=?";
+            String updateQuery = "UPDATE cse360users SET username=?, password=?, email=?, inviteCode=?, accountSetUp=?, OTP=?, OTP_expiration=?, firstName=?, middleName=?, lastName=?, preferredName=?, is_admin=?, is_instructor=?, is_student=?, groups=? WHERE id=?";
             PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
             updateStatement.setString(1, user.username);
             
@@ -262,7 +263,11 @@ public class DatabaseHelper {
             updateStatement.setBoolean(12, user.is_admin);
             updateStatement.setBoolean(13, user.is_instructor);
             updateStatement.setBoolean(14, user.is_student);
-            updateStatement.setInt(15, user.id);
+            
+            String groups = String.join("\n", user.groups);
+            updateStatement.setString(15, groups);
+            
+            updateStatement.setInt(16, user.id);
 
             // execute the query
             updateStatement.executeUpdate();
@@ -286,7 +291,7 @@ public class DatabaseHelper {
             String[] returnId = { "id" };
 
             // craft INSERT query
-            String insertQuery = "INSERT INTO cse360users (username, password, email, inviteCode, accountSetUp, OTP, OTP_expiration, firstName, middleName, lastName, preferredName, is_admin, is_instructor, is_student) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String insertQuery = "INSERT INTO cse360users (username, password, email, inviteCode, accountSetUp, OTP, OTP_expiration, firstName, middleName, lastName, preferredName, is_admin, is_instructor, is_student, groups) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement insertStatement = connection.prepareStatement(insertQuery, returnId);
             insertStatement.setString(1, user.username);
 
@@ -309,6 +314,9 @@ public class DatabaseHelper {
             insertStatement.setBoolean(12, user.is_admin);
             insertStatement.setBoolean(13, user.is_instructor);
             insertStatement.setBoolean(14, user.is_student);
+
+            String groups = String.join("\n", user.groups);
+            insertStatement.setString(15, groups);
 
             // execute the query
             insertStatement.executeUpdate();
