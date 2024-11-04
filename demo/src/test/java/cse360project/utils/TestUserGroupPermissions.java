@@ -126,4 +126,40 @@ public class TestUserGroupPermissions {
         assertFalse(accessibleArticles.contains(article4));
         assertFalse(accessibleArticles.contains(article5));
     }
+
+    @Test
+    public void editPermissionsTest() {
+        // reset the database users
+        DatabaseHelper.setDatabasePath("~/test");
+        DatabaseHelper.connectToDatabase();
+        DatabaseHelper.deleteAllUsers();
+
+        // add one admin user, one instructor user, and one student user
+        // the users dont need to have any groups
+        User admin = new User(-1, "admin", "Password1".toCharArray(), "admin@admin.com", null, true, false, null, "admin", "", "admin", null, true, false, false, new ArrayList<>());
+        User instructor = new User(-1, "instructor", "Password1".toCharArray(), "instructor@instructor.com", null, true, false, null, "instructor", "", "instructor", null, false, true, false, new ArrayList<>());
+        User student = new User(-1, "student", "Password1".toCharArray(), "student@student.com", null, true, false, null, "student", "", "student", null, false, false, true, new ArrayList<>());
+
+        DatabaseHelper.addUser(admin);
+        DatabaseHelper.addUser(instructor);
+        DatabaseHelper.addUser(student);
+
+        // make sure the admin can edit the instructor and student, but not the admin
+        ArrayList<User> adminEditable = GroupUtils.getAllUsersThatUserCanEditGroups(admin);
+        assertFalse(adminEditable.contains(admin));
+        assertTrue(adminEditable.contains(instructor));
+        assertTrue(adminEditable.contains(student));
+
+        // make sure the instructor can edit the student, but not the admin or instructor
+        ArrayList<User> instructorEditable = GroupUtils.getAllUsersThatUserCanEditGroups(instructor);
+        assertFalse(instructorEditable.contains(admin));
+        assertFalse(instructorEditable.contains(instructor));
+        assertTrue(instructorEditable.contains(student));
+
+        // make sure the student cannot edit anyone
+        ArrayList<User> studentEditable = GroupUtils.getAllUsersThatUserCanEditGroups(student);
+        assertFalse(studentEditable.contains(admin));
+        assertFalse(studentEditable.contains(instructor));
+        assertFalse(studentEditable.contains(student));
+    }
 }

@@ -132,4 +132,31 @@ public class GroupUtils {
         }
         return accessibleArticles;
     }
+
+    public static ArrayList<User> getAllUsersThatUserCanEditGroups(User user) {
+        // if a user is an admin, they can edit any student or instructor's groups
+        // if a user is an instructor, they can edit any student's groups
+
+        // if the user is a student, return an empty list
+        if (user.is_student) {
+            return new ArrayList<>();
+        }
+
+        ArrayList<User> allUsers = DatabaseHelper.getAllUsers(); // Retrieve users from the database
+        ArrayList<User> usersThatUserCanEditGroups = new ArrayList<>();
+
+        for (User otherUser : allUsers) {
+            if (user.is_admin) {
+                if (!otherUser.is_admin) {
+                    usersThatUserCanEditGroups.add(otherUser);
+                }
+            } else if (user.is_instructor) {
+                if (otherUser.is_student) {
+                    usersThatUserCanEditGroups.add(otherUser);
+                }
+            }
+        }
+
+        return usersThatUserCanEditGroups;
+    }
 }
