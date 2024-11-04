@@ -21,6 +21,7 @@ import javafx.scene.text.Font;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class UserPassSetupPage implements Page {
     // Root element for this page
@@ -126,7 +127,7 @@ public class UserPassSetupPage implements Page {
 
             if (isDatabaseEmpty) {
                 // First user, automatically set as admin
-                newUser = new User(-1, usernameField.getText(), password, null, null, false, false, null, "", "", "", "", true, false, false);
+                newUser = new User(-1, usernameField.getText(), password, null, null, false, false, null, "", "", "", "", true, false, false, new ArrayList<String>());
             } else {
                 // Get the logged-in user (assumed to be an invited user)
                 newUser = ApplicationStateManager.getLoggedInUser();
