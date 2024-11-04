@@ -381,7 +381,7 @@ public class AdminPage implements Page {
      * Create the bottom buttons for the page
      */
     private void createBottomButtons() {
-        // create buttons for: list articles, backup, and restore buttons
+        // create buttons for: edit user groups, list articles, backup, and restore buttons
         // each button will be styled and have a click action
         // they will be added to the bottom of the page, horizontally in an HBox
         // the HBox will be added to the bottom of the borderpane in the center
@@ -392,6 +392,11 @@ public class AdminPage implements Page {
         root.setBottom(bottomButtons);
         
         BorderPane.setMargin(bottomButtons, new Insets(20));
+
+        // create the edit user groups button
+        Button editUserGroupsButton = new Button("Edit User Groups");
+        editUserGroupsButton.setOnAction(e -> PageManager.switchToPage("editusergroups"));
+        setLinkButtonStyles(editUserGroupsButton);
 
         // create the list articles button
         Button listArticlesButton = new Button("List Articles");
@@ -409,7 +414,7 @@ public class AdminPage implements Page {
         setLinkButtonStyles(restoreButton);
 
         // add the buttons to the HBox
-        bottomButtons.getChildren().addAll(listArticlesButton, backupButton, restoreButton);
+        bottomButtons.getChildren().addAll(editUserGroupsButton, listArticlesButton, backupButton, restoreButton);
     }
 
     private void setLinkButtonStyles(Button linkButton) {
