@@ -126,7 +126,7 @@ public class GroupUtils {
         ArrayList<Article> allArticles = DatabaseHelper.getAllArticles(); // Retrieve articles from the database
         ArrayList<Article> accessibleArticles = new ArrayList<>();
         for (Article article : allArticles) {
-            if (canUserAccessArticle(user, article)) {
+            if (userCanAccessArticle(user, article)) {
                 accessibleArticles.add(article);
             }
         }
