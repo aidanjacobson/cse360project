@@ -3,6 +3,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import cse360project.Article;
+import cse360project.Message;
 import cse360project.User;
 
 public class DatabaseHelper {
@@ -651,4 +652,49 @@ public class DatabaseHelper {
             return true;
         }
 	}
+    
+    /**
+     * Get a list of all messages in the database.
+     * @return an ArrayList<Message> with all messages in the database.
+     */
+    public static ArrayList<Message> getAllMessages() {
+        return getAllMessages("SELECT * FROM cse360messages");
+    }
+    
+    /**
+     * Get all messages that match the query.
+     * @param query the SQL query to select the messages
+     * @return an ArrayList<Message> of all matching messages
+     */
+    public static ArrayList<Message> getAllMessages(String query) {
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            return getAllMessages(pstmt);
+        } catch(SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+    
+    /**
+     * Get all messages that match the prepared statement.
+     * @param pstmt a PreparedStatement created with DatabaseHelper.prepareStatement(query)
+     * @return an ArrayList<Message> of all matching messages
+     */
+    public static ArrayList<Message> getAllMessages(PreparedStatement pstmt) {
+        ArrayList<Message> messages = new ArrayList<>();
+        try {
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Message message = Message.fromResultSet(rs);
+                messages.add(message);
+            }
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return messages;
+    }
+
+
+
 }
