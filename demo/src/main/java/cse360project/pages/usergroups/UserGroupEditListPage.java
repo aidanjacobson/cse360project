@@ -45,7 +45,7 @@ public class UserGroupEditListPage implements Page {
         // center align grid
         StackPane.setAlignment(pageContent, Pos.CENTER);
 
-        // allow logout button to be clicked
+        // allow back button to be clicked
         pageContent.setMouseTransparent(true);
 
         // the page content should be in the center of the borderpane
@@ -64,27 +64,26 @@ public class UserGroupEditListPage implements Page {
         HBox topContent = new HBox();
         root.setTop(topContent);
 
-         // the toolbar should have logout button
-         topContent.getChildren().add(createLogoutButton());
+         // the toolbar should have back button
+         topContent.getChildren().add(createBackButton());
     }
 
     /**
-     * Create/style logout button and set click action
+     * Create/style back button and set click action
      * @return the button
      */
-    private Button createLogoutButton() {
-        // create the logout button
-        Button logoutButton = new Button("Log Out");
+    private Button createBackButton() {
+        // create the back button
+        Button backButton = new Button("Back");
         
-        // set logout button action
-        logoutButton.setOnAction(e -> ApplicationStateManager.logout());
+        // set back button action
+        backButton.setOnAction(e -> ApplicationStateManager.switchToRolePage());
 
         // it will be in top left, so pad it away from the corner
-        HBox.setMargin(logoutButton, new Insets(20, 20, 20, 20));
+        HBox.setMargin(backButton, new Insets(20, 20, 20, 20));
         
-        // set the top node to be the logout button
-        // root.setTop(logoutButton);
-        return logoutButton;
+        // set the top node to be the back button
+        return backButton;
     }
 
     public Pane getRoot() {
@@ -141,7 +140,7 @@ public class UserGroupEditListPage implements Page {
             userListGrid.add(createTextElement(username), 0, gridRowIndex, 1, 1);
             userListGrid.add(createTextElement(prefName), 1, gridRowIndex, 1, 1);
             userListGrid.add(createTextElement(fullName), 2, gridRowIndex, 1, 1);
-            userListGrid.add(createEditButton(user.id), 3, gridRowIndex, 1, 1);
+            userListGrid.add(createEditButton(user), 3, gridRowIndex, 1, 1);
         }
     }
 
@@ -166,7 +165,7 @@ public class UserGroupEditListPage implements Page {
         return out;
     }
 
-    private Button createEditButton(int userId) {
+    private Button createEditButton(User user) {
         // create the edit button
         Button editButton = new Button("Edit Groups");
         editButton.setPrefWidth(100);
@@ -174,7 +173,7 @@ public class UserGroupEditListPage implements Page {
 
         // set the action for the edit button
         editButton.setOnAction(e -> {
-            System.out.println("Edit button clicked for user with id: " + userId);
+            UserGroupEditWizard.editUserGroups(user);
         });
 
         return editButton;
