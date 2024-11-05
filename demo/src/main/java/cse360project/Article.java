@@ -32,14 +32,21 @@ public class Article implements Serializable{
      * @param links the link to the articles cannot be null 
      */
 	public Article(long id, Level level , ArrayList<String> group, String title, String description, String keywords, String body, ArrayList<String> link) {
-        this.ID = id;
-        this.level = level;
-        this.groups = group;
-        this.title = title;
-        this.description = description;
-        this.keywords = keywords;
-        this.body = body;
-        this.links = link;
+          this.ID = id;
+          this.level = level;
+
+          // format the groups before adding them
+          ArrayList<String> newGroups = new ArrayList<>();
+          for (String g : group) {
+               newGroups.add(GroupUtils.formatGroupName(g));
+          }
+
+          this.groups = newGroups;
+          this.title = title;
+          this.description = description;
+          this.keywords = keywords;
+          this.body = body;
+          this.links = link;
     }
 	
     /**
@@ -206,5 +213,51 @@ public class Article implements Serializable{
 			this.groups.remove(newGroup);
 		}
 	}
+
+     @Override
+     public boolean equals(Object obj) {
+          if (this == obj)
+               return true;
+          if (obj == null)
+               return false;
+          if (getClass() != obj.getClass())
+               return false;
+          Article other = (Article) obj;
+          if (ID != other.ID)
+               return false;
+          if (level != other.level)
+               return false;
+          if (groups == null) {
+               if (other.groups != null)
+                    return false;
+          } else if (!groups.equals(other.groups))
+               return false;
+          if (title == null) {
+               if (other.title != null)
+                    return false;
+          } else if (!title.equals(other.title))
+               return false;
+          if (description == null) {
+               if (other.description != null)
+                    return false;
+          } else if (!description.equals(other.description))
+               return false;
+          if (keywords == null) {
+               if (other.keywords != null)
+                    return false;
+          } else if (!keywords.equals(other.keywords))
+               return false;
+          if (body == null) {
+               if (other.body != null)
+                    return false;
+          } else if (!body.equals(other.body))
+               return false;
+          if (links == null) {
+               if (other.links != null)
+                    return false;
+          } else if (!links.equals(other.links))
+               return false;
+          return true;
+     }
 }
 

@@ -1,6 +1,7 @@
 package cse360project.pages;
 
 import cse360project.Article;
+import cse360project.User;
 import cse360project.pages.viewedit.EditPage;
 import cse360project.pages.viewedit.ViewPage;
 import cse360project.utils.ApplicationStateManager;
@@ -47,14 +48,15 @@ public class ListPage implements Page {
      * Constructor for the ListPage class
      */
     public ListPage() {
-        setupUI(); // Set up the UI for the list page
+        
     }
 
     /**
      * Set up the UI for the list page
      */
     private void setupUI() {
-        allArticles = DatabaseHelper.getAllArticles(); // Fetch articles from the database
+        User current = ApplicationStateManager.getLoggedInUser();
+        allArticles = GroupUtils.getAllArticlesForUser(current); // Fetch articles from the database
         root.getChildren().clear(); // Clear the root element before adding new elements
         VBox mainLayout = new VBox(10);
         mainLayout.setPadding(new Insets(20));

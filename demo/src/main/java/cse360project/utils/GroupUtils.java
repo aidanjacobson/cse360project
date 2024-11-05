@@ -132,4 +132,48 @@ public class GroupUtils {
         }
         return accessibleArticles;
     }
+
+    public static ArrayList<User> getAllUsersThatUserCanEditGroups(User user) {
+        // if a user is an admin, they can edit any student or instructor's groups
+        // if a user is an instructor, they can edit any student's groups
+
+        // if the user is a student, return an empty list
+        if (user.is_student) {
+            return new ArrayList<>();
+        }
+
+        ArrayList<User> allUsers = DatabaseHelper.getAllUsers(); // Retrieve users from the database
+        ArrayList<User> usersThatUserCanEditGroups = new ArrayList<>();
+
+        for (User otherUser : allUsers) {
+            if (user.is_admin) {
+                if (!otherUser.is_admin) {
+                    usersThatUserCanEditGroups.add(otherUser);
+                }
+            } else if (user.is_instructor) {
+                if (otherUser.is_student) {
+                    usersThatUserCanEditGroups.add(otherUser);
+                }
+            }
+        }
+
+        return usersThatUserCanEditGroups;
+    }
+
+    public static ArrayList<String> getAllGroupsThatCanBeEditedByUser(User user) {
+        // if a user is an admin, they can edit any group
+        if (user.is_admin) {
+            return consolidateGroups();
+        }
+        // if a user is an instructor, they can edit any group they are a part of
+        if (user.is_instructor) {
+            // consolidate the groups in the database, then filter out the groups that the user is not a part of
+            ArrayList<String> allGroups = consolidateGroups();
+            allGroups.removeIf(group -> !user.groups.contains(group));
+            return allGroups;
+        }
+
+        // otherwise, return an empty list
+        return new ArrayList<>();
+    }
 }

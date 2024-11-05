@@ -64,7 +64,13 @@ public class User {
         this.is_admin = is_admin;
         this.is_instructor = is_instructor;
         this.is_student = is_student;
-        this.groups = groups;
+
+        // format the groups before setting them
+        ArrayList<String> newGroups = new ArrayList<>(groups.size());
+        for (String g : groups) {
+            newGroups.add(GroupUtils.formatGroupName(g));
+       }
+        this.groups = newGroups;
     }
 
     /**
@@ -229,4 +235,77 @@ public class User {
             DatabaseHelper.updateUser(this);
         }
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        User other = (User) obj;
+        if (id != other.id)
+            return false;
+        if (username == null) {
+            if (other.username != null)
+                return false;
+        } else if (!username.equals(other.username))
+            return false;
+        if (!Arrays.equals(password, other.password))
+            return false;
+        if (email == null) {
+            if (other.email != null)
+                return false;
+        } else if (!email.equals(other.email))
+            return false;
+        if (inviteCode == null) {
+            if (other.inviteCode != null)
+                return false;
+        } else if (!inviteCode.equals(other.inviteCode))
+            return false;
+        if (accountSetUp != other.accountSetUp)
+            return false;
+        if (OTP != other.OTP)
+            return false;
+        if (OTP_expiration == null) {
+            if (other.OTP_expiration != null)
+                return false;
+        } else if (!OTP_expiration.equals(other.OTP_expiration))
+            return false;
+        if (firstName == null) {
+            if (other.firstName != null)
+                return false;
+        } else if (!firstName.equals(other.firstName))
+            return false;
+        if (middleName == null) {
+            if (other.middleName != null)
+                return false;
+        } else if (!middleName.equals(other.middleName))
+            return false;
+        if (lastName == null) {
+            if (other.lastName != null)
+                return false;
+        } else if (!lastName.equals(other.lastName))
+            return false;
+        if (preferredName == null) {
+            if (other.preferredName != null)
+                return false;
+        } else if (!preferredName.equals(other.preferredName))
+            return false;
+        if (is_admin != other.is_admin)
+            return false;
+        if (is_student != other.is_student)
+            return false;
+        if (is_instructor != other.is_instructor)
+            return false;
+        if (groups == null) {
+            if (other.groups != null)
+                return false;
+        } else if (!groups.equals(other.groups))
+            return false;
+        return true;
+    }
+
+    
 }
