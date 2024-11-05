@@ -159,4 +159,21 @@ public class GroupUtils {
 
         return usersThatUserCanEditGroups;
     }
+
+    public static ArrayList<String> getAllGroupsThatCanBeEditedByUser(User user) {
+        // if a user is an admin, they can edit any group
+        if (user.is_admin) {
+            return consolidateGroups();
+        }
+        // if a user is an instructor, they can edit any group they are a part of
+        if (user.is_instructor) {
+            // consolidate the groups in the database, then filter out the groups that the user is not a part of
+            ArrayList<String> allGroups = consolidateGroups();
+            allGroups.removeIf(group -> !user.groups.contains(group));
+            return allGroups;
+        }
+
+        // otherwise, return an empty list
+        return new ArrayList<>();
+    }
 }

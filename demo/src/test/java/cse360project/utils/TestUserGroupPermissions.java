@@ -3,6 +3,7 @@ package cse360project.utils;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
@@ -161,5 +162,107 @@ public class TestUserGroupPermissions {
         assertFalse(studentEditable.contains(admin));
         assertFalse(studentEditable.contains(instructor));
         assertFalse(studentEditable.contains(student));
+    }
+
+    @Test
+    public void getEditableGroupsTest() {
+        // set up the database
+        DatabaseHelper.setDatabasePath("~/test");
+        DatabaseHelper.connectToDatabase();
+        DatabaseHelper.deleteAllUsers();
+        DatabaseHelper.deleteAllArticles();
+
+        // create 5 articles with these groups
+        // 1. javafx, h2
+        // 2. javafx
+        // 3. h2
+        // 4. h2, junit
+        // 5. junit
+
+        ArrayList<String> article1Groups = new ArrayList<>();
+        article1Groups.add("javafx");
+        article1Groups.add("h2");
+        Article article1 = new Article(-1, Level.BEGINNER, article1Groups, "title1", "desc1", "kw1", "body1", new ArrayList<String>());
+        DatabaseHelper.addArticle(article1);
+
+        ArrayList<String> article2Groups = new ArrayList<>();
+        article2Groups.add("javafx");
+        Article article2 = new Article(-1, Level.BEGINNER, article2Groups, "title2", "desc2", "kw2", "body2", new ArrayList<String>());
+        DatabaseHelper.addArticle(article2);
+
+        ArrayList<String> article3Groups = new ArrayList<>();
+        article3Groups.add("h2");
+        Article article3 = new Article(-1, Level.BEGINNER, article3Groups, "title3", "desc3", "kw3", "body3", new ArrayList<String>());
+        DatabaseHelper.addArticle(article3);
+
+        ArrayList<String> article4Groups = new ArrayList<>();
+        article4Groups.add("h2");
+        article4Groups.add("junit");
+        Article article4 = new Article(-1, Level.BEGINNER, article4Groups, "title4", "desc4", "kw4", "body4", new ArrayList<String>());
+        DatabaseHelper.addArticle(article4);
+
+        ArrayList<String> article5Groups = new ArrayList<>();
+        article5Groups.add("junit");
+        Article article5 = new Article(-1, Level.BEGINNER, article5Groups, "title5", "desc5", "kw5", "body5", new ArrayList<String>());
+        DatabaseHelper.addArticle(article5);
+
+        // create users with these groups
+        // 1. admin with no groups
+        // 2. instructor with javafx group
+        // 3. instructor with h2 group
+        // 4. instructor with junit and h2 group
+        // 5. student with no groups
+
+        User admin = new User(-1, "admin", "Password1".toCharArray(), "a@a.com", null, true, false, null, "admin", "", "admin", null, true, false, false, new ArrayList<>());
+        DatabaseHelper.addUser(admin);
+
+        ArrayList<String> instructor1Groups = new ArrayList<>();
+        instructor1Groups.add("javafx");
+        User instructor1 = new User(-1, "instructor1", "Password1".toCharArray(), "i@i.com", null, true, false, null, "instructor1", "", "instructor1", null, false, true, false, instructor1Groups);
+        DatabaseHelper.addUser(instructor1);
+
+        ArrayList<String> instructor2Groups = new ArrayList<>();
+        instructor2Groups.add("h2");
+        User instructor2 = new User(-1, "instructor2", "Password1".toCharArray(), "i2@i.com", null, true, false, null, "instructor2", "", "instructor2", null, false, true, false, instructor2Groups);
+        DatabaseHelper.addUser(instructor2);
+
+        ArrayList<String> instructor3Groups = new ArrayList<>();
+        instructor3Groups.add("h2");
+        instructor3Groups.add("junit");
+        User instructor3 = new User(-1, "instructor3", "Password1".toCharArray(), "i3@i.com", null, true, false, null, "instructor3", "", "instructor3", null, false, true, false, instructor3Groups);
+        DatabaseHelper.addUser(instructor3);
+
+        User student = new User(-1, "student", "Password1".toCharArray(), "s@s.com", null, true, false, null, "student", "", "student", null, false, false, true, new ArrayList<>());
+        DatabaseHelper.addUser(student);
+
+        // test that the admin can edit all groups
+        ArrayList<String> adminEditableGroups = GroupUtils.getAllGroupsThatCanBeEditedByUser(admin);
+        assertTrue(adminEditableGroups.contains("Javafx"));
+        assertTrue(adminEditableGroups.contains("H2"));
+        assertTrue(adminEditableGroups.contains("Junit"));
+
+        // test that instructor1 can only edit javafx
+        ArrayList<String> instructor1EditableGroups = GroupUtils.getAllGroupsThatCanBeEditedByUser(instructor1);
+        assertTrue(instructor1EditableGroups.contains("Javafx"));
+        assertFalse(instructor1EditableGroups.contains("H2"));
+        assertFalse(instructor1EditableGroups.contains("Junit"));
+
+        // test that instructor2 can only edit h2
+        ArrayList<String> instructor2EditableGroups = GroupUtils.getAllGroupsThatCanBeEditedByUser(instructor2);
+        assertFalse(instructor2EditableGroups.contains("Javafx"));
+        assertTrue(instructor2EditableGroups.contains("H2"));
+        assertFalse(instructor2EditableGroups.contains("Junit"));
+
+        // test that instructor3 can only edit h2 and junit
+        ArrayList<String> instructor3EditableGroups = GroupUtils.getAllGroupsThatCanBeEditedByUser(instructor3);
+        assertFalse(instructor3EditableGroups.contains("Javafx"));
+        assertTrue(instructor3EditableGroups.contains("H2"));
+        assertTrue(instructor3EditableGroups.contains("Junit"));
+
+        // test that the student cannot edit any groups
+        ArrayList<String> studentEditableGroups = GroupUtils.getAllGroupsThatCanBeEditedByUser(student);
+        assertFalse(studentEditableGroups.contains("Javafx"));
+        assertFalse(studentEditableGroups.contains("H2"));
+        assertFalse(studentEditableGroups.contains("Junit"));
     }
 }
