@@ -11,7 +11,7 @@ public enum MessageType {
      * Convert an enum MessageType into a string specifying the type.
      * 
      * @param messageType the MessageType to convert
-     * @return a string specifying the type of the message
+     * @return a string specifying the type of the messag e
      */
     public static String messageTypeToString(MessageType messageType) {
         if (messageType == MessageType.GENERIC) {
