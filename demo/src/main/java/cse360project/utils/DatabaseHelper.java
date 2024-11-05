@@ -35,6 +35,7 @@ public class DatabaseHelper {
 			statement = connection.createStatement(); 
 			createTables();  // Create the necessary tables if they don't exist
             createArticleTables();
+            createMessagesTable(); // Create the necessary table for messages
             System.out.println("Connection successful");
 		} catch (ClassNotFoundException e) {
 			System.err.println("JDBC Driver not found: " + e.getMessage());
@@ -45,7 +46,7 @@ public class DatabaseHelper {
 	}
 
     /**
-     * Create the necessary tables if they dont exist already.
+     * Create the necessary tables if they don't exist already.
      * @throws SQLException
      */
     public static void createTables() throws SQLException {
@@ -71,7 +72,7 @@ public class DatabaseHelper {
 	}
 
     /**
-     * Create the necessary tables if they dont exist already.
+     * Create the necessary tables if they don't exist already.
      * @throws SQLException
      */
     public static void createArticleTables() throws SQLException {
@@ -87,6 +88,23 @@ public class DatabaseHelper {
                 +")";
 		statement.execute(ArticleTable);
 	}
+    
+    /**
+     * Create the necessary tables for messages if they don't exist already.
+     * @throws SQLException
+     */
+    public static void createMessagesTable() throws SQLException {
+        String messagesTable = "CREATE TABLE IF NOT EXISTS cse360messages (" 
+                               + "message_id INT AUTO_INCREMENT PRIMARY KEY, "
+                               + "messageType VARCHAR(15) NOT NULL, "
+                               + "messageContent VARCHAR(10000) NOT NULL, "
+                               + "senderUsername VARCHAR(255) NOT NULL, "
+                               + "senderRole VARCHAR(15) NOT NULL, "
+                               + "threadUsername VARCHAR(255), "
+                               + "messageTimestamp TIMESTAMP NOT NULL"
+                               +")";
+        statement.execute(messagesTable);
+    }
     
     /**
      * Create a PreparedStatement on the connection from the given query.
