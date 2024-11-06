@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 import cse360project.utils.GroupUtils;
 import cse360project.utils.Level;
+import cse360project.utils.EncryptionUtils;
 
 public class Article implements Serializable{
 	public long ID;
@@ -167,6 +168,7 @@ public class Article implements Serializable{
           String title = rs.getString("title");
           String description = rs.getString("description");
           String keywords = rs.getString("keywords");
+          String encryptedBody = rs.getString("body");
           String body = rs.getString("body");
 
           // return the article
