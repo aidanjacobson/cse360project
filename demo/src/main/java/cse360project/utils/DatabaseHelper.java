@@ -20,6 +20,7 @@ public class DatabaseHelper {
         DB_URL = "jdbc:h2:" + databasePath;
     }
 
+
     static final String DB_USER = "sa";
     static final String DB_PASS = "";
     static private Connection connection = null;
