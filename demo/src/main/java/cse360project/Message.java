@@ -9,7 +9,8 @@ import cse360project.utils.MessageType;
 import cse360project.utils.Role;
 
 public class Message implements Serializable {
-    private MessageType messageType;
+	private int id;
+	private MessageType messageType;
     private String messageContent;
     private User sender;
     private Role senderRole;
@@ -18,6 +19,7 @@ public class Message implements Serializable {
 
     /**
      * Constructor for Message
+     * @param id the unique identifier for the message
      * @param messageType the type of message
      * @param messageContent the content of the message
      * @param sender the user who sent the message
@@ -25,16 +27,31 @@ public class Message implements Serializable {
      * @param thread the user or thread this message is part of
      * @param messageTimestamp the timestamp when the message was sent
      */
-    public Message(MessageType messageType, String messageContent, User sender, Role senderRole, User thread, Timestamp messageTimestamp) {
-        this.messageType = messageType;
+    public Message(int id,MessageType messageType, String messageContent, User sender, Role senderRole, User thread, Timestamp messageTimestamp) {
+    	this.id = id;
+    	this.messageType = messageType;
         this.messageContent = messageContent;
         this.sender = sender;
         this.senderRole = senderRole;
         this.thread = thread;
         this.messageTimestamp = messageTimestamp;
     }
+    
+ // Overloaded constructor without ID, for cases where ID is not initially needed
+    public Message(MessageType messageType, String messageContent, User sender, Role senderRole, User thread, Timestamp messageTimestamp) {
+        this(-1, messageType, messageContent, sender, senderRole, thread, messageTimestamp);
+    }
 
     // Getters and Setters
+    
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
     public MessageType getMessageType() {
         return messageType;
     }
@@ -90,6 +107,7 @@ public class Message implements Serializable {
      * @throws SQLException
      */
     public static Message fromResultSet(ResultSet rs) throws SQLException {
+    	int id = rs.getInt("message_id");
         MessageType messageType = MessageType.valueOf(rs.getString("messageType"));
         String messageContent = rs.getString("messageContent");
         User sender = User.fromResultSet(rs); // Assumes User.fromResultSet() exists
@@ -97,6 +115,6 @@ public class Message implements Serializable {
         User thread = User.fromResultSet(rs); // Adjust if thread is another type
         Timestamp messageTimestamp = rs.getTimestamp("messageTimestamp");
 
-        return new Message(messageType, messageContent, sender, senderRole, thread, messageTimestamp);
+        return new Message(id,messageType, messageContent, sender, senderRole, thread, messageTimestamp);
     }
 }
