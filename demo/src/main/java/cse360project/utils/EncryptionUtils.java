@@ -22,6 +22,7 @@ public class EncryptionUtils {
         }
     }
 
+    
     public static String encryptString(String input) {
         try {
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
