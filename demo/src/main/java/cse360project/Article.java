@@ -19,7 +19,7 @@ public class Article implements Serializable{
 	public String keywords;
 	public String body;
 	public ArrayList<String>links = new ArrayList<>();
-	
+
 	
 	/**
      * Constructor for Article
