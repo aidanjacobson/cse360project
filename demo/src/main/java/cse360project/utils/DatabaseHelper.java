@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import cse360project.Article;
 import cse360project.User;
-
+import cse360project.utils.EncryptionUtils;
 public class DatabaseHelper {
     static final String JDBC_DRIVER = "org.h2.Driver";   
     static final String defaultDatabase = "~/cse360db";
@@ -378,6 +378,7 @@ public class DatabaseHelper {
             String group = String.join("\n", groups);
             String link = String.join("\n", article.links);
             String lev = Level.levelToString(article.level);
+            String encryptedBody = EncryptionUtils.encryptString(article.body);
             PreparedStatement insertStatement;
 
             if (article.ID == -1) {
@@ -389,7 +390,7 @@ public class DatabaseHelper {
                 insertStatement.setString(3, article.title);
                 insertStatement.setString(4, article.description);
                 insertStatement.setString(5, article.keywords);
-                insertStatement.setString(6, article.body);
+                insertStatement.setString(6, encryptedBody);
                 insertStatement.setString(7, link);
 
                 // execute the query
@@ -549,6 +550,7 @@ public class DatabaseHelper {
             String group = String.join("\n", article.groups);
             String link = String.join("\n", article.links);
             String lev = Level.levelToString(article.level);
+            String encryptedBody = EncryptionUtils.encryptString(article.body);
             
             // the user exists, craft the UPDATE query for the article
             String updateQuery = "UPDATE cse360articles SET level=?, groups=?, title=?, description=?, keywords=?, body=?, links=? WHERE article_id=?";
@@ -558,7 +560,7 @@ public class DatabaseHelper {
             updateStatement.setString(3, article.title);
             updateStatement.setString(4, article.description);
             updateStatement.setString(5, article.keywords);
-            updateStatement.setString(6, article.body);
+            updateStatement.setString(6, encryptedBody);
             updateStatement.setString(7, link);
             updateStatement.setLong(8, article.ID);
 
