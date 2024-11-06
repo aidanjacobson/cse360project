@@ -3,6 +3,7 @@ package cse360project.utils;
 import java.util.ArrayList;
 import java.util.HashSet;
 import cse360project.Article;
+import cse360project.User;
 
 public class GroupUtils {
 
@@ -106,4 +107,73 @@ public class GroupUtils {
         return getAllArticlesWithGroups(allArticles, groups);
     }
 
+    public static boolean userCanAccessArticle(User user, Article article) {
+        // if a user is an admin, they can access any article
+        if (user.is_admin) {
+            return true;
+        }
+
+        // a user can access an article if they share a group with the article
+        for (String group : article.groups) {
+            if (user.groups.contains(group)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static ArrayList<Article> getAllArticlesForUser(User user) {
+        ArrayList<Article> allArticles = DatabaseHelper.getAllArticles(); // Retrieve articles from the database
+        ArrayList<Article> accessibleArticles = new ArrayList<>();
+        for (Article article : allArticles) {
+            if (userCanAccessArticle(user, article)) {
+                accessibleArticles.add(article);
+            }
+        }
+        return accessibleArticles;
+    }
+
+    public static ArrayList<User> getAllUsersThatUserCanEditGroups(User user) {
+        // if a user is an admin, they can edit any student or instructor's groups
+        // if a user is an instructor, they can edit any student's groups
+
+        // if the user is a student, return an empty list
+        if (user.is_student) {
+            return new ArrayList<>();
+        }
+
+        ArrayList<User> allUsers = DatabaseHelper.getAllUsers(); // Retrieve users from the database
+        ArrayList<User> usersThatUserCanEditGroups = new ArrayList<>();
+
+        for (User otherUser : allUsers) {
+            if (user.is_admin) {
+                if (!otherUser.is_admin) {
+                    usersThatUserCanEditGroups.add(otherUser);
+                }
+            } else if (user.is_instructor) {
+                if (otherUser.is_student) {
+                    usersThatUserCanEditGroups.add(otherUser);
+                }
+            }
+        }
+
+        return usersThatUserCanEditGroups;
+    }
+
+    public static ArrayList<String> getAllGroupsThatCanBeEditedByUser(User user) {
+        // if a user is an admin, they can edit any group
+        if (user.is_admin) {
+            return consolidateGroups();
+        }
+        // if a user is an instructor, they can edit any group they are a part of
+        if (user.is_instructor) {
+            // consolidate the groups in the database, then filter out the groups that the user is not a part of
+            ArrayList<String> allGroups = consolidateGroups();
+            allGroups.removeIf(group -> !user.groups.contains(group));
+            return allGroups;
+        }
+
+        // otherwise, return an empty list
+        return new ArrayList<>();
+    }
 }

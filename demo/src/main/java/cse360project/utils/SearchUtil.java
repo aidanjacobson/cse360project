@@ -8,8 +8,8 @@ public class SearchUtil {
 
     /**
      * This method searches the list of articles and returns the articles that match the query.
-     * The match is determined by how many words in the query match with the article title, body,
-     * description, groups, level, and keywords. Partial matches are also considered.
+     * The match is determined by how many words in the query match with the article title, 
+     * description, groups, level, keywords, and ID. Partial matches are also considered.
      *
      * @param articles The list of articles to search
      * @param query The search query string
@@ -17,6 +17,7 @@ public class SearchUtil {
      */
     public static ArrayList<Article> searchArticles(ArrayList<Article> articles, String query) {
         ArrayList<ArticleMatch> scoredArticles = new ArrayList<>();
+        boolean idMatchFound = false;
 
         // If query is empty, return all articles without error
         if (query.trim().isEmpty()) {
@@ -30,11 +31,29 @@ public class SearchUtil {
         for (Article article : articles) {
             int matchScore = 0;
 
+            // Check if the query contains an ID match
+            for (String queryWord : queryWords) {
+                try {
+                    long queryId = Long.parseLong(queryWord);
+                    if (article.getID() == queryId) {
+                        // Assign a very high match score for ID match
+                        scoredArticles.add(new ArticleMatch(article, Integer.MAX_VALUE));
+                        idMatchFound = true;
+                        break; // Skip other fields for this article since ID match is prioritized
+                    }
+                } catch (NumberFormatException e) {
+                    // Not a number, continue with the rest of the search
+                }
+            }
+
+            // Skip other field checks if an ID match was found for this article
+            if (idMatchFound) {
+                idMatchFound = false; // Reset for the next article
+                continue;
+            }
+
             // Check article's title
             matchScore += countMatchingWords(article.title.toLowerCase(), queryWords);
-
-            // Check article's body
-            matchScore += countMatchingWords(article.body.toLowerCase(), queryWords);
 
             // Check article's description
             matchScore += countMatchingWords(article.description.toLowerCase(), queryWords);
@@ -67,9 +86,9 @@ public class SearchUtil {
     }
 
     /**
-     * Helper method to count how many query words partially match a given text (title, body, etc.).
+     * Helper method to count how many query words partially match a given text (title, description, etc.).
      *
-     * @param text The text to be searched (article title, body, etc.)
+     * @param text The text to be searched (article title, description, etc.)
      * @param queryWords The array of words from the search query
      * @return The number of partial matches found
      */

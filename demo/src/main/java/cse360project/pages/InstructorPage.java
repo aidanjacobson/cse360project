@@ -47,6 +47,13 @@ public class InstructorPage implements Page {
         mainLayout.getChildren().addAll(instructorText, toolsText);
         
         // create buttons for the following tools:
+        // Edit User Groups
+        Button editUserGroupsButton = new Button("Edit User Groups");
+        editUserGroupsButton.setOnAction(e -> {
+            PageManager.switchToPage("editusergroups");
+        });
+        setLinkButtonStyles(editUserGroupsButton);
+
         // See article list
         Button articleListButton = new Button("See Article List");
         articleListButton.setOnAction(e -> {
@@ -69,7 +76,7 @@ public class InstructorPage implements Page {
         setLinkButtonStyles(restoreButton);
 
         // Add the buttons to the layout
-        mainLayout.getChildren().addAll(articleListButton, backupButton, restoreButton);
+        mainLayout.getChildren().addAll(editUserGroupsButton, articleListButton, backupButton, restoreButton);
 
         root.setCenter(mainLayout);
     }
