@@ -176,7 +176,7 @@ public class Article implements Serializable{
           String description = rs.getString("description");
           String keywords = rs.getString("keywords");
           String encryptedBody = rs.getString("body");
-          String body = rs.getString("body");
+          String body = EncryptionUtils.decryptString(encryptedBody);
 
           // return the article
           return new Article(id, level, groups, title, description, keywords, body, links);
