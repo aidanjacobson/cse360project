@@ -98,7 +98,7 @@ public class DatabaseHelper {
         String messagesTable = "CREATE TABLE IF NOT EXISTS cse360messages (" 
                                + "message_id INT AUTO_INCREMENT PRIMARY KEY, "
                                + "messageType VARCHAR(15) NOT NULL, "
-                               + "messageContent VARCHAR(10000) NOT NULL, "
+                               + "messageContent VARCHAR(1000) NOT NULL, "
                                + "senderUsername VARCHAR(255) NOT NULL, "
                                + "senderRole VARCHAR(15) NOT NULL, "
                                + "threadUsername VARCHAR(255), "
@@ -121,6 +121,27 @@ public class DatabaseHelper {
             return null;
         }
     }
+    
+    /**
+     * Checks if the messages database table is empty.
+     * 
+     * @return true if there are no messages in the database, false otherwise.
+     */
+    public static boolean isMessagesDatabaseEmpty() {
+        try {
+            String query = "SELECT COUNT(*) AS count FROM cse360messages";
+            ResultSet resultSet = statement.executeQuery(query);
+            if (resultSet.next()) {
+                return resultSet.getInt("count") == 0;
+            }
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Could not access the messages database");
+            return true;
+        }
+    }
+
 
     /**
      * Test if users exist in database
@@ -694,7 +715,195 @@ public class DatabaseHelper {
         }
         return messages;
     }
+    
+    
+    /**
+     * Get one message that matches the query.
+     * @param query the SQL query to select a message
+     * @return the first message that matches the selection, or null if none match
+     */
+    public static Message getOneMessage(String query) {
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            return getOneMessage(pstmt);
+        } catch(SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    
+    /**
+     * Get one message that matches the PreparedStatement.
+     * @param pstmt a PreparedStatement created with DatabaseHelper.prepareStatement(query)
+     * @return the first message that matches the selection, or null if none match
+     */
+    public static Message getOneMessage(PreparedStatement pstmt) {
+        try {
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return Message.fromResultSet(rs);
+            } else {
+                return null;
+            }
+        } catch(SQLException e) {
+            System.out.println("Error in getOneMessage()");
+            return null;
+        }
+    }
+    
+    /**
+     * Adds a new message to the database. If the message ID is -1, an auto-generated ID
+     * will be assigned by the database. If the ID is specified (not -1), the method will
+     * attempt to insert the message with that specific ID.
+     *
+     * @param message The Message object containing the details to be inserted into the database.
+     *                This includes the message type, content, sender information, sender role,
+     *                thread (if applicable), and timestamp.
+     *
+     * @throws SQLException if there is an error while inserting the message into the database.
+     */
+    public static void addMessage(Message message) {
+        try {
+            String[] returnId = { "message_id" };
+            PreparedStatement insertStatement;
 
+            if (message.getId() == -1) {
+                String insertQuery = "INSERT INTO cse360messages (messageType, messageContent, senderUsername, senderRole, threadUsername, messageTimestamp) VALUES (?, ?, ?, ?, ?, ?)";
+                insertStatement = connection.prepareStatement(insertQuery, returnId);
+                insertStatement.setString(1, message.getMessageType().toString());
+                insertStatement.setString(2, message.getMessageContent());
+                insertStatement.setString(3, message.getSender().username);
+                insertStatement.setString(4, message.getSenderRole().toString());
+                insertStatement.setString(5, (message.getThread() != null) ? message.getThread().username : null);
+                insertStatement.setTimestamp(6, message.getMessageTimestamp());
+            } else {
+                String insertQuery = "INSERT INTO cse360messages (message_id, messageType, messageContent, senderUsername, senderRole, threadUsername, messageTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                insertStatement = connection.prepareStatement(insertQuery, returnId);
+                insertStatement.setInt(1, message.getId());
+                insertStatement.setString(2, message.getMessageType().toString());
+                insertStatement.setString(3, message.getMessageContent());
+                insertStatement.setString(4, message.getSender().username);
+                insertStatement.setString(5, message.getSenderRole().toString());
+                insertStatement.setString(6, (message.getThread() != null) ? message.getThread().username : null);
+                insertStatement.setTimestamp(7, message.getMessageTimestamp());
+            }
 
+            // Execute the query
+            insertStatement.executeUpdate();
 
+            // Capture auto-generated ID if it was not specified
+            if (message.getId() == -1) {
+                try (ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        message.setId(generatedKeys.getInt(1));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    
+    /**
+     * Updates an existing message in the database. If the message with the specified ID
+     * does not exist in the database, this method will not perform any operation.
+     *
+     * @param message The Message object containing the updated details. The ID of the message
+     *                must be set to identify the record to update.
+     *
+     * @throws SQLException if there is an error while updating the message in the database.
+     */
+    public static void updateMessage(Message message) {
+        // Check if the message has a valid ID
+        if (message.getId() == -1) {
+            System.err.println("Error: Attempted to update a message without a valid ID.");
+            return;
+        }
+
+        String updateQuery = "UPDATE cse360messages SET messageType = ?, messageContent = ?, senderUsername = ?, senderRole = ?, threadUsername = ?, messageTimestamp = ? WHERE message_id = ?";
+
+        try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
+            // Set parameters for the update query
+            updateStatement.setString(1, message.getMessageType().toString());
+            updateStatement.setString(2, message.getMessageContent());
+            updateStatement.setString(3, message.getSender().username);
+            updateStatement.setString(4, message.getSenderRole().toString());
+            updateStatement.setString(5, (message.getThread() != null) ? message.getThread().username : null);
+            updateStatement.setTimestamp(6, message.getMessageTimestamp());
+            updateStatement.setInt(7, message.getId());
+
+            // Execute the update query
+            int affectedRows = updateStatement.executeUpdate();
+
+            // Check if any rows were affected
+            if (affectedRows == 0) {
+                System.err.println("Error: No message found with ID " + message.getId());
+            } else {
+                System.out.println("Message with ID " + message.getId() + " updated successfully.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
+    /**
+     * Adds a new message to the database if it does not already exist (i.e., ID is -1),
+     * or updates an existing message if it has a valid ID.
+     *
+     * @param message The Message object to add or update in the database.
+     */
+    public static void addOrUpdateMessage(Message message) {
+        if (message.getId() == -1) {
+            // If the message ID is -1, treat it as a new message and add it to the database
+            addMessage(message);
+        } else {
+            // If the message has a valid ID, update the existing message in the database
+            updateMessage(message);
+        }
+    }
+    
+    
+    /**
+     * Deletes a specific message from the database based on its ID.
+     *
+     * @param message The Message object to delete from the database.
+     * @return true if the deletion was successful, false otherwise.
+     */
+    public static boolean deleteMessage(Message message) {
+        try {
+            String deleteQuery = "DELETE FROM cse360messages WHERE message_id=?";
+            PreparedStatement pstmt = connection.prepareStatement(deleteQuery);
+            pstmt.setInt(1, message.getId());
+            int affectedRows = pstmt.executeUpdate();
+            message.setId(-1); // Set ID to -1 to indicate deletion
+            if (affectedRows == 0) return false;
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Warning! This function will delete ALL messages in the connected database!
+     * Use with caution!
+     * 
+     * @return true if the deletion of all messages succeeded, false otherwise.
+     */
+    public static boolean deleteAllMessages() {
+        if (isMessagesDatabaseEmpty()) return true;
+        String sql = "DELETE FROM cse360messages";
+        try {
+            statement.executeUpdate(sql);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    
 }
