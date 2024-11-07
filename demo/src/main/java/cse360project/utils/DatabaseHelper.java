@@ -762,45 +762,41 @@ public class DatabaseHelper {
      *
      * @param message The Message object containing the details to be inserted into the database.
      *                This includes the message type, content, sender information, sender role,
-     *                thread (if applicable), and timestamp.
+     *                thread (if applicable), and time stamp.
      *
      * @throws SQLException if there is an error while inserting the message into the database.
      */
     public static void addMessage(Message message) {
+    	
+        // If the message already has an ID, print an error and return
+        if (message.getId() != -1) {
+            System.err.printf("Error: Attempted to add message to db, but message ID was not -1 (got %d)%n", message.getId());
+            return;
+        }
+        
         try {
+            
             String[] returnId = { "message_id" };
-            PreparedStatement insertStatement;
-
-            if (message.getId() == -1) {
-                String insertQuery = "INSERT INTO cse360messages (messageType, messageContent, senderUsername, senderRole, threadUsername, messageTimestamp) VALUES (?, ?, ?, ?, ?, ?)";
-                insertStatement = connection.prepareStatement(insertQuery, returnId);
-                insertStatement.setString(1, message.getMessageType().toString());
-                insertStatement.setString(2, message.getMessageContent());
-                insertStatement.setString(3, message.getSender().username);
-                insertStatement.setString(4, message.getSenderRole().toString());
-                insertStatement.setString(5, (message.getThread() != null) ? message.getThread().username : null);
-                insertStatement.setTimestamp(6, message.getMessageTimestamp());
-            } else {
-                String insertQuery = "INSERT INTO cse360messages (message_id, messageType, messageContent, senderUsername, senderRole, threadUsername, messageTimestamp) VALUES (?, ?, ?, ?, ?, ?, ?)";
-                insertStatement = connection.prepareStatement(insertQuery, returnId);
-                insertStatement.setInt(1, message.getId());
-                insertStatement.setString(2, message.getMessageType().toString());
-                insertStatement.setString(3, message.getMessageContent());
-                insertStatement.setString(4, message.getSender().username);
-                insertStatement.setString(5, message.getSenderRole().toString());
-                insertStatement.setString(6, (message.getThread() != null) ? message.getThread().username : null);
-                insertStatement.setTimestamp(7, message.getMessageTimestamp());
-            }
-
-            // Execute the query
+            
+            // Create the insert query
+            String insertQuery = "INSERT INTO cse360messages (messageType, messageContent, senderUsername, senderRole, threadUsername, messageTimestamp) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement insertStatement = connection.prepareStatement(insertQuery, returnId);
+            
+            // Set the parameters for the insert statement
+            insertStatement.setString(1, MessageType.messageTypeToString(message.getMessageType()));
+            insertStatement.setString(2, message.getMessageContent());
+            insertStatement.setString(3, message.getSender().username);
+            insertStatement.setString(4, message.getSenderRole().toString());
+            insertStatement.setString(5, (message.getThread() != null) ? message.getThread().username : null);
+            insertStatement.setTimestamp(6, message.getMessageTimestamp());
+            
+            // Execute the insert query
             insertStatement.executeUpdate();
 
-            // Capture auto-generated ID if it was not specified
-            if (message.getId() == -1) {
-                try (ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        message.setId(generatedKeys.getInt(1));
-                    }
+            // Capture and set the generated ID for the message
+            try (ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    message.setId(generatedKeys.getInt(1));
                 }
             }
         } catch (SQLException e) {
@@ -829,7 +825,7 @@ public class DatabaseHelper {
 
         try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
             // Set parameters for the update query
-            updateStatement.setString(1, message.getMessageType().toString());
+            updateStatement.setString(1, MessageType.messageTypeToString(message.getMessageType()));
             updateStatement.setString(2, message.getMessageContent());
             updateStatement.setString(3, message.getSender().username);
             updateStatement.setString(4, message.getSenderRole().toString());
