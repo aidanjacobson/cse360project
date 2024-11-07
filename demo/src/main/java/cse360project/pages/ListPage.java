@@ -94,7 +94,8 @@ public class ListPage implements Page {
                     setGraphic(null);
                 } else {
                     VBox articleBox = new VBox(5);
-                    Label titleLabel = new Label(article.title + " - " + Level.levelToString(article.level));
+                    // Label titleLabel = new Label(article.title + " - " + Level.levelToString(article.level));
+                    Label titleLabel = new Label(String.format("%s - %s (#%d)", article.title, Level.levelToString(article.level), article.getID()));
                     titleLabel.setFont(new Font("Arial", 16));
                     titleLabel.setStyle("-fx-font-weight: bold;");
                     Label descriptionLabel = new Label(article.description);
