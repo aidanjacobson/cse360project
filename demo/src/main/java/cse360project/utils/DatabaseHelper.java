@@ -775,7 +775,7 @@ public class DatabaseHelper {
         }
         
         try {
-            
+            // Define columns to return the generated ID
             String[] returnId = { "message_id" };
             
             // Create the insert query
