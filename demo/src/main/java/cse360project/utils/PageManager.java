@@ -2,6 +2,8 @@ package cse360project.utils;
 
 import java.util.HashMap;
 
+import javax.print.attribute.standard.PagesPerMinute;
+
 import cse360project.pages.Page;
 import javafx.scene.Scene;
 
@@ -75,4 +77,12 @@ public class PageManager {
     public static Page getActivePage() {
         return activePage;
     }
+    /**
+     * Get the active page as a string
+     * @return the page object that is currently active as a string
+     */
+	public static String getCurrentPageId() {
+		return activePage.toString();
+	}
+   
 }

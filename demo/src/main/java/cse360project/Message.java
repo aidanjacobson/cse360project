@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import cse360project.utils.DatabaseHelper;
 import cse360project.utils.MessageType;
 import cse360project.utils.Role;
 
@@ -108,11 +109,17 @@ public class Message implements Serializable {
      */
     public static Message fromResultSet(ResultSet rs) throws SQLException {
     	int id = rs.getInt("message_id");
-        MessageType messageType = MessageType.valueOf(rs.getString("messageType"));
+    	MessageType messageType = MessageType.stringToMessageType(rs.getString("messageType"));
         String messageContent = rs.getString("messageContent");
-        User sender = User.fromResultSet(rs); // Assumes User.fromResultSet() exists
+        
+        String senderUsername = rs.getString("senderUsername");
+        User sender = DatabaseHelper.getOneUser("SELECT * FROM cse360users WHERE username = '" + senderUsername + "'");
+        
         Role senderRole = Role.valueOf(rs.getString("senderRole"));
-        User thread = User.fromResultSet(rs); // Adjust if thread is another type
+        
+        String threadUsername = rs.getString("threadUsername");
+        User thread = (threadUsername != null) ? DatabaseHelper.getOneUser("SELECT * FROM cse360users WHERE username = '" + threadUsername + "'") : null;
+                
         Timestamp messageTimestamp = rs.getTimestamp("messageTimestamp");
 
         return new Message(id,messageType, messageContent, sender, senderRole, thread, messageTimestamp);

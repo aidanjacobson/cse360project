@@ -1,12 +1,10 @@
 package cse360project.utils;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import cse360project.Article;
 import cse360project.User;
