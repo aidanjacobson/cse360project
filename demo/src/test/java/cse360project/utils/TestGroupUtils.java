@@ -1,97 +1,74 @@
-package test;
+package cse360project.utils;
 
 import cse360project.utils.GroupUtils;
 import cse360project.Article;
 import cse360project.utils.Level;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestGroupUtils {
 
-    static int numPassed = 0;
-    static int numFailed = 0;
+	private ArrayList<Article> articles;
 
-    public static void main(String[] args) {
-        System.out.println("____________________________________________________________________________");
-        System.out.println("\nGroupUtils Testing Automation");
+    @BeforeEach
+    public void setUp() {
+        // Initialize the test articles before each test
+        articles = createTestArticles();
+    }
 
-      
-        ArrayList<Article> articles = createTestArticles();
+    @Test
+    public void testGetAllArticlesWithGroup_Group1() {
+        ArrayList<Article> result = GroupUtils.getAllArticlesWithGroup(articles, "Group 1");
+        assertEquals(2, result.size(), "Expected 2 articles in group: Group 1");
+    }
 
-        // test getAllArticlesWithGroup
-        performGroupTest(1, "Group 1", 2); 
-        performGroupTest(2, "Group 2", 2); 
-        performGroupTest(3, "Group 3", 1);
-        performGroupTest(4, "NonExistentGroup", 0); 
+    @Test
+    public void testGetAllArticlesWithGroup_Group2() {
+        ArrayList<Article> result = GroupUtils.getAllArticlesWithGroup(articles, "Group 2");
+        assertEquals(2, result.size(), "Expected 2 articles in group: Group 2");
+    }
 
-        // test getAllArticlesWithGroups
+    @Test
+    public void testGetAllArticlesWithGroup_Group3() {
+        ArrayList<Article> result = GroupUtils.getAllArticlesWithGroup(articles, "Group 3");
+        assertEquals(1, result.size(), "Expected 1 article in group: Group 3");
+    }
+
+    @Test
+    public void testGetAllArticlesWithGroup_NonExistentGroup() {
+        ArrayList<Article> result = GroupUtils.getAllArticlesWithGroup(articles, "NonExistentGroup");
+        assertEquals(0, result.size(), "Expected 0 articles in non-existent group");
+    }
+
+    @Test
+    public void testGetAllArticlesWithGroups() {
         ArrayList<String> groupList = new ArrayList<>();
         groupList.add("Group 1");
         groupList.add("Group 2");
-        performGroupsTest(5, groupList, 3);  
-
-        // test consolidateGroups
-        performConsolidateGroupsTest(6, articles, 3);
-
-        // test formatGroupName
-        performFormatGroupNameTest(7, " group1 test ", "Group1 Test");
-
-        System.out.println("____________________________________________________________________________");
-        System.out.println();
-        System.out.println("Number of tests passed: " + numPassed);
-        System.out.println("Number of tests failed: " + numFailed);
+        ArrayList<Article> result = GroupUtils.getAllArticlesWithGroups(articles, groupList);
+        assertEquals(3, result.size(), "Expected 3 articles in groups: Group 1, Group 2");
     }
 
-    // test getAllArticlesWithGroup
-    private static void performGroupTest(int testCase, String group, int expectedCount) {
-        System.out.println("____________________________________________________________________________\n\nTest case: " + testCase + " (Group Test)");
-        System.out.println("Group: \"" + group + "\"");
-
-        ArrayList<Article> result = GroupUtils.getAllArticlesWithGroup(createTestArticles(), group);
-        evaluateResult(result.size() == expectedCount, "Group test", "Expected " + expectedCount + " articles in group: " + group);
-    }
-
-    // test getAllArticlesWithGroups
-    private static void performGroupsTest(int testCase, ArrayList<String> groups, int expectedCount) {
-        System.out.println("____________________________________________________________________________\n\nTest case: " + testCase + " (Groups Test)");
-        System.out.println("Groups: " + groups);
-
-        ArrayList<Article> result = GroupUtils.getAllArticlesWithGroups(createTestArticles(), groups);
-        evaluateResult(result.size() == expectedCount, "Groups test", "Expected " + expectedCount + " articles in groups: " + groups);
-    }
-
-    // test consolidateGroups
-    private static void performConsolidateGroupsTest(int testCase, ArrayList<Article> articles, int expectedCount) {
-        System.out.println("____________________________________________________________________________\n\nTest case: " + testCase + " (Consolidate Groups Test)");
-
+    @Test
+    public void testConsolidateGroups() {
         ArrayList<String> result = GroupUtils.consolidateGroups(articles);
-        evaluateResult(result.size() == expectedCount, "Consolidate groups test", "Expected " + expectedCount + " unique groups");
+        assertEquals(3, result.size(), "Expected 3 unique groups");
+        assertTrue(result.contains("Group 1"));
+        assertTrue(result.contains("Group 2"));
+        assertTrue(result.contains("Group 3"));
     }
 
-    // test formatGroupName
-    private static void performFormatGroupNameTest(int testCase, String input, String expectedOutput) {
-        System.out.println("____________________________________________________________________________\n\nTest case: " + testCase + " (Format Group Name Test)");
-        System.out.println("Input: \"" + input + "\"");
-
-        String result = GroupUtils.formatGroupName(input);
-        evaluateResult(result.equals(expectedOutput), "Format group name test", "Expected: \"" + expectedOutput + "\"");
+    @Test
+    public void testFormatGroupName() {
+        String result = GroupUtils.formatGroupName(" group1 test ");
+        assertEquals("Group1 Test", result, "Expected formatted group name to be 'Group1 Test'");
     }
 
-    // Evaluates if the test passed or failed
-    private static void evaluateResult(boolean result, String testType, String message) {
-        if (result) {
-            System.out.println("***Success*** The " + testType + " passed as expected. " + message);
-            numPassed++;
-        } else {
-            System.err.println("***Failure*** The " + testType + " failed. " + message);
-            numFailed++;
-        }
-    }
-
-    private static ArrayList<Article> createTestArticles() {
+    private ArrayList<Article> createTestArticles() {
         ArrayList<Article> articles = new ArrayList<>();
 
-        
         ArrayList<String> groups1 = new ArrayList<>();
         groups1.add("Group 1");
         groups1.add("Group 2");
@@ -103,7 +80,6 @@ public class TestGroupUtils {
         Article article1 = new Article(1L, Level.BEGINNER, groups1, "Title 1", "Description 1", "Keywords 1", "Body 1", links1);
         articles.add(article1);
 
-        
         ArrayList<String> groups2 = new ArrayList<>();
         groups2.add("Group 2");
 
@@ -113,10 +89,9 @@ public class TestGroupUtils {
         Article article2 = new Article(2L, Level.INTERMEDIATE, groups2, "Title 2", "Description 2", "Keywords 2", "Body 2", links2);
         articles.add(article2);
 
-        
         ArrayList<String> groups3 = new ArrayList<>();
         groups3.add("Group 1");
-        groups3.add("Group 3");  
+        groups3.add("Group 3");
 
         ArrayList<String> links3 = new ArrayList<>();
         links3.add("Link 3");
