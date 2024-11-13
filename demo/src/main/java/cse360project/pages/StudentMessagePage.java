@@ -56,7 +56,7 @@ public class StudentMessagePage implements Page {
         	}
         	messageContent.getChildren().add(message);
 
-			if (i % 2 == 0) {
+			if (messages.get(i).getSender().getUserName().equals(ApplicationStateManager.getLoggedInUser().getUserName())) {
 				message.setAlignment(Pos.CENTER_LEFT);
 			} else {
 				message.setAlignment(Pos.CENTER_RIGHT);
