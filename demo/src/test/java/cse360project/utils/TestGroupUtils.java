@@ -3,16 +3,18 @@ package cse360project.utils;
 import cse360project.utils.GroupUtils;
 import cse360project.Article;
 import cse360project.utils.Level;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TestGroupUtils {
 
 	private ArrayList<Article> articles;
 
-    @BeforeEach
+    @Before
     public void setUp() {
         // Initialize the test articles before each test
         articles = createTestArticles();
@@ -21,25 +23,25 @@ public class TestGroupUtils {
     @Test
     public void testGetAllArticlesWithGroup_Group1() {
         ArrayList<Article> result = GroupUtils.getAllArticlesWithGroup(articles, "Group 1");
-        assertEquals(2, result.size(), "Expected 2 articles in group: Group 1");
+        assertEquals("Expected 2 articles in group: Group 1", 2, result.size());
     }
 
     @Test
     public void testGetAllArticlesWithGroup_Group2() {
         ArrayList<Article> result = GroupUtils.getAllArticlesWithGroup(articles, "Group 2");
-        assertEquals(2, result.size(), "Expected 2 articles in group: Group 2");
+        assertEquals("Expected 2 articles in group: Group 2", 2, result.size());
     }
 
     @Test
     public void testGetAllArticlesWithGroup_Group3() {
         ArrayList<Article> result = GroupUtils.getAllArticlesWithGroup(articles, "Group 3");
-        assertEquals(1, result.size(), "Expected 1 article in group: Group 3");
+        assertEquals("Expected 1 article in group: Group 3", 1, result.size());
     }
 
     @Test
     public void testGetAllArticlesWithGroup_NonExistentGroup() {
         ArrayList<Article> result = GroupUtils.getAllArticlesWithGroup(articles, "NonExistentGroup");
-        assertEquals(0, result.size(), "Expected 0 articles in non-existent group");
+        assertEquals("Expected 0 articles in non-existent group", 0, result.size());
     }
 
     @Test
@@ -48,22 +50,22 @@ public class TestGroupUtils {
         groupList.add("Group 1");
         groupList.add("Group 2");
         ArrayList<Article> result = GroupUtils.getAllArticlesWithGroups(articles, groupList);
-        assertEquals(3, result.size(), "Expected 3 articles in groups: Group 1, Group 2");
+        assertEquals("Expected 3 articles in groups: Group 1, Group 2", 3, result.size());
     }
 
     @Test
     public void testConsolidateGroups() {
         ArrayList<String> result = GroupUtils.consolidateGroups(articles);
-        assertEquals(3, result.size(), "Expected 3 unique groups");
-        assertTrue(result.contains("Group 1"));
-        assertTrue(result.contains("Group 2"));
-        assertTrue(result.contains("Group 3"));
+        assertEquals("Expected 3 unique groups", 3, result.size());
+        assertTrue("Result should contain Group 1", result.contains("Group 1"));
+        assertTrue("Result should contain Group 2", result.contains("Group 2"));
+        assertTrue("Result should contain Group 3", result.contains("Group 3"));
     }
 
     @Test
     public void testFormatGroupName() {
         String result = GroupUtils.formatGroupName(" group1 test ");
-        assertEquals("Group1 Test", result, "Expected formatted group name to be 'Group1 Test'");
+        assertEquals("Expected formatted group name to be 'Group1 Test'", "Group1 Test", result);
     }
 
     private ArrayList<Article> createTestArticles() {
