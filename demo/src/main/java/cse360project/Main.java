@@ -94,6 +94,17 @@ public class Main extends Application {
         DatabaseHelper.addMessage(message);
         DatabaseHelper.addMessage(message2);
 
+        // add a really long message
+        String longMessage = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi. Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa, scelerisque vitae, consequat in, pretium a, enim. Pellentesque congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum bibendum augue. Praesent egestas leo in pede. Praesent blandit odio eu enim. Pellentesque sed d";
+        Message message3 = new Message(MessageType.GENERIC, longMessage, student, Role.STUDENT, student, new Timestamp(System.currentTimeMillis()));
+        DatabaseHelper.addMessage(message3);
+
+        // add 50 instructor messages to test scrolling
+        for (int i = 0; i < 50; i++) {
+            Message message4 = new Message(MessageType.GENERIC, "Message " + i, instructor, Role.INSTRUCTOR, student, new Timestamp(System.currentTimeMillis()));
+            DatabaseHelper.addMessage(message4);
+        }
+
         // switch to the login page on open
         PageManager.switchToPage("studentmessage");
     }

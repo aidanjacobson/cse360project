@@ -10,17 +10,12 @@ import javafx.scene.layout.VBox;
 
 import javafx.scene.control.Label;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import cse360project.Message;
-import cse360project.User;
 import cse360project.utils.ApplicationStateManager;
-import cse360project.utils.DatabaseHelper;
-import cse360project.utils.MessageType;
 import cse360project.utils.MessengerUtils;
 import cse360project.utils.PageManager;
-import cse360project.utils.Role;
 
 public class StudentMessagePage implements Page {
 	BorderPane root = new BorderPane();
@@ -71,9 +66,9 @@ public class StudentMessagePage implements Page {
         	messageContent.getChildren().add(message);
 
 			if (messages.get(i).getSender().getUserName().equals(ApplicationStateManager.getLoggedInUser().getUserName())) {
-				message.setAlignment(Pos.CENTER_LEFT);
-			} else {
 				message.setAlignment(Pos.CENTER_RIGHT);
+			} else {
+				message.setAlignment(Pos.CENTER_LEFT);
 			}
         }
 		
