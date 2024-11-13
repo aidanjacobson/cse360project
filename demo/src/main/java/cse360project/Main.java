@@ -9,12 +9,16 @@ import javafx.stage.Stage;
 import cse360project.pages.LoginPage;
 import cse360project.pages.PasswordResetPage;
 import cse360project.pages.RoleSelectionPage;
+import cse360project.pages.StudentMessagePage;
 import cse360project.utils.DatabaseHelper;
 import cse360project.utils.PageManager;
 import cse360project.pages.UserPassSetupPage;
 import cse360project.pages.admin.AdminPage;
 import cse360project.pages.usergroups.UserGroupEditListPage;
 import cse360project.pages.StudentPage;
+
+import java.sql.SQLException;
+
 import cse360project.pages.AccountSetupScreen;
 import cse360project.pages.viewedit.EditPage;
 import cse360project.pages.viewedit.ViewPage;
@@ -27,7 +31,7 @@ public class Main extends Application {
         launch(args);
     }
     
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws SQLException {
         // show the initial window
     	System.out.println("Starting CSE360 Project...");
 
@@ -60,8 +64,9 @@ public class Main extends Application {
         PageManager.registerPage("editpage", new EditPage());
 
         PageManager.registerPage("editusergroups", new UserGroupEditListPage());
+        PageManager.registerPage("studentmessage", new StudentMessagePage());
 
         // switch to the login page on open
-        PageManager.switchToPage("login");
+        PageManager.switchToPage("studentmessage");
     }
 }
