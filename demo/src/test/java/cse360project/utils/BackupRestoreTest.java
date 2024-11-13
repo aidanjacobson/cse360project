@@ -3,9 +3,10 @@ package cse360project.utils;
 import cse360project.Article;
 import cse360project.utils.BackupRestoreUtils;
 import cse360project.utils.DatabaseHelper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class BackupRestoreTest {
     private static final String TEST_BACKUP_PATH = "test_backup.db";
     private static final String TEST_RESTORE_PATH = "test_restore.db";
 
-    @BeforeEach
+    @Before
     public void setUp() {
         // Ensure that the database is clean before each test
         DatabaseHelper.setDatabasePath("~/testdb");
@@ -34,11 +35,11 @@ public class BackupRestoreTest {
         boolean success = BackupRestoreUtils.backupDatabase(TEST_BACKUP_PATH, groups);
 
         // Verify that the backup was successful
-        assertTrue(success, "Backup should be successful");
+        assertTrue("Backup should be successful", success);
 
         // Check if the backup file exists
         File backupFile = new File(TEST_BACKUP_PATH);
-        assertTrue(backupFile.exists(), "Backup file should exist after backup");
+        assertTrue("Backup file should exist after backup", backupFile.exists());
 
         // Cleanup the backup file after the test
         backupFile.delete();
@@ -59,7 +60,7 @@ public class BackupRestoreTest {
 
         // Restore the database from the backup
         boolean success = BackupRestoreUtils.hardRestoreDatabase(TEST_BACKUP_PATH);
-        assertTrue(success, "Restore should be successful");
+        assertTrue("Restore should be successful", success);
 
         // Verify that articles are restored
         // Add assertions depending on how you verify articles are in the database
@@ -85,7 +86,7 @@ public class BackupRestoreTest {
 
         // Soft restore the database (with merging and overwriting)
         boolean success = BackupRestoreUtils.softRestoreDatabase(TEST_BACKUP_PATH, true);
-        assertTrue(success, "Soft restore should be successful");
+        assertTrue("Soft restore should be successful", success);
 
         // Verify that articles are restored
         // Add assertions depending on how you verify articles are in the database
@@ -109,10 +110,10 @@ public class BackupRestoreTest {
         boolean success = BackupRestoreUtils.backupDatabase(TEST_RESTORE_PATH, groups);
 
         // Ensure the backup is created
-        assertTrue(success, "Backup should be successful");
+        assertTrue("Backup should be successful", success);
 
         // Verify the file was created
-        assertTrue(backupFile.exists(), "Backup file should exist after backup");
+        assertTrue("Backup file should exist after backup", backupFile.exists());
 
         // Cleanup
         backupFile.delete();
@@ -122,13 +123,13 @@ public class BackupRestoreTest {
     public void testRestoreFromNonExistentFile() {
         // Test restore from a non-existent backup file
         boolean success = BackupRestoreUtils.hardRestoreDatabase("non_existent_file.db");
-        assertFalse(success, "Restoring from a non-existent file should fail");
+        assertFalse("Restoring from a non-existent file should fail", success);
     }
 
     @Test
     public void testBackupWithInvalidPath() {
         // Test backup with an invalid file path
         boolean success = BackupRestoreUtils.backupDatabase("/invalid/path/to/backup.db", new ArrayList<>());
-        assertFalse(success, "Backup to an invalid path should fail");
+        assertFalse("Backup to an invalid path should fail", success);
     }
 }
