@@ -23,24 +23,31 @@ public class StudentMessagePage implements Page {
 	
 	public StudentMessagePage() throws SQLException {
         messageContent = new VBox();
+
+		// messages should be aligned to the bottom of the container
         messageContent.setAlignment(Pos.BOTTOM_LEFT);
+
+		// add a scroll pane to the message content
+		// it should be scrolled to the bottom by default
         ScrollPane scrollPane = new ScrollPane(messageContent);
         scrollPane.setVvalue(1.0);
 
         
-		 Button backButton = new Button("Back");
-	        backButton.setOnAction(e -> {
-	            PageManager.switchToPage("student"); // Switch to login page
-	        });
-	        // add new message button open to page thing a magig
-	        scrollPane.setMaxWidth(700);
-	        scrollPane.setFitToHeight(true);
-	        scrollPane.setFitToWidth(true);
-	        scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-	        
-	        root.setTop(backButton);
-	        BorderPane.setMargin(scrollPane, new Insets(100, 100, 100, 100));
-	        root.setCenter(scrollPane);
+		Button backButton = new Button("Back");
+
+		// when the back button is clicked, switch to the student page
+		backButton.setOnAction(e -> {
+			PageManager.switchToPage("student"); // Switch to login page
+		});
+
+		scrollPane.setMaxWidth(700);
+		scrollPane.setFitToHeight(true);
+		scrollPane.setFitToWidth(true);
+		scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+		
+		root.setTop(backButton);
+		BorderPane.setMargin(scrollPane, new Insets(100, 100, 100, 100));
+		root.setCenter(scrollPane);
 
 	}
 	
@@ -53,16 +60,11 @@ public class StudentMessagePage implements Page {
 	@Override
 	public void onPageOpen() {
 		ArrayList<Message> messages = MessengerUtils.getAllMessagesInUserThread(ApplicationStateManager.getLoggedInUser());
+
+		// @Liam TODO: Sort messages by timestamp
+
         for (int i = 0; i < messages.size(); i++) {
-        	VBox message = new VBox();
-        	Label text = new Label(messages.get(i).getMessageContent());
-        	Label Sender = new Label(messages.get(i).getSender().getUserName() + ":");
-        	Label pad = new Label("\n");
-        	message.getChildren().add(Sender);
-        	message.getChildren().add(text);
-        	if (i != messages.size() - 1 ) {
-        		message.getChildren().add(pad);
-        	}
+			VBox message = createMessage(messages.get(i));
         	messageContent.getChildren().add(message);
 
 			if (messages.get(i).getSender().getUserName().equals(ApplicationStateManager.getLoggedInUser().getUserName())) {
@@ -72,6 +74,24 @@ public class StudentMessagePage implements Page {
 			}
         }
 		
+	}
+
+	private VBox createMessage(Message messageObject) {
+		VBox message = new VBox();
+		Label text = new Label(messageObject.getMessageContent());
+
+		// @Liam TODO: Add timestamp to message
+		// @Liam TODO: Wrap message text in textflow
+
+		// @Liam TODO: Sender label should be in this format: "[prefname] (role)" e.g. "Johnny (Student)" or "Janie (Instructor)"
+
+		Label Sender = new Label(messageObject.getSender().getUserName() + ":");
+		message.getChildren().add(Sender);
+		message.getChildren().add(text);
+
+		message.setPadding(new Insets(10));
+
+		return message;
 	}
 }
 
