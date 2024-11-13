@@ -11,13 +11,19 @@ import cse360project.pages.PasswordResetPage;
 import cse360project.pages.RoleSelectionPage;
 import cse360project.pages.StudentMessagePage;
 import cse360project.utils.DatabaseHelper;
+import cse360project.utils.MessageType;
 import cse360project.utils.PageManager;
 import cse360project.pages.UserPassSetupPage;
 import cse360project.pages.admin.AdminPage;
 import cse360project.pages.usergroups.UserGroupEditListPage;
 import cse360project.pages.StudentPage;
+import cse360project.utils.ApplicationStateManager;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+
+import cse360project.utils.Role;
 
 import cse360project.pages.AccountSetupScreen;
 import cse360project.pages.viewedit.EditPage;
@@ -65,6 +71,28 @@ public class Main extends Application {
 
         PageManager.registerPage("editusergroups", new UserGroupEditListPage());
         PageManager.registerPage("studentmessage", new StudentMessagePage());
+
+        // init test db
+        DatabaseHelper.setDatabasePath("~/testdb");
+        DatabaseHelper.connectToDatabase();
+        DatabaseHelper.deleteAllUsers();
+        DatabaseHelper.deleteAllMessages();
+
+        // add test users
+        User student = new User(-1, "student", "password".toCharArray(), "sender@example.com", null, true, false, null, "John", null, "Doe", "Johnny", false, false, true, new ArrayList<>());
+        User instructor = new User(-1, "instructor", "password".toCharArray(), "thread@example.com", null, true, false, null, "Jane", null, "Doe", "Janie", false, true, false, new ArrayList<>());
+
+        DatabaseHelper.addUser(student);
+        DatabaseHelper.addUser(instructor);
+
+        ApplicationStateManager.setLoggedInUser(student);
+
+        // add test messages
+        Message message = new Message(MessageType.GENERIC, "Hi i have a problem", student, Role.STUDENT, student, new Timestamp(System.currentTimeMillis()));
+        Message message2 = new Message(MessageType.GENERIC, "Hi i can help", instructor, Role.INSTRUCTOR, student, new Timestamp(System.currentTimeMillis()));
+
+        DatabaseHelper.addMessage(message);
+        DatabaseHelper.addMessage(message2);
 
         // switch to the login page on open
         PageManager.switchToPage("studentmessage");
