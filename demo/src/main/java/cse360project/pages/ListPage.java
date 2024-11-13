@@ -5,7 +5,6 @@ import cse360project.User;
 import cse360project.pages.viewedit.EditPage;
 import cse360project.pages.viewedit.ViewPage;
 import cse360project.utils.ApplicationStateManager;
-import cse360project.utils.DatabaseHelper;
 import cse360project.utils.Level;
 import cse360project.utils.PageManager;
 import cse360project.utils.GroupUtils;

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import cse360project.Article;
 import cse360project.Message;
 import cse360project.User;
-import cse360project.utils.EncryptionUtils;
+
 public class DatabaseHelper {
     static final String JDBC_DRIVER = "org.h2.Driver";   
     static final String defaultDatabase = "~/cse360db";

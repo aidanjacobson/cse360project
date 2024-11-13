@@ -6,9 +6,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-import java.util.ArrayList;
-
-import cse360project.utils.ApplicationStateManager;
 import cse360project.utils.PageManager;
 
 public class StudentMessagePage implements Page {
@@ -41,7 +38,6 @@ public class StudentMessagePage implements Page {
 
 	@Override
 	public void onPageOpen() {
-		// TODO Auto-generated method stub
-		
+
 	}
 }
