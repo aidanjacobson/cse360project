@@ -55,6 +55,12 @@ public class StudentMessagePage implements Page {
         		message.getChildren().add(pad);
         	}
         	messageContent.getChildren().add(message);
+
+			if (i % 2 == 0) {
+				message.setAlignment(Pos.CENTER_LEFT);
+			} else {
+				message.setAlignment(Pos.CENTER_RIGHT);
+			}
         }
 		 Button backButton = new Button("Back");
 	        backButton.setOnAction(e -> {
