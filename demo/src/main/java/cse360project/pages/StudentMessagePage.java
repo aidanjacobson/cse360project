@@ -27,7 +27,9 @@ public class StudentMessagePage implements Page {
 	
 	public StudentMessagePage() throws SQLException {
         VBox messageContent = new VBox();
+        messageContent.setAlignment(Pos.BOTTOM_LEFT);
         ScrollPane scrollPane = new ScrollPane(messageContent);
+        scrollPane.setVvalue(1.0);
         DatabaseHelper.deleteAllMessages();
         DatabaseHelper.deleteAllUsers();
         DatabaseHelper.createMessagesTable();
@@ -49,13 +51,8 @@ public class StudentMessagePage implements Page {
         	Label pad = new Label("\n");
         	message.getChildren().add(Sender);
         	message.getChildren().add(text);
-        	message.getChildren().add(pad);
-        	if (messages.get(i).getSender() == ApplicationStateManager.getLoggedInUser()) {
-        		
-        		message.setAlignment(Pos.BOTTOM_RIGHT);
-        	}
-        	else {
-        		message.setAlignment(Pos.BOTTOM_RIGHT);
+        	if (i != messages.size() - 1 ) {
+        		message.getChildren().add(pad);
         	}
         	messageContent.getChildren().add(message);
         }
@@ -64,13 +61,15 @@ public class StudentMessagePage implements Page {
 	            PageManager.switchToPage("student"); // Switch to login page
 	        });
 	        // add new message button open to page thing a magig
-	        messageContent.setAlignment(Pos.CENTER);
 	        scrollPane.setMaxWidth(700);
+	        scrollPane.setFitToHeight(true);
+	        scrollPane.setFitToWidth(true);
 	        scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 	        
 	        root.setTop(backButton);
 	        BorderPane.setMargin(scrollPane, new Insets(100, 100, 100, 100));
 	        root.setCenter(scrollPane);
+
 	}
 	
 	
