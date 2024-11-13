@@ -1,70 +1,70 @@
 package cse360project.utils;
 
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class TestValidationHelper {
 
     @Test
     public void testValidUsername() {
-        assertTrue(ValidationHelper.isValidUsername("validUser_123"), "Valid username should pass");
-        assertTrue(ValidationHelper.isValidUsername("user.name"), "Valid username with period should pass");
+        assertTrue("Valid username should pass", ValidationHelper.isValidUsername("validUser_123"));
+        assertTrue("Valid username with period should pass", ValidationHelper.isValidUsername("user.name"));
     }
 
     @Test
     public void testInvalidUsername() {
-        assertFalse(ValidationHelper.isValidUsername(""), "Empty username should fail");
-        assertFalse(ValidationHelper.isValidUsername("ab"), "Username less than 3 characters should fail");
-        assertFalse(ValidationHelper.isValidUsername("user@name"), "Username with invalid character '@' should fail");
+        assertFalse("Empty username should fail", ValidationHelper.isValidUsername(""));
+        assertFalse("Username less than 3 characters should fail", ValidationHelper.isValidUsername("ab"));
+        assertFalse("Username with invalid character '@' should fail", ValidationHelper.isValidUsername("user@name"));
     }
 
     @Test
     public void testValidPassword() {
-        assertTrue(ValidationHelper.isValidPassword("Passw0rd!".toCharArray()), "Valid password should pass");
-        assertTrue(ValidationHelper.isValidPassword("P@ssw0rd".toCharArray()), "Valid password with special characters should pass");
+        assertTrue("Valid password should pass", ValidationHelper.isValidPassword("Passw0rd!".toCharArray()));
+        assertTrue("Valid password with special characters should pass", ValidationHelper.isValidPassword("P@ssw0rd".toCharArray()));
     }
 
     @Test
     public void testInvalidPassword() {
-        assertFalse(ValidationHelper.isValidPassword("short".toCharArray()), "Password less than 6 characters should fail");
-        assertFalse(ValidationHelper.isValidPassword("password".toCharArray()), "Password missing at least 3 character types should fail");
-        assertFalse(ValidationHelper.isValidPassword("123456".toCharArray()), "Password with only numeric characters should fail");
+        assertFalse("Password less than 6 characters should fail", ValidationHelper.isValidPassword("short".toCharArray()));
+        assertFalse("Password missing at least 3 character types should fail", ValidationHelper.isValidPassword("password".toCharArray()));
+        assertFalse("Password with only numeric characters should fail", ValidationHelper.isValidPassword("123456".toCharArray()));
     }
 
     @Test
     public void testPasswordMatch() {
         char[] password = "Password123".toCharArray();
         char[] confirmPassword = "Password123".toCharArray();
-        assertTrue(ValidationHelper.doPasswordsMatch(password, confirmPassword), "Passwords should match");
+        assertTrue("Passwords should match", ValidationHelper.doPasswordsMatch(password, confirmPassword));
 
         confirmPassword = "WrongPassword123".toCharArray();
-        assertFalse(ValidationHelper.doPasswordsMatch(password, confirmPassword), "Passwords should not match");
+        assertFalse("Passwords should not match", ValidationHelper.doPasswordsMatch(password, confirmPassword));
     }
 
     @Test
     public void testValidName() {
-        assertTrue(ValidationHelper.isValidName("John Doe"), "Valid name should pass");
-        assertTrue(ValidationHelper.isValidName("O'Neil"), "Name with apostrophe should pass");
-        assertTrue(ValidationHelper.isValidName("Mary-Jane"), "Name with hyphen should pass");
+        assertTrue("Valid name should pass", ValidationHelper.isValidName("John Doe"));
+        assertTrue("Name with apostrophe should pass", ValidationHelper.isValidName("O'Neil"));
+        assertTrue("Name with hyphen should pass", ValidationHelper.isValidName("Mary-Jane"));
     }
 
     @Test
     public void testInvalidName() {
-        assertFalse(ValidationHelper.isValidName(""), "Empty name should fail");
-        assertFalse(ValidationHelper.isValidName("   "), "Name with only spaces should fail");
-        assertFalse(ValidationHelper.isValidName("John#Doe"), "Name with invalid character '#' should fail");
+        assertFalse("Empty name should fail", ValidationHelper.isValidName(""));
+        assertFalse("Name with only spaces should fail", ValidationHelper.isValidName("   "));
+        assertFalse("Name with invalid character '#' should fail", ValidationHelper.isValidName("John#Doe"));
     }
 
     @Test
     public void testValidEmail() {
-        assertTrue(ValidationHelper.isValidEmail("test@example.com"), "Valid email should pass");
-        assertTrue(ValidationHelper.isValidEmail("user.name@example.co"), "Valid email with domain extension should pass");
+        assertTrue("Valid email should pass", ValidationHelper.isValidEmail("test@example.com"));
+        assertTrue("Valid email with domain extension should pass", ValidationHelper.isValidEmail("user.name@example.co"));
     }
 
     @Test
     public void testInvalidEmail() {
-        assertFalse(ValidationHelper.isValidEmail("invalidemail.com"), "Email missing '@' should fail");
-        assertFalse(ValidationHelper.isValidEmail("user@domain"), "Email missing domain extension should fail");
-        assertFalse(ValidationHelper.isValidEmail("user@domain@com"), "Email with multiple '@' should fail");
+        assertFalse("Email missing '@' should fail", ValidationHelper.isValidEmail("invalidemail.com"));
+        assertFalse("Email missing domain extension should fail", ValidationHelper.isValidEmail("user@domain"));
+        assertFalse("Email with multiple '@' should fail", ValidationHelper.isValidEmail("user@domain@com"));
     }
 }
