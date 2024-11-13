@@ -1,8 +1,6 @@
 package cse360project.utils;
 
-import cse360project.utils.GroupUtils;
 import cse360project.Article;
-import cse360project.utils.Level;
 
 import java.util.ArrayList;
 
