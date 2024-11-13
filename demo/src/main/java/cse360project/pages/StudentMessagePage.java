@@ -26,10 +26,8 @@ public class StudentMessagePage implements Page {
 	BorderPane root = new BorderPane();
 	
 	public StudentMessagePage() throws SQLException {
-		VBox mainLayout = new VBox(10);
-        mainLayout.setAlignment(Pos.TOP_LEFT);
         VBox messageContent = new VBox();
-        ScrollPane scrollPane = new ScrollPane();
+        ScrollPane scrollPane = new ScrollPane(messageContent);
         DatabaseHelper.deleteAllMessages();
         DatabaseHelper.deleteAllUsers();
         DatabaseHelper.createMessagesTable();
@@ -48,11 +46,13 @@ public class StudentMessagePage implements Page {
         	VBox message = new VBox();
         	Label text = new Label(messages.get(i).getMessageContent());
         	Label Sender = new Label(messages.get(i).getSender().getUserName() + ":");
+        	Label pad = new Label("\n");
         	message.getChildren().add(Sender);
         	message.getChildren().add(text);
+        	message.getChildren().add(pad);
         	if (messages.get(i).getSender() == ApplicationStateManager.getLoggedInUser()) {
         		
-        		message.setAlignment(Pos.BOTTOM_CENTER);
+        		message.setAlignment(Pos.BOTTOM_RIGHT);
         	}
         	else {
         		message.setAlignment(Pos.BOTTOM_RIGHT);
@@ -60,18 +60,15 @@ public class StudentMessagePage implements Page {
         	messageContent.getChildren().add(message);
         }
 		 Button backButton = new Button("Back");
-		 mainLayout.setMaxWidth(10);
 	        backButton.setOnAction(e -> {
 	            PageManager.switchToPage("student"); // Switch to login page
 	        });
 	        // add new message button open to page thing a magig
 	        messageContent.setAlignment(Pos.CENTER);
-	        mainLayout.getChildren().add(backButton);
-	        scrollPane.setContent(messageContent);
 	        scrollPane.setMaxWidth(700);
 	        scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 	        
-	        root.getChildren().add(mainLayout);
+	        root.setTop(backButton);
 	        BorderPane.setMargin(scrollPane, new Insets(100, 100, 100, 100));
 	        root.setCenter(scrollPane);
 	}
