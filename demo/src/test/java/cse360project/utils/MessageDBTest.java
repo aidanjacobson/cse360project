@@ -11,8 +11,6 @@ import org.junit.Test;
 
 import cse360project.Message;
 import cse360project.User;
-import cse360project.utils.MessageType;
-import cse360project.utils.Role;
 
 public class MessageDBTest {
 
