@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import cse360project.Article;
 
-public class NewArticleDBTest {
+public class ArticleDBTest {
 	@Before
 	public void setup() throws SQLException {
 		DatabaseHelper.setDatabasePath("~/testdb");

@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import cse360project.User;
 
-public class NewDBTest {
+public class UserDBTest {
 
 	@Before
 	public void setup() throws SQLException {
