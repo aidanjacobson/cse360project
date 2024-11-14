@@ -7,7 +7,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-
+import javafx.scene.text.TextFlow;
 import javafx.scene.control.Label;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ import cse360project.utils.PageManager;
 public class StudentMessagePage implements Page {
 	BorderPane root = new BorderPane();
 	VBox messageContent;
+	
 	
 	public StudentMessagePage() throws SQLException {
         messageContent = new VBox();
@@ -48,7 +49,12 @@ public class StudentMessagePage implements Page {
 		root.setTop(backButton);
 		BorderPane.setMargin(scrollPane, new Insets(100, 100, 100, 100));
 		root.setCenter(scrollPane);
-
+		
+		Button createMessage = new Button("New Message");
+		createMessage.setOnAction(e-> {
+			PageManager.switchToPage("createmessage");
+		});
+		root.setBottom(createMessage);
 	}
 	
 	
@@ -60,9 +66,9 @@ public class StudentMessagePage implements Page {
 	@Override
 	public void onPageOpen() {
 		ArrayList<Message> messages = MessengerUtils.getAllMessagesInUserThread(ApplicationStateManager.getLoggedInUser());
-
+		
 		// @Liam TODO: Sort messages by timestamp
-
+		
         for (int i = 0; i < messages.size(); i++) {
 			VBox message = createMessage(messages.get(i));
         	messageContent.getChildren().add(message);
@@ -73,6 +79,7 @@ public class StudentMessagePage implements Page {
 				message.setAlignment(Pos.CENTER_LEFT);
 			}
         }
+        
 		
 	}
 
@@ -81,18 +88,27 @@ public class StudentMessagePage implements Page {
 		Label text = new Label(messageObject.getMessageContent());
 
 		// @Liam TODO: Add timestamp to message
+		String time = (messageObject.getMessageTimestamp().toString());
 		// @Liam TODO: Wrap message text in textflow
+		TextFlow bodyContainer = new TextFlow(text);
+        bodyContainer.setPadding(new Insets(5, 0, 0, 30));
 
-		// @Liam TODO: Sender label should be in this format: "[prefname] (role)" e.g. "Johnny (Student)" or "Janie (Instructor)"
+        // Make the body container scrollable
+        ScrollPane bodyScrollPane = new ScrollPane(bodyContainer);
+        bodyScrollPane.setFitToWidth(false);
+        bodyScrollPane.setPrefHeight(600);
+        bodyScrollPane.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
 
-		Label Sender = new Label(messageObject.getSender().getUserName() + ":");
+		Label Sender = new Label(messageObject.getSender().getPreferredName() + "(" + messageObject.getSenderRole().toString() + ") " + time);
 		message.getChildren().add(Sender);
-		message.getChildren().add(text);
+		message.getChildren().add(bodyScrollPane);
 
 		message.setPadding(new Insets(10));
 
 		return message;
 	}
+	
+	
 }
 
 
