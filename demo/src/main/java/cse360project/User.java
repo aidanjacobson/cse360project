@@ -66,10 +66,17 @@ public class User {
         this.is_student = is_student;
 
         // format the groups before setting them
-        ArrayList<String> newGroups = new ArrayList<>(groups.size());
-        for (String g : groups) {
-            newGroups.add(GroupUtils.formatGroupName(g));
-       }
+
+        ArrayList<String> newGroups;
+        if (groups == null) {
+            newGroups = new ArrayList<>();
+        } else {
+            newGroups = new ArrayList<>(groups.size());
+            for (String g : groups) {
+                newGroups.add(GroupUtils.formatGroupName(g));
+            }
+        }
+
         this.groups = newGroups;
     }
 
