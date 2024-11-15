@@ -7,6 +7,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.TextFlow;
 import javafx.scene.control.Label;
 import java.sql.SQLException;
@@ -51,6 +52,7 @@ public class StudentMessagePage implements Page {
 		root.setCenter(scrollPane);
 		
 		Button createMessage = new Button("New Message");
+		setLinkButtonStyles(createMessage);
 		createMessage.setOnAction(e-> {
 			PageManager.switchToPage("createmessage");
 		});
@@ -65,9 +67,9 @@ public class StudentMessagePage implements Page {
 
 	@Override
 	public void onPageOpen() {
+		messageContent.getChildren().clear();
 		ArrayList<Message> messages = MessengerUtils.getAllMessagesInUserThread(ApplicationStateManager.getLoggedInUser());
 		
-		// @Liam TODO: Sort messages by timestamp
 		
         for (int i = 0; i < messages.size(); i++) {
 			VBox message = createMessage(messages.get(i));
@@ -87,9 +89,9 @@ public class StudentMessagePage implements Page {
 		VBox message = new VBox();
 		Label text = new Label(messageObject.getMessageContent());
 
-		// @Liam TODO: Add timestamp to message
+
 		String time = (messageObject.getMessageTimestamp().toString());
-		// @Liam TODO: Wrap message text in textflow
+
 		TextFlow bodyContainer = new TextFlow(text);
         bodyContainer.setPadding(new Insets(5, 0, 0, 30));
 
@@ -108,7 +110,15 @@ public class StudentMessagePage implements Page {
 		return message;
 	}
 	
-	
+    private void setLinkButtonStyles(Button linkButton) {
+        final String btnBackgroundColor = "#0088ff";
+        final Color textColor = Color.WHITE;
+        final int btnWidth = 150;
+
+        linkButton.setStyle("-fx-background-color: " + btnBackgroundColor + "; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10px 20px;");
+        linkButton.setTextFill(textColor);
+        linkButton.setPrefWidth(btnWidth);
+    }
 }
 
 

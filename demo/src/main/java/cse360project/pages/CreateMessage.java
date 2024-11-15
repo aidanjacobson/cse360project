@@ -1,5 +1,6 @@
 package cse360project.pages;
 
+import java.awt.Label;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -15,6 +16,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
@@ -22,10 +24,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 public class CreateMessage implements Page{
 	VBox messageContainer;
-	TextField messageBody;
+	TextArea messageBody;
 	ComboBox<String> typeComboBox;
 	Message question;
 	private BorderPane root = new BorderPane();
@@ -36,6 +39,10 @@ public class CreateMessage implements Page{
         BorderPane.setMargin(messageContainer, new Insets(20));
         root.setCenter(messageContainer);
 
+        Text prompt = new Text("Does your message suggest information for a new Article?");
+        prompt.setStyle("-fx-font-size: 20px;");
+        root.setTop(prompt);
+        
      // create the level selection
         createTypeSelection();
         
@@ -48,26 +55,28 @@ public class CreateMessage implements Page{
 	
     private void createMessageBody() {
         // we need a textbox for the message
-        messageBody = new TextField();
-        messageBody.setMaxWidth(500);
-        messageBody.setPromptText("Enter Your Message");
+        messageBody = new TextArea();
+        
+        messageBody.setPrefWidth(800);
+        messageBody.setPromptText("Enter Message");
         messageBody.setStyle("-fx-font-size: 20px;");
         messageContainer.getChildren().add(messageBody);
+        messageBody.setWrapText(true);
     }
     
     private void createTypeSelection() {
-        // we need a dropdown selection for the level
+        // we need a dropdown selection for the type
         // font size 20px
         typeComboBox = new ComboBox<String>();
-        typeComboBox.getItems().addAll("GENERIC", "SPECIFIC");
-        typeComboBox.setValue("GENERIC");
+        typeComboBox.getItems().addAll("Yes", "No");
+        typeComboBox.setValue("No");
         typeComboBox.setStyle("-fx-font-size: 20px;");
         messageContainer.getChildren().add(typeComboBox);
     }
     
     private void createBottomButtons() {
-        // create the save and close button
-        Button saveButton = new Button("Save and Close");
+        // create the send and close button
+        Button saveButton = new Button("Send Message");
         saveButton.setStyle("-fx-font-size: 15px;");
         saveButton.setOnAction(event -> {
             doAttemptSave();
@@ -102,19 +111,25 @@ public class CreateMessage implements Page{
     private void doAttemptSave() {
         // check if all fields are filled
         // only some fields are required
-        // title
+        // messageBody
         if (messageBody.getText().isEmpty()) {
             failSave("Please enter a message");
             return;
         }
+        MessageType type;
+        if (typeComboBox.getValue() == "Yes") {
+        	type = MessageType.SPECIFIC;
+        }
+        else {
+        	type = MessageType.GENERIC; 
+        }
+        question = new Message(-1, type, messageBody.getText(), ApplicationStateManager.getLoggedInUser(), Role.STUDENT, ApplicationStateManager.getLoggedInUser(), Timestamp.valueOf(LocalDateTime.now()));
 
-        question = new Message(-1, MessageType.stringToMessageType(typeComboBox.getValue()), messageBody.getText(), ApplicationStateManager.getLoggedInUser(), Role.STUDENT, ApplicationStateManager.getLoggedInUser(), Timestamp.valueOf(LocalDateTime.now()));
-
-        // save the article
+        // save the Message
         // it might be new or existing
         DatabaseHelper.addOrUpdateMessage(question);
         
-        // go back to the view page
+        // go back to the studentMessage page
         PageManager.switchToPage("studentmessage");
     }
     
