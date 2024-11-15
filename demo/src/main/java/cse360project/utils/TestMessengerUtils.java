@@ -13,8 +13,6 @@ import java.util.List;
 
 public class TestMessengerUtils {
 
-    private MessengerUtils messengerUtils;
-
     @BeforeEach
     public void setUp() {
     	InitTestDB.init();
