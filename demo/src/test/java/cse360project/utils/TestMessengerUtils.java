@@ -76,7 +76,7 @@ public class TestMessengerUtils {
         DatabaseHelper.addMessage(message2);
         Message message3 = new Message(-1, messageType, "Help me please!", student2, instructorSenderRole, student2, new Timestamp(System.currentTimeMillis()));
         DatabaseHelper.addMessage(message3);
-        Message message4 = new Message(-1, messageType, "Seperate Thread!", instructor2, instructorSenderRole, instructor2, new Timestamp(System.currentTimeMillis()));
+        Message message4 = new Message(-1, messageType, "Separate Thread!", instructor2, instructorSenderRole, instructor2, new Timestamp(System.currentTimeMillis()));
         DatabaseHelper.addMessage(message4);
         List<Message> messageList1 = MessengerUtils.getAllMessagesInUserThread(student1);
         List<Message> messageList2 = MessengerUtils.getAllMessagesInUserThread(student2);
@@ -89,8 +89,8 @@ public class TestMessengerUtils {
         // Test 2: Check that the retrieved thread for student1 includes the correct messages by content
         assertTrue("Student1's thread should contain the student's message 'Hello instructor!'", 
                 messageList1.stream().anyMatch(msg -> msg.getMessageContent().equals("Hello instructor!")));
-        assertTrue("Student1's thread should contain the instructor's response 'Hi, how can I help you?'", 
-                messageList1.stream().anyMatch(msg -> msg.getMessageContent().equals("Hi, how can I help you?")));
+        assertTrue("Student1's thread should contain the instructor's response 'Hi how can I help you!'", 
+                messageList1.stream().anyMatch(msg -> msg.getMessageContent().equals("Hi how can I help you!")));
         assertTrue("Student2's thread should contain the student's message 'Help me please!'", 
                 messageList2.stream().anyMatch(msg -> msg.getMessageContent().equals("Help me please!")));
 
