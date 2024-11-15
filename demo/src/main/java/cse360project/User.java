@@ -242,6 +242,10 @@ public class User {
             DatabaseHelper.updateUser(this);
         }
     }
+    
+    public String getUserName() {
+    	return this.username;
+    }
 
     @Override
     public boolean equals(Object obj) {

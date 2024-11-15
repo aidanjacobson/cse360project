@@ -73,7 +73,16 @@ public class StudentPage implements Page {
 
         // Add the buttons to the layout
         mainLayout.getChildren().addAll(articleListButton);
-
+        
+        Button studentMessageButton = new Button("See Student Messages");
+        studentMessageButton.setOnAction(e -> {
+            PageManager.switchToPage("studentmessage");
+        });
+        setLinkButtonStyles(studentMessageButton);
+        
+     // Add the buttons to the layout
+        mainLayout.getChildren().addAll(studentMessageButton);
+        
         // Add the layout to the root
         root.setCenter(mainLayout);
     }
