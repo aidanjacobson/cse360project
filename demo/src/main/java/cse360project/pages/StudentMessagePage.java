@@ -22,7 +22,9 @@ public class StudentMessagePage implements Page {
 	BorderPane root = new BorderPane();
 	VBox messageContent;
 	
-	
+    /**
+     * constructor for StudentMessagePage
+     */
 	public StudentMessagePage() throws SQLException {
         messageContent = new VBox();
 

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import cse360project.utils.Role;
 
 import cse360project.pages.AccountSetupScreen;
+import cse360project.pages.CreateMessage;
 import cse360project.pages.viewedit.EditPage;
 import cse360project.pages.viewedit.ViewPage;
 import cse360project.pages.InstructorPage;
@@ -71,5 +72,6 @@ public class Main extends Application {
 
         PageManager.registerPage("editusergroups", new UserGroupEditListPage());
         PageManager.registerPage("studentmessage", new StudentMessagePage());
+        PageManager.registerPage("createmessage", new CreateMessage());
     }
 }
