@@ -3,9 +3,9 @@ import cse360project.InitTestDB;
 import cse360project.Message;
 import cse360project.User;
 import cse360project.utils.MessengerUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class TestMessengerUtils {
 
-    @BeforeEach
+    @Before
     public void setUp() {
     	InitTestDB.init();
     }
@@ -39,16 +39,16 @@ public class TestMessengerUtils {
         
         List<Message> messageList = MessengerUtils.getAllMessagesInUserThread(student1);
         // Assertions
-        assertNotNull(messageList, "The message list should not be null");
-        assertEquals(2, messageList.size(), "The number of messages in the thread should be 2 for student1");
+        assertNotNull("The message list should not be null", messageList);
+        assertEquals("The number of messages in the thread should be 2 for student1", 2, messageList.size());
 
         // Verify the first message in the list is the one from student1
-        assertTrue(messageList.get(0).getMessageContent().equals("Hi I need help!"), "The first message should be the one from student1");
+        assertTrue("The first message should be the one from student1", messageList.get(0).getMessageContent().equals("Hi I need help!"));
         
         // Verify the second message in the list is from the instructor
-        assertTrue(messageList.get(1).getMessageContent().equals("Hi I can help you!"), "The second message should be the one from instructor1");
+        assertTrue("The second message should be the one from instructor1", messageList.get(1).getMessageContent().equals("Hi I can help you!"));
         
-        assertFalse(messageList.stream().anyMatch(msg -> msg.getMessageContent().equals("Separate Thread!")), "The separate thread message should not be in student1's thread");
+        assertFalse("The separate thread message should not be in student1's thread", messageList.stream().anyMatch(msg -> msg.getMessageContent().equals("Separate Thread!")));
         //Check size of array list is 2
         //Check to make sure that that the message for student1 is the first element of the array list. 
         //Check to make sure message2 is the 2nd element of the array list. 
@@ -62,8 +62,8 @@ public class TestMessengerUtils {
         User instructor1 = DatabaseHelper.getOneUser("SELECT * FROM cse360users WHERE username='instructor1'");
         User instructor2 = DatabaseHelper.getOneUser("SELECT * FROM cse360users WHERE username='instructor2'");
         
-        assertNotNull(student1, "Student1 should not be null");
-        assertNotNull(student2, "Student2 should not be null");
+        assertNotNull("Student1 should not be null", student1);
+        assertNotNull("Student2 should not be null", student2);
         
         // Retrieve all student threads
         MessageType messageType = MessageType.GENERIC;  // Replace with actual MessageType you are using
@@ -78,31 +78,30 @@ public class TestMessengerUtils {
         DatabaseHelper.addMessage(message3);
         Message message4 = new Message(-1, messageType, "Seperate Thread!", instructor2, instructorSenderRole, instructor2, new Timestamp(System.currentTimeMillis()));
         DatabaseHelper.addMessage(message4);
-        
         List<Message> messageList1 = MessengerUtils.getAllMessagesInUserThread(student1);
         List<Message> messageList2 = MessengerUtils.getAllMessagesInUserThread(student2);
         List<Message> messageList3 = MessengerUtils.getAllMessagesInUserThread(instructor2);
         
-        assertEquals(2, messageList1.size(), "Student1's thread should contain 2 messages");
-        assertEquals(1, messageList2.size(), "Student2's thread should contain 1 message");
-        assertEquals(1, messageList3.size(), "Instructor2's thread should contain 1 message");
+        assertEquals("Student1's thread should contain 2 messages", 2, messageList1.size());
+        assertEquals("Student2's thread should contain 1 message", 1, messageList2.size());
+        assertEquals("Instructor2's thread should contain 1 message", 1, messageList3.size());
 
-     // Test 2: Check that the retrieved thread for student1 includes the correct messages by content
-        assertTrue(messageList1.stream().anyMatch(msg -> msg.getMessageContent().equals("Hello instructor!")),
-                "Student1's thread should contain the student's message 'Hello instructor!'");
-        assertTrue(messageList1.stream().anyMatch(msg -> msg.getMessageContent().equals("Hi, how can I help you?")),
-                "Student1's thread should contain the instructor's response 'Hi, how can I help you?'");
-        assertTrue(messageList2.stream().anyMatch(msg -> msg.getMessageContent().equals("Help me please!")),
-                "Student2's thread should contain the student's message 'Help me please!'");
+        // Test 2: Check that the retrieved thread for student1 includes the correct messages by content
+        assertTrue("Student1's thread should contain the student's message 'Hello instructor!'", 
+                messageList1.stream().anyMatch(msg -> msg.getMessageContent().equals("Hello instructor!")));
+        assertTrue("Student1's thread should contain the instructor's response 'Hi, how can I help you?'", 
+                messageList1.stream().anyMatch(msg -> msg.getMessageContent().equals("Hi, how can I help you?")));
+        assertTrue("Student2's thread should contain the student's message 'Help me please!'", 
+                messageList2.stream().anyMatch(msg -> msg.getMessageContent().equals("Help me please!")));
 
-        assertTrue(messageList3.stream().anyMatch(msg -> msg.getMessageContent().equals("Separate Thread!")),
-                "Instructor2's thread should contain the separate message 'Separate Thread!'");
+        assertTrue("Instructor2's thread should contain the separate message 'Separate Thread!'", 
+                messageList3.stream().anyMatch(msg -> msg.getMessageContent().equals("Separate Thread!")));
 
         // Additional checks to verify no incorrect cross-thread messages
-        assertFalse(messageList1.stream().anyMatch(msg -> msg.getMessageContent().equals("Help me please!")),
-                "Student1's thread should not contain messages from student2");
-        assertFalse(messageList2.stream().anyMatch(msg -> msg.getMessageContent().equals("Separate Thread!")),
-                "Student2's thread should not contain messages from instructor2");
+        assertFalse("Student1's thread should not contain messages from student2", 
+                messageList1.stream().anyMatch(msg -> msg.getMessageContent().equals("Help me please!")));
+        assertFalse("Student2's thread should not contain messages from instructor2", 
+                messageList2.stream().anyMatch(msg -> msg.getMessageContent().equals("Separate Thread!")));
 
         // Print diagnostics for debug assistance
         System.out.println("Student1's thread messages: " + messageList1);
@@ -112,5 +111,7 @@ public class TestMessengerUtils {
         //List student 1 thread, 2's thread, instructor 2 thread. 
         //Test 1: size of array list should be 3. 
         //Test 2: return student 1, Test 3: student 2, Test 4: instructor 2. 
+
+        
     }
 }
