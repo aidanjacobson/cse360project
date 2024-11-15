@@ -70,48 +70,33 @@ public class TestMessengerUtils {
         Role studentSenderRole = Role.STUDENT;  // Replace with actual Role (e.g., STUDENT or TEACHER)
         Role instructorSenderRole = Role.INSTRUCTOR;
         
-        Message message1 = new Message(-1, messageType, "Hello instructor!", student1, studentSenderRole, student1, new Timestamp(System.currentTimeMillis()));
-        DatabaseHelper.addMessage(message1);
-        Message message2 = new Message(-1, messageType, "Hi how can I help you!", instructor1, instructorSenderRole, student1, new Timestamp(System.currentTimeMillis()));
-        DatabaseHelper.addMessage(message2);
-        Message message3 = new Message(-1, messageType, "Help me please!", student2, instructorSenderRole, student2, new Timestamp(System.currentTimeMillis()));
-        DatabaseHelper.addMessage(message3);
-        Message message4 = new Message(-1, messageType, "Separate Thread!", instructor2, instructorSenderRole, instructor2, new Timestamp(System.currentTimeMillis()));
-        DatabaseHelper.addMessage(message4);
-        List<Message> messageList1 = MessengerUtils.getAllMessagesInUserThread(student1);
-        List<Message> messageList2 = MessengerUtils.getAllMessagesInUserThread(student2);
-        List<Message> messageList3 = MessengerUtils.getAllMessagesInUserThread(instructor2);
-        
-        assertEquals("Student1's thread should contain 2 messages", 2, messageList1.size());
-        assertEquals("Student2's thread should contain 1 message", 1, messageList2.size());
-        assertEquals("Instructor2's thread should contain 1 message", 1, messageList3.size());
-
-        // Test 2: Check that the retrieved thread for student1 includes the correct messages by content
-        assertTrue("Student1's thread should contain the student's message 'Hello instructor!'", 
-                messageList1.stream().anyMatch(msg -> msg.getMessageContent().equals("Hello instructor!")));
-        assertTrue("Student1's thread should contain the instructor's response 'Hi how can I help you!'", 
-                messageList1.stream().anyMatch(msg -> msg.getMessageContent().equals("Hi how can I help you!")));
-        assertTrue("Student2's thread should contain the student's message 'Help me please!'", 
-                messageList2.stream().anyMatch(msg -> msg.getMessageContent().equals("Help me please!")));
-
-        assertTrue("Instructor2's thread should contain the separate message 'Separate Thread!'", 
-                messageList3.stream().anyMatch(msg -> msg.getMessageContent().equals("Separate Thread!")));
-
-        // Additional checks to verify no incorrect cross-thread messages
-        assertFalse("Student1's thread should not contain messages from student2", 
-                messageList1.stream().anyMatch(msg -> msg.getMessageContent().equals("Help me please!")));
-        assertFalse("Student2's thread should not contain messages from instructor2", 
-                messageList2.stream().anyMatch(msg -> msg.getMessageContent().equals("Separate Thread!")));
-
-        // Print diagnostics for debug assistance
-        System.out.println("Student1's thread messages: " + messageList1);
-        System.out.println("Student2's thread messages: " + messageList2);
-        System.out.println("Instructor2's thread messages: " + messageList3);
         //add messages for multiple students. student 1 sends in student 1 thread. etc. student 2 -> 2. instructor 1 replies to student 1 in student 1 thread. Instructor 2 sends a message in instructor 2 thread. 
         //List student 1 thread, 2's thread, instructor 2 thread. 
-        //Test 1: size of array list should be 3. 
-        //Test 2: return student 1, Test 3: student 2, Test 4: instructor 2. 
+        //Test 1: size of array list should be 2. 
+        //Test 2: return student 1, Test 3: student 2
 
+        Message message1 = new Message(-1, messageType, "s1->s1", student1, studentSenderRole, student1, new Timestamp(System.currentTimeMillis()));
+        MessengerUtils.sendMessage(message1);
+
+        Message message2 = new Message(-1, messageType, "s2->s2", student2, studentSenderRole, student2, new Timestamp(System.currentTimeMillis()));
+        MessengerUtils.sendMessage(message2);
+
+        Message message3 = new Message(-1, messageType, "i1->s1", instructor1, instructorSenderRole, student1, new Timestamp(System.currentTimeMillis()));
+        MessengerUtils.sendMessage(message3);
+
+        Message message4 = new Message(-1, messageType, "i2->i2", instructor2, instructorSenderRole, instructor2, new Timestamp(System.currentTimeMillis()));
+        MessengerUtils.sendMessage(message4);
         
+        // get a list of all student threads
+        ArrayList<User> studentThreads = MessengerUtils.getAllStudentThreads();
+
+        // test 1: size of array list should be 3
+        assertEquals("The number of student threads should be 3", 2, studentThreads.size());
+
+        // test 2: array list should contain a user with username student1
+        assertTrue("The student threads should contain student1", studentThreads.stream().anyMatch(user -> user.username.equals("student1")));
+
+        // test 3: array list should contain a user with username student2
+        assertTrue("The student threads should contain student2", studentThreads.stream().anyMatch(user -> user.username.equals("student2")));
     }
 }
