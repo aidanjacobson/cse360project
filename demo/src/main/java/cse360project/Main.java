@@ -73,5 +73,8 @@ public class Main extends Application {
         PageManager.registerPage("editusergroups", new UserGroupEditListPage());
         PageManager.registerPage("studentmessage", new StudentMessagePage());
         PageManager.registerPage("createmessage", new CreateMessage());
+        
+     // switch to the login page on open
+        PageManager.switchToPage("login");
     }
 }

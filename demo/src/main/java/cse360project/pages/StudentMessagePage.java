@@ -86,7 +86,10 @@ public class StudentMessagePage implements Page {
         
 		
 	}
-
+    /**
+     * Creates a vbox 
+     * @return a VBox containing the Message
+     */
 	private VBox createMessage(Message messageObject) {
 		VBox message = new VBox();
 		Label text = new Label(messageObject.getMessageContent());
