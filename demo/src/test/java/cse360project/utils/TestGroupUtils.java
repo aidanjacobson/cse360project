@@ -12,36 +12,54 @@ public class TestGroupUtils {
 
 	private ArrayList<Article> articles;
 
+    /**
+     * Setup the test articles before each test
+     */
     @Before
     public void setUp() {
         // Initialize the test articles before each test
         articles = createTestArticles();
     }
 
+    /**
+     * Test the getAllArticlesWithGroup method
+     */
     @Test
     public void testGetAllArticlesWithGroup_Group1() {
         ArrayList<Article> result = GroupUtils.getAllArticlesWithGroup(articles, "Group 1");
         assertEquals("Expected 2 articles in group: Group 1", 2, result.size());
     }
 
+    /**
+     * Test the getAllArticlesWithGroup method
+     */
     @Test
     public void testGetAllArticlesWithGroup_Group2() {
         ArrayList<Article> result = GroupUtils.getAllArticlesWithGroup(articles, "Group 2");
         assertEquals("Expected 2 articles in group: Group 2", 2, result.size());
     }
 
+    /**
+     * Test the getAllArticlesWithGroup method
+     */
     @Test
     public void testGetAllArticlesWithGroup_Group3() {
         ArrayList<Article> result = GroupUtils.getAllArticlesWithGroup(articles, "Group 3");
         assertEquals("Expected 1 article in group: Group 3", 1, result.size());
     }
 
+    /**
+     * Test the getAllArticlesWithGroup method
+     */
     @Test
     public void testGetAllArticlesWithGroup_NonExistentGroup() {
         ArrayList<Article> result = GroupUtils.getAllArticlesWithGroup(articles, "NonExistentGroup");
         assertEquals("Expected 0 articles in non-existent group", 0, result.size());
     }
 
+    /**
+     * Test the getAllArticlesWithGroups method
+     */
     @Test
     public void testGetAllArticlesWithGroups() {
         ArrayList<String> groupList = new ArrayList<>();
@@ -51,6 +69,9 @@ public class TestGroupUtils {
         assertEquals("Expected 3 articles in groups: Group 1, Group 2", 3, result.size());
     }
 
+    /**
+     * Test the consolidateGroups method
+     */
     @Test
     public void testConsolidateGroups() {
         ArrayList<String> result = GroupUtils.consolidateGroups(articles);
@@ -60,12 +81,18 @@ public class TestGroupUtils {
         assertTrue("Result should contain Group 3", result.contains("Group 3"));
     }
 
+    /**
+     * Test the formatGroupName method
+     */
     @Test
     public void testFormatGroupName() {
         String result = GroupUtils.formatGroupName(" group1 test ");
         assertEquals("Expected formatted group name to be 'Group1 Test'", "Group1 Test", result);
     }
 
+    /**
+     * Method to create test articles
+     */
     private ArrayList<Article> createTestArticles() {
         ArrayList<Article> articles = new ArrayList<>();
 

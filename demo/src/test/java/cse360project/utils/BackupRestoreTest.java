@@ -12,6 +12,9 @@ public class BackupRestoreTest {
     private static final String TEST_BACKUP_PATH = "test_backup.db";
     private static final String TEST_RESTORE_PATH = "test_restore.db";
 
+    /**
+     * Setup the database before each test
+     */
     @Before
     public void setUp() {
         // Ensure that the database is clean before each test
@@ -20,6 +23,9 @@ public class BackupRestoreTest {
         DatabaseHelper.deleteAllArticles();
     }
 
+    /**
+     * Test the backupDatabase method in BackupRestoreUtils
+     */
     @Test
     public void testBackupDatabase() {
         // Create some mock articles and groups
@@ -41,6 +47,9 @@ public class BackupRestoreTest {
         backupFile.delete();
     }
 
+    /**
+     * Test the hardRestoreDatabase method in BackupRestoreUtils
+     */
     @Test
     public void testHardRestoreDatabase() {
         // Create mock articles and groups for backup
@@ -67,6 +76,9 @@ public class BackupRestoreTest {
         backupFile.delete();
     }
 
+    /**
+     * Test the softRestoreDatabase method in BackupRestoreUtils
+     */
     @Test
     public void testSoftRestoreDatabase() {
         // Create mock articles and groups for backup
@@ -92,6 +104,9 @@ public class BackupRestoreTest {
         backupFile.delete();
     }
 
+    /**
+     * Test the softRestoreDatabase method in BackupRestoreUtils with no existing backup
+     */
     @Test
     public void testBackupRestoreWithNoExistingBackup() {
         // Test backup when there is no pre-existing backup file
@@ -115,6 +130,9 @@ public class BackupRestoreTest {
         backupFile.delete();
     }
 
+    /**
+     * Test the softRestoreDatabase method in BackupRestoreUtils with no existing backup
+     */
     @Test
     public void testRestoreFromNonExistentFile() {
         // Test restore from a non-existent backup file
@@ -122,6 +140,9 @@ public class BackupRestoreTest {
         assertFalse("Restoring from a non-existent file should fail", success);
     }
 
+    /**
+     * Test the backupDatabase method in BackupRestoreUtils with an invalid path
+     */
     @Test
     public void testBackupWithInvalidPath() {
         // Test backup with an invalid file path

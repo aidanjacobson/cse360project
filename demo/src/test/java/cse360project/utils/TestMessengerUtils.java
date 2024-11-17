@@ -12,11 +12,17 @@ import java.util.List;
 
 public class TestMessengerUtils {
 
+    /**
+     * Setup the test database before each test
+     */
     @Before
     public void setUp() {
     	InitTestDB.init();
     }
     
+    /**
+     * Test the getAllMessagesInUserThread method
+     */
     @Test
     public void testGetAllMessagesInUserThread() {
         // Create a test user to simulate a user thread
@@ -53,6 +59,9 @@ public class TestMessengerUtils {
         //Check to make sure message2 is the 2nd element of the array list. 
     }
     
+    /**
+     * Test the getAllStudentThreads method
+     */
     @Test
     public void testGetAllStudentThreads() {
         // Create test users to represent students

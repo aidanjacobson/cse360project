@@ -12,6 +12,11 @@ import cse360project.User;
 
 public class UserDBTest {
 
+
+	/**
+	 * Setup the database before each test
+	 * @throws SQLException
+	 */
 	@Before
 	public void setup() throws SQLException {
 		DatabaseHelper.setDatabasePath("~/testdb");
@@ -20,11 +25,18 @@ public class UserDBTest {
 
         DatabaseHelper.createTables();
 	}
+
+	/**
+	 * Make sure the database was emptied before each test
+	 */
 	@Test
 	public void testDBEmpty() {
 		assertTrue("Running test for database is empty", DatabaseHelper.isDatabaseEmpty());
 	}
 	
+	/**
+	 * Test adding a user to the database
+	 */
 	@Test
 	public void testUserAdd() {
 		ArrayList<String> groups = new ArrayList<>();
@@ -35,6 +47,9 @@ public class UserDBTest {
         assertFalse("Running test to see if user is in database", DatabaseHelper.isDatabaseEmpty());
 	}
 	
+	/**
+	 * Test getting a user from the database
+	 */
 	@Test
 	public void testGetOneUser() {
 		ArrayList<String> groups = new ArrayList<>();
@@ -46,6 +61,9 @@ public class UserDBTest {
         assertTrue("Finding user with new username 'admin'", found != null);
 	}
 	
+	/**
+	 * Test updating a user in the database
+	 */
 	@Test
 	public void testUpdateUser() {
 		ArrayList<String> groups = new ArrayList<>();
@@ -61,6 +79,9 @@ public class UserDBTest {
         assertTrue("Finding user with new prefered name", found != null);
 	}
 	
+	/**
+	 * Test deleting a user from the database
+	 */
 	@Test
 	public void testDeleteUser() {
 		ArrayList<String> groups = new ArrayList<>();

@@ -11,6 +11,10 @@ import org.junit.Test;
 import cse360project.Article;
 
 public class ArticleDBTest {
+	/**
+	 * Setup the database for testing
+	 * @throws SQLException
+	 */
 	@Before
 	public void setup() throws SQLException {
 		DatabaseHelper.setDatabasePath("~/testdb");
@@ -20,12 +24,17 @@ public class ArticleDBTest {
 	    DatabaseHelper.createArticleTables();
 	}
 
-	
+	/**
+	 * Test the database is empty
+	 */
 	@Test
 	public void testDatabaseEmpty() {
 		assertTrue("Running test for database is empty", DatabaseHelper.isArticleDatabaseEmpty());
 	}
 	
+	/**
+	 * Test creating an article
+	 */
 	@Test
 	public void testCreateArticle() {
 		ArrayList<String> groups = new ArrayList<>();
@@ -38,6 +47,9 @@ public class ArticleDBTest {
         assertFalse("Running test to see if article is in database", DatabaseHelper.isArticleDatabaseEmpty());
 	}
 	
+	/**
+	 * Test getting one article
+	 */
 	@Test
 	public void testGetOneArticle() {
 		ArrayList<String> groups = new ArrayList<>();
@@ -51,6 +63,9 @@ public class ArticleDBTest {
 		assertTrue("Finding article with title", found != null);
 	}
 	
+	/**
+	 * Test updating an article
+	 */
 	@Test
 	public void testUpdateArticle() {
 		ArrayList<String> groups = new ArrayList<>();
@@ -68,6 +83,9 @@ public class ArticleDBTest {
         assertTrue("Finding article with new title", found != null);
 	}
 	
+	/**
+	 * Test deleting an article
+	 */
 	@Test
 	public void testDeleteArticle() {
 		ArrayList<String> groups = new ArrayList<>();
