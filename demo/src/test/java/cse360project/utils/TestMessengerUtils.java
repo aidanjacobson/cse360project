@@ -2,7 +2,6 @@ package cse360project.utils;
 import cse360project.InitTestDB;
 import cse360project.Message;
 import cse360project.User;
-import cse360project.utils.MessengerUtils;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
