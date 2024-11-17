@@ -9,6 +9,9 @@ import cse360project.utils.DatabaseHelper;
 import cse360project.utils.MessageType;
 import cse360project.utils.Role;
 
+/**
+ * Represents a message in the application
+ */
 public class Message implements Serializable {
 	private int id;
 	private MessageType messageType;
@@ -38,65 +41,121 @@ public class Message implements Serializable {
         this.messageTimestamp = messageTimestamp;
     }
     
- // Overloaded constructor without ID, for cases where ID is not initially needed
+    // Overloaded constructor without ID, for cases where ID is not initially needed
     public Message(MessageType messageType, String messageContent, User sender, Role senderRole, User thread, Timestamp messageTimestamp) {
         this(-1, messageType, messageContent, sender, senderRole, thread, messageTimestamp);
     }
 
     // Getters and Setters
     
+    /**
+     * Get the ID of the message
+     * @return the ID of the message
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Set the ID of the message
+     * @param id the ID of the message
+     */
     public void setId(int id) {
         this.id = id;
     }
     
+    /**
+     * Get the type of message
+     * @return the type of message
+     */
     public MessageType getMessageType() {
         return messageType;
     }
 
+    /**
+     * Set the type of message
+     * @param messageType the type of message
+     */
     public void setMessageType(MessageType messageType) {
         this.messageType = messageType;
     }
 
+    /**
+     * Get the content of the message
+     * @return the content of the message
+     */
     public String getMessageContent() {
         return messageContent;
     }
 
+    /**
+     * Set the content of the message
+     * @param messageContent the content of the message
+     */
     public void setMessageContent(String messageContent) {
         this.messageContent = messageContent;
     }
 
+    /**
+     * Get the sender of the message
+     * @return the sender of the message
+     */
     public User getSender() {
         return sender;
     }
 
+    /**
+     * Set the sender of the message
+     * @param sender the sender of the message
+     */
     public void setSender(User sender) {
         this.sender = sender;
     }
 
+    /**
+     * Get the role of the sender
+     * @return the role of the sender
+     */
     public Role getSenderRole() {
         return senderRole;
     }
 
+    /**
+     * Set the role of the sender
+     * @param senderRole the role of the sender
+     */
     public void setSenderRole(Role senderRole) {
         this.senderRole = senderRole;
     }
 
+    /**
+     * Get the thread this message is part of
+     * @return the user whos thread this message is part of
+     */
     public User getThread() {
         return thread;
     }
 
+    /**
+     * Set the thread this message is part of
+     * @param thread the user whos thread this message is part of
+     */
     public void setThread(User thread) {
         this.thread = thread;
     }
 
+    /**
+     * Get the timestamp of the message
+     * @return the timestamp of the message
+     */
     public Timestamp getMessageTimestamp() {
         return messageTimestamp;
     }
 
+    /**
+     * Set the timestamp of the message
+     * @param messageTimestamp the timestamp of the message
+     */
     public void setMessageTimestamp(Timestamp messageTimestamp) {
         this.messageTimestamp = messageTimestamp;
     }
