@@ -20,23 +20,6 @@ public class StudentPage implements Page {
      * Constructor for Student Page
      */
     public StudentPage() {
-        // VBox mainLayout = new VBox(10);
-        // mainLayout.setAlignment(Pos.CENTER);
-
-        // // Create the message
-        // Text studentText = new Text("You are on the Student page");
-        // studentText.setFont(new Font("Arial", 24));
-
-        // // Create the logout button
-        // Button logoutButton = new Button("Logout");
-        // logoutButton.setOnAction(e -> {
-        // ApplicationStateManager.logout(); // Logout the user
-        // PageManager.switchToPage("login"); // Switch to login page
-        // });
-
-        // // Add the message and button to the layout
-        // mainLayout.getChildren().addAll(studentText, logoutButton);
-        // root.getChildren().add(mainLayout);
 
         VBox mainLayout = new VBox(10);
         mainLayout.setAlignment(Pos.CENTER);
@@ -87,6 +70,11 @@ public class StudentPage implements Page {
         root.setCenter(mainLayout);
     }
 
+    /**
+     * Method to set the styles for the buttons
+     * 
+     * @param linkButton the button to set the styles for
+     */
     public void setLinkButtonStyles(Button linkButton) {
         final String btnBackgroundColor = "#0088ff";
         final Color textColor = Color.WHITE;

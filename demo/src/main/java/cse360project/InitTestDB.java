@@ -6,7 +6,13 @@ import java.util.Arrays;
 import cse360project.utils.DatabaseHelper;
 import cse360project.utils.Level;
 
+/**
+ * This class is used to initialize the test database with some test data
+ */
 public class InitTestDB {
+    /**
+     * This method initializes the test database with some test data
+     */
     public static void init() {
         // Ensure that the database is clean before each test
         DatabaseHelper.setDatabasePath("~/testdb");

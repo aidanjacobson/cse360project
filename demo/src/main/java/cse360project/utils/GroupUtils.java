@@ -107,6 +107,12 @@ public class GroupUtils {
         return getAllArticlesWithGroups(allArticles, groups);
     }
 
+    /**
+     * Check if a user can access an article.
+     * @param user The user to check.
+     * @param article The article to check.
+     * @return True if the user can access the article, false otherwise.
+     */
     public static boolean userCanAccessArticle(User user, Article article) {
         // if a user is an admin, they can access any article
         if (user.is_admin) {
@@ -122,6 +128,11 @@ public class GroupUtils {
         return false;
     }
 
+    /**
+     * Get all articles that a user can access.
+     * @param user The user to check.
+     * @return A list of articles that the user can access.
+     */
     public static ArrayList<Article> getAllArticlesForUser(User user) {
         ArrayList<Article> allArticles = DatabaseHelper.getAllArticles(); // Retrieve articles from the database
         ArrayList<Article> accessibleArticles = new ArrayList<>();
@@ -133,6 +144,11 @@ public class GroupUtils {
         return accessibleArticles;
     }
 
+    /**
+     * Get all users that a user can edit groups for.
+     * @param user The user to check.
+     * @return A list of users that the user can edit groups for.
+     */
     public static ArrayList<User> getAllUsersThatUserCanEditGroups(User user) {
         // if a user is an admin, they can edit any student or instructor's groups
         // if a user is an instructor, they can edit any student's groups
@@ -160,6 +176,11 @@ public class GroupUtils {
         return usersThatUserCanEditGroups;
     }
 
+    /**
+     * Get all groups that a user can edit.
+     * @param user The user to check.
+     * @return A list of groups that the user can edit.
+     */
     public static ArrayList<String> getAllGroupsThatCanBeEditedByUser(User user) {
         // if a user is an admin, they can edit any group
         if (user.is_admin) {
