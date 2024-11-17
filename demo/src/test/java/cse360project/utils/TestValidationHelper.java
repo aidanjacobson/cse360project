@@ -5,12 +5,18 @@ import org.junit.Test;
 
 public class TestValidationHelper {
 
+    /**
+     * Test valid username
+     */
     @Test
     public void testValidUsername() {
         assertTrue("Valid username should pass", ValidationHelper.isValidUsername("validUser_123"));
         assertTrue("Valid username with period should pass", ValidationHelper.isValidUsername("user.name"));
     }
 
+    /**
+     * Test invalid username
+     */
     @Test
     public void testInvalidUsername() {
         assertFalse("Empty username should fail", ValidationHelper.isValidUsername(""));
@@ -18,12 +24,18 @@ public class TestValidationHelper {
         assertFalse("Username with invalid character '@' should fail", ValidationHelper.isValidUsername("user@name"));
     }
 
+    /**
+     * Test valid password
+     */
     @Test
     public void testValidPassword() {
         assertTrue("Valid password should pass", ValidationHelper.isValidPassword("Passw0rd!".toCharArray()));
         assertTrue("Valid password with special characters should pass", ValidationHelper.isValidPassword("P@ssw0rd".toCharArray()));
     }
 
+    /**
+     * Test invalid password
+     */
     @Test
     public void testInvalidPassword() {
         assertFalse("Password less than 6 characters should fail", ValidationHelper.isValidPassword("short".toCharArray()));
@@ -31,6 +43,9 @@ public class TestValidationHelper {
         assertFalse("Password with only numeric characters should fail", ValidationHelper.isValidPassword("123456".toCharArray()));
     }
 
+    /**
+     * Test password match
+     */
     @Test
     public void testPasswordMatch() {
         char[] password = "Password123".toCharArray();
@@ -41,6 +56,9 @@ public class TestValidationHelper {
         assertFalse("Passwords should not match", ValidationHelper.doPasswordsMatch(password, confirmPassword));
     }
 
+    /**
+     * Test valid name
+     */
     @Test
     public void testValidName() {
         assertTrue("Valid name should pass", ValidationHelper.isValidName("John Doe"));
@@ -48,6 +66,9 @@ public class TestValidationHelper {
         assertTrue("Name with hyphen should pass", ValidationHelper.isValidName("Mary-Jane"));
     }
 
+    /**
+     * Test invalid name
+     */
     @Test
     public void testInvalidName() {
         assertFalse("Empty name should fail", ValidationHelper.isValidName(""));
@@ -55,12 +76,18 @@ public class TestValidationHelper {
         assertFalse("Name with invalid character '#' should fail", ValidationHelper.isValidName("John#Doe"));
     }
 
+    /**
+     * Test valid email
+     */
     @Test
     public void testValidEmail() {
         assertTrue("Valid email should pass", ValidationHelper.isValidEmail("test@example.com"));
         assertTrue("Valid email with domain extension should pass", ValidationHelper.isValidEmail("user.name@example.co"));
     }
 
+    /**
+     * Test invalid email
+     */
     @Test
     public void testInvalidEmail() {
         assertFalse("Email missing '@' should fail", ValidationHelper.isValidEmail("invalidemail.com"));

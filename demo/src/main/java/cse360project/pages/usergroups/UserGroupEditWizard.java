@@ -19,6 +19,9 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/**
+ * This class is used to edit the groups of a user
+ */
 public class UserGroupEditWizard {
     private static Stage userGroupEditStage;
     private static BorderPane root;
@@ -72,6 +75,9 @@ public class UserGroupEditWizard {
         addCloseButton();
     }
 
+    /**
+     * This method is used to set the title of the window
+     */
     private static void setTitle() {
         Label titleLabel = new Label("Edit Groups for " + editingUser.getPreferredName());
         titleLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
@@ -79,6 +85,9 @@ public class UserGroupEditWizard {
         BorderPane.setAlignment(titleLabel, Pos.CENTER);
     }
 
+    /**
+     * This method is used to add the group checkboxes to the window
+     */
     private static void addGroupCheckboxes() {
         // create a container for the group checkboxes
         groupCheckboxContainer = new VBox(10);
@@ -91,6 +100,9 @@ public class UserGroupEditWizard {
         renderCheckboxList();
     }
 
+    /**
+     * This method is used to render the group checkboxes
+     */
     private static void renderCheckboxList() {
         // clear the group checkbox container
         groupCheckboxContainer.getChildren().clear();
@@ -123,6 +135,9 @@ public class UserGroupEditWizard {
         }
     }
 
+    /**
+     * This method is used to add a close button to the bottom of the window
+     */
     private static void addCloseButton() {
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> {
@@ -135,6 +150,10 @@ public class UserGroupEditWizard {
         BorderPane.setAlignment(closeButton, Pos.CENTER_LEFT);
     }
 
+    /**
+     * This method is used to set the styles for a link button
+     * @param linkButton the button to set the styles for
+     */
     private static void setLinkButtonStyles(Button linkButton) {
         final String btnBackgroundColor = "#0088ff";
         final Color textColor = Color.WHITE;

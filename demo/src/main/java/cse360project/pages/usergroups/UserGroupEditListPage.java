@@ -86,14 +86,24 @@ public class UserGroupEditListPage implements Page {
         return backButton;
     }
 
+    /**
+     * Get the root node of the page
+     * @return the root node
+     */
     public Pane getRoot() {
         return root;
     }
 
+    /**
+     * This method is called when the page is opened
+     */
     public void onPageOpen() {
         renderUserTable();
     }
 
+    /**
+     * This method renders the user table
+     */
     private void renderUserTable() {
         // remove everything from the table so we can rebuild it
         clearUserTable();
@@ -105,12 +115,18 @@ public class UserGroupEditListPage implements Page {
         updateUserList();
     }
 
+    /**
+     * This method clears the user table
+     */
     private void clearUserTable() {
         userListGrid.getChildren().clear();
         userListGrid.setGridLinesVisible(false);
         userListGrid.setGridLinesVisible(true);
     }
 
+    /**
+     * This method populates the header row of the user list
+     */
     private void populateUserListHeaders() {
         userListGrid.setPadding(new Insets(20)); // Padding around the grid
         userListGrid.setAlignment(Pos.CENTER);
@@ -121,6 +137,9 @@ public class UserGroupEditListPage implements Page {
         userListGrid.add(createTextElement("Full Name", true),         2, 0, 1, 1);
     }
 
+    /**
+     * This method updates the list of users in the user table
+     */
     private void updateUserList() {
         User loggedInUser = ApplicationStateManager.getLoggedInUser();
         displayedUsers = GroupUtils.getAllUsersThatUserCanEditGroups(loggedInUser);
@@ -144,11 +163,22 @@ public class UserGroupEditListPage implements Page {
         }
     }
 
+    /**
+     * Create a text element with the specified text
+     * @param text the text to display
+     * @return the text element as a label
+     */
     private Label createTextElement(String text) {
         // if bold is not specified, default to false
         return createTextElement(text, false);
     }
 
+    /**
+     * Create a text element with the specified text and bold status
+     * @param text the text to display
+     * @param bold whether the text should be bold
+     * @return the text element as a label
+     */
     private Label createTextElement(String text, boolean bold) {
         // create label, set alignment, set padding
         Label out = new Label(text);
@@ -165,6 +195,11 @@ public class UserGroupEditListPage implements Page {
         return out;
     }
 
+    /**
+     * Create an edit button for the specified user
+     * @param user the user to create the edit button for
+     * @return the edit button
+     */
     private Button createEditButton(User user) {
         // create the edit button
         Button editButton = new Button("Edit Groups");

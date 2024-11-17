@@ -11,19 +11,13 @@ import cse360project.pages.PasswordResetPage;
 import cse360project.pages.RoleSelectionPage;
 import cse360project.pages.StudentMessagePage;
 import cse360project.utils.DatabaseHelper;
-import cse360project.utils.MessageType;
 import cse360project.utils.PageManager;
 import cse360project.pages.UserPassSetupPage;
 import cse360project.pages.admin.AdminPage;
 import cse360project.pages.usergroups.UserGroupEditListPage;
 import cse360project.pages.StudentPage;
-import cse360project.utils.ApplicationStateManager;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-
-import cse360project.utils.Role;
 
 import cse360project.pages.AccountSetupScreen;
 import cse360project.pages.CreateMessage;

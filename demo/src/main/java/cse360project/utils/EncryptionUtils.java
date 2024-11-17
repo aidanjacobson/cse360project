@@ -5,12 +5,18 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
+/**
+ * Utility class for encrypting and decrypting strings
+ */
 public class EncryptionUtils {
     private static final String ALGORITHM = "AES";
     private static final String TRANSFORMATION = "AES";
     private static final SecretKey SECRET_KEY = generateKey();
 
- // Generate a 128-bit key
+    /**
+     * Generate a secret key for encryption and decryption
+     * @return the secret key
+     */
     private static SecretKey generateKey() {
         byte[] keyBytes = new byte[] {
             0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
@@ -19,7 +25,11 @@ public class EncryptionUtils {
         return new SecretKeySpec(keyBytes, ALGORITHM);
     }
 
-    
+    /**
+     * Encrypt a string
+     * @param input the string to encrypt
+     * @return the encrypted string
+     */
     public static String encryptString(String input) {
         try {
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
@@ -31,6 +41,11 @@ public class EncryptionUtils {
         }
     }
 
+    /**
+     * Decrypt a string
+     * @param input the encrypted string
+     * @return the decrypted string
+     */
     public static String decryptString(String input) {
         try {
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);

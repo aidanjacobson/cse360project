@@ -18,6 +18,9 @@ import cse360project.utils.ApplicationStateManager;
 import cse360project.utils.MessengerUtils;
 import cse360project.utils.PageManager;
 
+/**
+ * This page is used to display the messages of a student
+ */
 public class StudentMessagePage implements Page {
 	BorderPane root = new BorderPane();
 	VBox messageContent;
@@ -61,12 +64,17 @@ public class StudentMessagePage implements Page {
 		root.setBottom(createMessage);
 	}
 	
-	
+	/**
+	 * @return the root
+	 */
 	public BorderPane getRoot() {
         return root;
     }
 
 
+	/**
+	 * This method is called when the page is opened
+	 */
 	@Override
 	public void onPageOpen() {
 		messageContent.getChildren().clear();
@@ -115,6 +123,10 @@ public class StudentMessagePage implements Page {
 		return message;
 	}
 	
+	/**
+	 * This method sets the styles for the link buttons
+	 * @param linkButton the button to set the styles for
+	 */
     private void setLinkButtonStyles(Button linkButton) {
         final String btnBackgroundColor = "#0088ff";
         final Color textColor = Color.WHITE;

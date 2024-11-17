@@ -7,6 +7,11 @@ import cse360project.User;
 
 public class MessengerUtils {
 
+    /**
+     * Sends a message by adding it to a database.
+     * @param message The message to send.
+     * @return True if the message was sent successfully, false otherwise.
+     */
 	public static boolean sendMessage(Message message) {
         try {
             // Assume we add the message to a database or a data structure here
@@ -46,6 +51,10 @@ public class MessengerUtils {
 	    }
     }
 
+    /**
+     * Retrieves all student threads.
+     * @return A list of all student threads.
+     */
     public static ArrayList<User> getAllStudentThreads() {
         try {
             // Fetch all messages from the database

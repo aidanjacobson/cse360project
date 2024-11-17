@@ -14,6 +14,10 @@ import cse360project.User;
 
 public class MessageDBTest {
 
+    /**
+     * Setup the database before each test
+     * @throws SQLException
+     */
     @Before
     public void setup() throws SQLException {
         DatabaseHelper.setDatabasePath("~/testdb");
@@ -23,11 +27,17 @@ public class MessageDBTest {
         DatabaseHelper.createMessagesTable();
     }
 
+    /**
+     * Test if the message database is empty
+     */
     @Test
     public void testMessageDBEmpty() {
         assertTrue("Running test to check if message database is empty", DatabaseHelper.isMessagesDatabaseEmpty());
     }
 
+    /**
+     * Test adding a message to the database
+     */
     @Test
     public void testAddMessage() {
         // Setup a sample user as the sender and thread for the message
@@ -46,6 +56,9 @@ public class MessageDBTest {
         assertFalse("Message database should not be empty after adding a message", DatabaseHelper.isMessagesDatabaseEmpty());
     }
 
+    /**
+     * Test getting all specific messages from the database
+     */
     @Test
     public void testGetSpecificMessages() {
         // Setup a sample message with SPECIFIC type
@@ -68,6 +81,9 @@ public class MessageDBTest {
         assertEquals("Specific message 1", specificMessages.get(0).getMessageContent());
     }
     
+    /**
+     * Test getting a single message from the database
+     */
     @Test
     public void testGetOneMessage() {
         User sender = new User(-1, "senderUser", "password".toCharArray(), "sender@example.com", null, true, false, null, "John", null, "Doe", "Johnny", false, false, true, new ArrayList<>());
@@ -82,6 +98,9 @@ public class MessageDBTest {
         assertEquals("Message content should match", "Single message content", retrievedMessage.getMessageContent());
     }
 
+    /**
+     * Test getting all messages from the database
+     */
     @Test
     public void testGetAllMessages() {
         User sender = new User(-1, "senderUser", "password".toCharArray(), "sender@example.com", null, true, false, null, "John", null, "Doe", "Johnny", false, false, true, new ArrayList<>());
@@ -98,6 +117,9 @@ public class MessageDBTest {
         assertEquals("There should be two messages in the database", 2, allMessages.size());
     }
 
+    /**
+     * Test updating a message in the database
+     */
     @Test
     public void testUpdateMessage() {
         User sender = new User(-1, "senderUser", "password".toCharArray(), "sender@example.com", null, true, false, null, "John", null, "Doe", "Johnny", false, false, true, new ArrayList<>());
@@ -122,6 +144,9 @@ public class MessageDBTest {
     }
 
 
+    /**
+     * Test deleting a message from the database
+     */
     @Test
     public void testDeleteMessage() {
         // Setup sample message

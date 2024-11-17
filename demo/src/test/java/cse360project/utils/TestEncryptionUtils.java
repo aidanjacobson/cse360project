@@ -5,6 +5,9 @@ import org.junit.Test;
 
 public class TestEncryptionUtils {
 
+    /**
+     * Test the encryption and decryption of a simple string
+     */
     @Test
     public void testEncryptionDecryption_HelloWorld() {
         String inputText = "HelloWorld";
@@ -16,6 +19,9 @@ public class TestEncryptionUtils {
         assertEquals("Decrypted text should match the original input", inputText, decryptedText);
     }
 
+    /**
+     * Test the encryption and decryption of a longer string with spaces and special characters
+     */
     @Test
     public void testEncryptionDecryption_LongText() {
         String inputText = "This is a longer text with spaces and special characters!@#";
@@ -27,6 +33,9 @@ public class TestEncryptionUtils {
         assertEquals("Decrypted text should match the original input", inputText, decryptedText);
     }
 
+    /**
+     * Test the encryption and decryption of an empty string
+     */
     @Test
     public void testEncryptionDecryption_EmptyString() {
         String inputText = "";
@@ -38,6 +47,9 @@ public class TestEncryptionUtils {
         assertEquals("Decrypted text should match the original input", inputText, decryptedText);
     }
 
+    /**
+     * Test the encryption and decryption of a null string
+     */
     @Test
     public void testInvalidDecryption() {
         String invalidCipherText = "InvalidCipherText";

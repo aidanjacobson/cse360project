@@ -1,6 +1,5 @@
 package cse360project.pages;
 
-import java.awt.Label;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -17,11 +16,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -33,6 +30,9 @@ public class CreateMessage implements Page{
 	Message question;
 	private BorderPane root = new BorderPane();
 	
+    /**
+     * This method is used to create the interface for the page
+     */
 	private void createInterface() {
         // lets add a vbox for the editor content
         messageContainer = new VBox(10);
@@ -53,6 +53,9 @@ public class CreateMessage implements Page{
         createBottomButtons();
     }
 	
+    /**
+     * This method is used to create the message body
+     */
     private void createMessageBody() {
         // we need a textbox for the message
         messageBody = new TextArea();
@@ -64,6 +67,9 @@ public class CreateMessage implements Page{
         messageBody.setWrapText(true);
     }
     
+    /**
+     * This method is used to create the type selection
+     */
     private void createTypeSelection() {
         // we need a dropdown selection for the type
         // font size 20px
@@ -74,6 +80,9 @@ public class CreateMessage implements Page{
         messageContainer.getChildren().add(typeComboBox);
     }
     
+    /**
+     * This method is used to create the bottom buttons
+     */
     private void createBottomButtons() {
         // create the send and close button
         Button saveButton = new Button("Send Message");
@@ -98,6 +107,10 @@ public class CreateMessage implements Page{
         root.setBottom(bottomButtonContainer);
     }
     
+    /**
+     * This method is used to set the styles for the link buttons
+     * @param linkButton the button to set the styles for
+     */
     private void setLinkButtonStyles(Button linkButton) {
         final String btnBackgroundColor = "#0088ff";
         final Color textColor = Color.WHITE;
@@ -108,6 +121,9 @@ public class CreateMessage implements Page{
         linkButton.setPrefWidth(btnWidth);
     }
     
+    /**
+     * This method is used to attempt to save the message
+     */
     private void doAttemptSave() {
         // check if all fields are filled
         // only some fields are required
@@ -133,11 +149,18 @@ public class CreateMessage implements Page{
         PageManager.switchToPage("studentmessage");
     }
     
+    /**
+     * This method is used to show a failure message
+     * @param message the message to show
+     */
     private void failSave(String message) {
         Alert alert = new Alert(AlertType.ERROR, message, ButtonType.OK);
         alert.showAndWait();
     }
     
+    /**
+     * This method is used to attempt to cancel the message
+     */
     private void doAttemptCancel() {
         // confirm cancel
         Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to cancel? Any unsaved changes will be lost.", ButtonType.YES, ButtonType.NO);
@@ -147,12 +170,18 @@ public class CreateMessage implements Page{
             }
         });
     }
+
+    /**
+     * This method is used to get the root of the page
+     */
 	@Override
 	public BorderPane getRoot() {
-		// TODO Auto-generated method stub
 		return root;
 	}
 
+    /**
+     * This method is used to set the title of the page
+     */
 	@Override
 	public void onPageOpen() {
 		// create the interface
